@@ -30,3 +30,12 @@ $(VENV_DONE): $(MAKEFILE_LIST) setup.py $(wildcard *-requirements.txt)
 	$(VENV_PIP) install -r setup-requirements.txt
 	$(VENV_PIP) install -e $(VENV_PIP_INSTALL)
 	touch $@
+
+# ---
+
+.PHONY: yearly
+yearly: YEAR=$(shell date +%Y)
+yearly:
+	m4 -DYEAR=$(YEAR) yearly_summary.sql.m4 \
+		| sqlite3 strava.sqlite \
+		| perl -0777 -pe 's/(SELECT.*?;)/`tput setaf 246` . $$1 . `tput sgr0`/gse'
