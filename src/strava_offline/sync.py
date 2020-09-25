@@ -1,7 +1,5 @@
 from contextlib import contextmanager
-from datetime import datetime
-from stravalib import unithelper as uh  # type: ignore
-import pytz
+import json
 import sqlite3
 
 
@@ -11,12 +9,21 @@ def database():
     db.row_factory = sqlite3.Row
     try:
         db.execute((
+            "CREATE TABLE IF NOT EXISTS bike"
+            "( id TEXT PRIMARY KEY"
+            ", json TEXT"
+            ", name TEXT"
+            ")"
+        ))
+        db.execute((
             "CREATE TABLE IF NOT EXISTS activity"
             "( id INTEGER PRIMARY KEY"
+            ", json TEXT"
+            ", upload_id TEXT"
             ", name TEXT"
-            ", start_date INTEGER"
-            ", moving_time REAL"
-            ", elapsed_time REAL"
+            ", start_date TEXT"
+            ", moving_time INTEGER"
+            ", elapsed_time INTEGER"
             ", distance REAL"
             ", total_elevation_gain REAL"
             ", gear_id TEXT"
@@ -29,45 +36,55 @@ def database():
         db.close()
 
 
-def sync_activities(strava, db):
-    now = datetime.now(pytz.utc)
+def sync_bikes(strava, db):
     with db:  # transaction
-        for activity in strava.get_activities(before=now):
-            try:
-                db.execute(
-                    (
-                        "INSERT INTO activity"
-                        "( id"
-                        ", name"
-                        ", start_date"
-                        ", moving_time"
-                        ", elapsed_time"
-                        ", distance"
-                        ", total_elevation_gain"
-                        ", gear_id"
-                        ", type"
-                        ", commute"
-                        ")"
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-                    ),
-                    (
-                        activity.id,
-                        activity.name,
-                        int(activity.start_date.timestamp()),
-                        float(activity.moving_time.total_seconds()),
-                        float(activity.elapsed_time.total_seconds()),
-                        float(uh.meters(activity.distance).num),
-                        float(uh.meters(activity.total_elevation_gain).num),
-                        activity.gear_id,
-                        activity.type,
-                        activity.commute,
-                    )
+        for bike in strava.get_bikes():
+            db.execute(
+                "INSERT OR REPLACE INTO bike(id, json, name) VALUES (?, ?, ?)",
+                (bike['id'], json.dumps(bike), bike['name'])
+            )
+
+
+def sync_activities(strava, db):
+    with db:  # transaction
+        for activity in strava.get_activities():
+            db.execute(
+                (
+                    "INSERT OR REPLACE INTO activity"
+                    "( id"
+                    ", json"
+                    ", upload_id"
+                    ", name"
+                    ", start_date"
+                    ", moving_time"
+                    ", elapsed_time"
+                    ", distance"
+                    ", total_elevation_gain"
+                    ", gear_id"
+                    ", type"
+                    ", commute"
+                    ")"
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                ),
+                (
+                    activity['id'],
+                    json.dumps(activity),
+                    activity['upload_id'],
+                    activity['name'],
+                    activity['start_date'],
+                    activity['moving_time'],
+                    activity['elapsed_time'],
+                    activity['distance'],
+                    activity['total_elevation_gain'],
+                    activity['gear_id'],
+                    activity['type'],
+                    activity['commute'],
                 )
-                print(activity.start_date)
-            except sqlite3.IntegrityError:
-                continue
+            )
+            print(activity['start_date'])
 
 
 def sync(strava):
     with database() as db:
+        sync_bikes(strava, db)
         sync_activities(strava, db)

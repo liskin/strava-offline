@@ -1,4 +1,0 @@
-[submodule "deps/stravalib"]
-	path = deps/stravalib
-	#url = https://github.com/hozn/stravalib
-	url = https://github.com/liskin/stravalib

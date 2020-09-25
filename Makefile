@@ -27,7 +27,6 @@ clean:
 
 $(VENV_DONE): $(MAKEFILE_LIST) setup.py $(wildcard *-requirements.txt)
 	$(PYTHON) -m venv --system-site-packages $(VENV)
-	for dep in deps/*; do $(VENV_PIP) install -e "$$dep"; done
 	$(VENV_PIP) install -r setup-requirements.txt
 	$(VENV_PIP) install -e $(VENV_PIP_INSTALL)
 	touch $@

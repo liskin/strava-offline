@@ -1,5 +1,8 @@
+from datetime import datetime
 from requests_oauthlib import OAuth2Session  # type: ignore
+from typing import List
 import json
+import pytz
 
 from . import config
 from . import redirect_server
@@ -13,13 +16,13 @@ def load_token():
         return None
 
 
-def save_token(token):
+def save_token(token) -> None:
     with open("token.json", "w") as f:
         json.dump(token, f)
 
 
 class StravaAPI:
-    def __init__(self, scope):
+    def __init__(self, scope: List[str]):
         token = load_token()
         self._client_secret = config.strava_client_secret
         self._session = OAuth2Session(
@@ -38,7 +41,7 @@ class StravaAPI:
         if not token:
             self.authorize()
 
-    def authorize(self):
+    def authorize(self) -> None:
         authorization_url, _ = self._session.authorization_url("https://www.strava.com/oauth/authorize")
         code = redirect_server.get_code(authorization_url)
         token = self._session.fetch_token(
@@ -49,10 +52,26 @@ class StravaAPI:
         save_token(token)
 
     @property
-    def access_token(self):
+    def access_token(self) -> str:
         return self._session.access_token
 
     def get_athlete(self):
         r = self._session.get("https://www.strava.com/api/v3/athlete")
         r.raise_for_status()
         return r.json()
+
+    def get_bikes(self):
+        return self.get_athlete()['bikes']
+
+    def get_activities(self):
+        now = int(datetime.now(pytz.utc).timestamp())
+        params = {'before': now, 'per_page': 200, 'page': 0}
+        while True:
+            params['page'] += 1
+            r = self._session.get("https://www.strava.com/api/v3/athlete/activities", params=params)
+            r.raise_for_status()
+            activities = r.json()
+            if activities:
+                yield from activities
+            else:
+                break
