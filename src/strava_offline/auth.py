@@ -1,5 +1,5 @@
 from multiprocessing import Process, Queue
-from time import sleep
+from time import sleep, time
 import bottle  # type: ignore
 import json
 import stravalib  # type: ignore
@@ -84,7 +84,9 @@ def save_token(token):
 
 def get_token():
     token = load_token()
-    if token:
+    if token and token['expires_at'] > time() + 300:
+        pass  # do nothing if token expires after more than 5 minutes
+    elif token:
         token = refresh_token(token)
     else:
         token = get_token_oauth()
