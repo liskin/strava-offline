@@ -93,3 +93,9 @@ def get_token():
 
     save_token(token)
     return token
+
+
+def get_client() -> stravalib.Client:
+    token = get_token()
+    strava.access_token = token['access_token']
+    return strava

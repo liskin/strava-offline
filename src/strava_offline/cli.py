@@ -1,6 +1,7 @@
 from . import auth
+from . import sync
 
 
 def main():
-    token = auth.get_token()
-    print(token)
+    strava = auth.get_client()
+    sync.sync(strava)

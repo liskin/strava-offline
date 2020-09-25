@@ -1,6 +1,3 @@
 *.egg-info/
 /.venv/
 __pycache__/
-
-/.private.sh
-/token.json
