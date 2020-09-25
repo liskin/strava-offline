@@ -9,15 +9,17 @@ from . import config
 from . import strava
 
 
+stravaapi = strava.StravaAPI(
+    client_id=config.strava_client_id,
+    client_secret=config.strava_client_secret,
+)
 queue = None
 
 
 @bottle.route("/authorize")
 def authorize():
-    redirect_uri = f"http://{config.http_host}:{config.http_port}/token"
-    authorize_uri = strava.authorization_url(
-        client_id=config.strava_client_id,
-        redirect_uri=redirect_uri,
+    authorize_uri = stravaapi.authorization_url(
+        redirect_uri=f"http://{config.http_host}:{config.http_port}/token",
         scope=["read", "profile:read_all", "activity:read_all"],
     )
     bottle.redirect(authorize_uri)
@@ -25,16 +27,12 @@ def authorize():
 
 @bottle.route("/token")
 def authorization_successful():
-    token = strava.exchange_code_for_token(
-        client_id=config.strava_client_id,
-        client_secret=config.strava_client_secret,
-        code=bottle.request.query.code,
-    )
+    token = stravaapi.exchange_code_for_token(code=bottle.request.query.code)
 
     global queue
     queue.put(token)
 
-    return str(token)
+    return "OK"
 
 
 def server(q):
@@ -62,11 +60,7 @@ def get_token_oauth():
 
 
 def refresh_token(token):
-    return strava.refresh_access_token(
-        client_id=config.strava_client_id,
-        client_secret=config.strava_client_secret,
-        refresh_token=token['refresh_token'],
-    )
+    return stravaapi.refresh_access_token(refresh_token=token['refresh_token'])
 
 
 def load_token():
