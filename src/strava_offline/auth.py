@@ -6,9 +6,9 @@ import stravalib  # type: ignore
 import webbrowser
 
 from . import config
+from . import strava
 
 
-strava = stravalib.Client()
 queue = None
 
 
@@ -97,5 +97,4 @@ def get_token():
 
 def get_client() -> stravalib.Client:
     token = get_token()
-    strava.access_token = token['access_token']
-    return strava
+    return stravalib.Client(access_token=token['access_token'])
