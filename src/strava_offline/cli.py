@@ -1,2 +1,6 @@
+from . import auth
+
+
 def main():
-    print("hello")
+    token = auth.get_token()
+    print(token)
