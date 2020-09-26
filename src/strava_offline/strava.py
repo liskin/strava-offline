@@ -1,4 +1,5 @@
 from datetime import datetime
+from requests import Session
 from requests_oauthlib import OAuth2Session  # type: ignore
 from typing import List
 import json
@@ -71,3 +72,29 @@ class StravaAPI:
                 yield from activities
             else:
                 break
+
+
+class StravaWeb:
+    def __init__(self, config: Config):
+        self._config = config
+        self._session = Session()
+        self._session.cookies.set(
+            '_strava4_session', config.strava_cookie_strava4_session,
+            domain="www.strava.com", secure=True,
+        )
+
+    def get_gpx(self, activity_id: int) -> bytes:
+        r = self._session.get(f"https://www.strava.com/activities/{activity_id}/export_gpx")
+        r.raise_for_status()
+
+        content_type_ok = r.headers.get('Content-Type') == "application/octet-stream"
+        content_disposition_ok = "attachment" in r.headers.get('Content-Disposition', "")
+        if content_type_ok and content_disposition_ok:
+            return r.content
+        else:
+            raise RuntimeError(f"expected application/octet-stream attachment, got:\n{r.headers}")
+
+    def download_gpx(self, activity_id: int, filename: str) -> None:
+        gpx = self.get_gpx(activity_id)
+        with open(filename, "wb") as f:
+            f.write(gpx)

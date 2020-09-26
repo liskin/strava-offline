@@ -15,6 +15,7 @@ def _getenv(var: str) -> str:
 class Config:
     strava_client_id: str = field(default_factory=partial(_getenv, 'STRAVA_CLIENT_ID'))
     strava_client_secret: str = field(default_factory=partial(_getenv, 'STRAVA_CLIENT_SECRET'))
+    strava_cookie_strava4_session: str = field(default_factory=partial(_getenv, 'STRAVA_COOKIE_STRAVA4_SESSION'))
     strava_token_filename: str = "token.json"
     strava_sqlite_database: str = "strava.sqlite"
 

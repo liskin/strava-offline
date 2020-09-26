@@ -1,7 +1,7 @@
 import argparse
 
 from .config import Config
-from .strava import StravaAPI
+from .strava import StravaAPI, StravaWeb
 from .sync import sync
 
 
@@ -19,6 +19,10 @@ def parse_args() -> argparse.Namespace:
     group_config.add_argument(
         '--client-secret', metavar="XXX", dest='strava_client_secret',
         help="strava oauth2 client secret (default: genenv('STRAVA_CLIENT_SECRET'))",
+    )
+    group_config.add_argument(
+        '--strava4-session', metavar="XX", dest='strava_cookie_strava4_session:',
+        help="'_strava4_session' cookie value (default: genenv('STRAVA_COOKIE_STRAVA4_SESSION'))",
     )
     group_config.add_argument(
         '--token-file', metavar="FILE", dest='strava_token_filename',
