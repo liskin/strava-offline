@@ -51,10 +51,6 @@ class StravaAPI:
         )
         self._save_token(token)
 
-    @property
-    def access_token(self) -> str:
-        return self._session.access_token
-
     def get_athlete(self):
         r = self._session.get("https://www.strava.com/api/v3/athlete")
         r.raise_for_status()
