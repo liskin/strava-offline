@@ -4,10 +4,9 @@ from types import SimpleNamespace
 import bottle  # type: ignore
 import webbrowser
 
-from . import config
+from .config import Config
 
 
-redirect_uri = f"http://{config.http_host}:{config.http_port}/code"
 shared = SimpleNamespace()
 
 
@@ -25,26 +24,35 @@ def code():
     return "OK"
 
 
-def server(queue, authorization_url):
+def server(_shared: SimpleNamespace) -> None:
     global shared
+    shared = _shared
+
+    bottle.run(host=shared.config.http_host, port=shared.config.http_port)
+
+
+def get_code(config: Config, authorization_url: str) -> str:
+    queue: Queue[str] = Queue()
+
+    shared = SimpleNamespace()
+    shared.config = config
     shared.queue = queue
     shared.authorization_url = authorization_url
 
-    bottle.run(host=config.http_host, port=config.http_port)
-
-
-def get_code(authorization_url):
-    q = Queue()
-    p = Process(target=server, args=(q, authorization_url))
-    p.start()
+    process = Process(target=server, args=(shared,))
+    process.start()
 
     sleep(0.2)
     webbrowser.open_new(f"http://{config.http_host}:{config.http_port}/authorize")
 
-    code = q.get()
+    code = queue.get()
 
     sleep(0.2)
-    p.terminate()
-    p.join()
+    process.terminate()
+    process.join()
 
     return code
+
+
+def redirect_uri(config: Config) -> str:
+    return f"http://{config.http_host}:{config.http_port}/code"

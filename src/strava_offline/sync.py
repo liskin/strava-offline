@@ -1,8 +1,10 @@
-from .strava import StravaAPI
 from contextlib import contextmanager
 from typing import Iterator
 import json
 import sqlite3
+
+from .config import Config
+from .strava import StravaAPI
 
 
 @contextmanager
@@ -125,8 +127,8 @@ def sync_activities_incremental(strava: StravaAPI, db: sqlite3.Connection):
             sync_activity(activity, db)
 
 
-def sync(strava: StravaAPI, full, filename):
-    with database(filename) as db:
+def sync(config: Config, strava: StravaAPI, full: bool):
+    with database(config.strava_sqlite_database) as db:
         sync_bikes(strava, db)
         if full:
             sync_activities(strava, db)
