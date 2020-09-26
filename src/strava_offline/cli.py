@@ -3,8 +3,8 @@ from typing import Optional
 import argparse
 
 from . import config
+from . import sqlite
 from .strava import StravaAPI, StravaWeb
-from .sync import sync
 
 
 class BaseCommand:
@@ -51,7 +51,7 @@ class SqliteCommand(BaseCommand):
             config=config,
             scope=["read", "profile:read_all", "activity:read_all"],
         )
-        sync(config=config, strava=strava, full=config.full)
+        sqlite.sync(config=config, strava=strava, full=config.full)
 
 
 commands = [
