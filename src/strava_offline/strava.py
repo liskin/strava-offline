@@ -8,23 +8,13 @@ from . import config
 from . import redirect_server
 
 
-def load_token():
-    try:
-        with open("token.json", "r") as f:
-            return json.load(f)
-    except Exception:
-        return None
-
-
-def save_token(token) -> None:
-    with open("token.json", "w") as f:
-        json.dump(token, f)
-
-
 class StravaAPI:
-    def __init__(self, scope: List[str]):
-        token = load_token()
+    def __init__(self, scope: List[str], token_filename: str):
+        self._token_filename = token_filename
         self._client_secret = config.strava_client_secret
+
+        token = self._load_token()
+
         self._session = OAuth2Session(
             client_id=config.strava_client_id,
             redirect_uri=redirect_server.redirect_uri,
@@ -35,13 +25,24 @@ class StravaAPI:
                 'client_id': config.strava_client_id,
                 'client_secret': config.strava_client_secret,
             },
-            token_updater=save_token,
+            token_updater=self._save_token,
         )
 
         if not token:
-            self.authorize()
+            self._authorize()
 
-    def authorize(self) -> None:
+    def _load_token(self):
+        try:
+            with open(self._token_filename, "r") as f:
+                return json.load(f)
+        except Exception:
+            return None
+
+    def _save_token(self, token) -> None:
+        with open(self._token_filename, "w") as f:
+            json.dump(token, f)
+
+    def _authorize(self) -> None:
         authorization_url, _ = self._session.authorization_url("https://www.strava.com/oauth/authorize")
         code = redirect_server.get_code(authorization_url)
         token = self._session.fetch_token(
@@ -49,7 +50,7 @@ class StravaAPI:
             code=code,
             client_secret=self._client_secret,
         )
-        save_token(token)
+        self._save_token(token)
 
     @property
     def access_token(self) -> str:

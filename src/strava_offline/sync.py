@@ -1,11 +1,13 @@
+from .strava import StravaAPI
 from contextlib import contextmanager
+from typing import Iterator
 import json
 import sqlite3
 
 
 @contextmanager
-def database():
-    db = sqlite3.connect("strava.sqlite")
+def database(filename: str) -> Iterator[sqlite3.Connection]:
+    db = sqlite3.connect(filename)
     db.row_factory = sqlite3.Row
     try:
         db.execute((
@@ -36,14 +38,14 @@ def database():
         db.close()
 
 
-def sync_bike(bike, db):
+def sync_bike(bike, db: sqlite3.Connection):
     db.execute(
         "INSERT OR REPLACE INTO bike(id, json, name) VALUES (?, ?, ?)",
         (bike['id'], json.dumps(bike), bike['name'])
     )
 
 
-def sync_bikes(strava, db):
+def sync_bikes(strava, db: sqlite3.Connection):
     with db:  # transaction
         old_bikes = set(b['id'] for b in db.execute("SELECT id FROM bike"))
 
@@ -55,7 +57,7 @@ def sync_bikes(strava, db):
         db.executemany("DELETE FROM bike WHERE id = ?", delete)
 
 
-def sync_activity(activity, db):
+def sync_activity(activity, db: sqlite3.Connection):
     db.execute(
         (
             "INSERT OR REPLACE INTO activity"
@@ -91,36 +93,40 @@ def sync_activity(activity, db):
     )
 
 
-def sync_activities(strava, db):
+def sync_activities(strava: StravaAPI, db: sqlite3.Connection):
     with db:  # transaction
         old_activities = set(a['id'] for a in db.execute("SELECT id FROM activity"))
 
         for activity in strava.get_activities():
+            status = "seen: " if activity['id'] in old_activities else "new:  "
+            print(status + str(activity['id']) + " - " + activity['start_date'])
+
             old_activities.discard(activity['id'])
             sync_activity(activity, db)
-            print(activity['start_date'])
 
         delete = ((activity,) for activity in old_activities)
         db.executemany("DELETE FROM activity WHERE id = ?", delete)
 
 
-def sync_activities_incremental(strava, db):
+def sync_activities_incremental(strava: StravaAPI, db: sqlite3.Connection):
     with db:  # transaction
         old_activities = set(a['id'] for a in db.execute("SELECT id FROM activity"))
 
         seen = 0
         for activity in strava.get_activities():
+            status = "seen: " if activity['id'] in old_activities else "new:  "
+            print(status + str(activity['id']) + " - " + activity['start_date'])
+
             if activity['id'] in old_activities:
                 seen += 1
             if seen > 10:
                 break
 
             sync_activity(activity, db)
-            print(activity['start_date'])
 
 
-def sync(strava, full=False):
-    with database() as db:
+def sync(strava: StravaAPI, full, filename):
+    with database(filename) as db:
         sync_bikes(strava, db)
         if full:
             sync_activities(strava, db)
