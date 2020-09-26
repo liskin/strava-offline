@@ -3,7 +3,7 @@ from typing import Iterator
 import json
 import sqlite3
 
-from .config import Config
+from . import config
 from .strava import StravaAPI
 
 
@@ -127,7 +127,7 @@ def sync_activities_incremental(strava: StravaAPI, db: sqlite3.Connection):
             sync_activity(activity, db)
 
 
-def sync(config: Config, strava: StravaAPI, full: bool):
+def sync(config: config.DatabaseConfig, strava: StravaAPI, full: bool):
     with database(config.strava_sqlite_database) as db:
         sync_bikes(strava, db)
         if full:

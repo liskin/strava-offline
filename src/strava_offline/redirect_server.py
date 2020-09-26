@@ -4,7 +4,7 @@ from types import SimpleNamespace
 import bottle  # type: ignore
 import webbrowser
 
-from .config import Config
+from . import config
 
 
 shared = SimpleNamespace()
@@ -31,7 +31,7 @@ def server(_shared: SimpleNamespace) -> None:
     bottle.run(host=shared.config.http_host, port=shared.config.http_port)
 
 
-def get_code(config: Config, authorization_url: str) -> str:
+def get_code(config: config.StravaApiConfig, authorization_url: str) -> str:
     queue: Queue[str] = Queue()
 
     shared = SimpleNamespace()
@@ -54,5 +54,5 @@ def get_code(config: Config, authorization_url: str) -> str:
     return code
 
 
-def redirect_uri(config: Config) -> str:
+def redirect_uri(config: config.StravaApiConfig) -> str:
     return f"http://{config.http_host}:{config.http_port}/code"

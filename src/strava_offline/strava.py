@@ -6,11 +6,11 @@ import json
 import pytz
 
 from . import redirect_server
-from .config import Config
+from . import config
 
 
 class StravaAPI:
-    def __init__(self, config: Config, scope: List[str]):
+    def __init__(self, config: config.StravaApiConfig, scope: List[str]):
         self._config = config
 
         token = self._load_token()
@@ -75,7 +75,7 @@ class StravaAPI:
 
 
 class StravaWeb:
-    def __init__(self, config: Config):
+    def __init__(self, config: config.StravaWebConfig):
         self._config = config
         self._session = Session()
         self._session.cookies.set(
