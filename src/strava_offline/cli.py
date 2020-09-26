@@ -1,5 +1,6 @@
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Type, final
 import argparse
 
 from . import config
@@ -7,13 +8,14 @@ from . import sqlite
 from .strava import StravaAPI, StravaWeb
 
 
-class BaseCommand:
+class BaseCommand(ABC):
     name: str
     help: Optional[str] = None
     description: Optional[str] = None
 
     Config = config.BaseConfig
 
+    @final
     @classmethod
     def add_subparser(cls, subparsers) -> None:
         subparser = subparsers.add_parser(
@@ -21,6 +23,11 @@ class BaseCommand:
             help=cls.help, description=cls.description,
         )
         subparser.set_defaults(command=cls)
+
+    @staticmethod
+    @abstractmethod
+    def run(config) -> None:
+        pass
 
 
 class SqliteCommand(BaseCommand):
@@ -73,5 +80,6 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    config = args.command.Config.from_args(args)
-    args.command.run(config)
+    command: Type[BaseCommand] = args.command
+    config = command.Config.from_args(args)
+    command.run(config)
