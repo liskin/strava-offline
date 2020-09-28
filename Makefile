@@ -13,6 +13,14 @@ venv: $(VENV_DONE)
 venv-prod: override VENV_PIP_INSTALL = '.'
 venv-prod: $(VENV_DONE)
 
+.PHONY: pipx
+pipx:
+	pipx install --editable --spec . strava-offline
+
+.PHONY: pipsi
+pipsi:
+	pipsi install --editable .
+
 .PHONY: dist
 dist: $(VENV_DONE)
 	$(VENV_PYTHON) -m pep517.build --source --binary --out-dir dist .
