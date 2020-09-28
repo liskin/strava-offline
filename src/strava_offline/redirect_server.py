@@ -1,7 +1,7 @@
 from multiprocessing import Process, Queue
 from time import sleep
 from types import SimpleNamespace
-import bottle  # type: ignore
+import bottle  # type: ignore [import]
 import webbrowser
 
 from . import config
