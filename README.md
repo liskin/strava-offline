@@ -93,7 +93,7 @@ least once to let strava-offline reuse these downloaded files.
 [strava-bulk-export]: https://support.strava.com/hc/en-us/articles/216918437-Exporting-your-Data-and-Bulk-Export#Bulk
 
 ```
-$ strava-offline.sh gpx --help
+$ strava-offline gpx --help
 usage: strava-offline gpx [-h] [--strava4-session XX] [--dir-activities DIR]
                           [--dir-activities-backup DIR] [--database FILE]
 
