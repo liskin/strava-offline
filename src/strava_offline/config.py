@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field, fields
 from functools import partial
-from typing import Optional, Type, TypeVar, final
+from typing import Optional, Type, TypeVar
 import argparse
 import os
 
@@ -17,14 +17,14 @@ T = TypeVar('T', bound='BaseConfig')
 
 @dataclass
 class BaseConfig:
-    @final
+    # @final, python 3.7 compat
     @classmethod
     def from_args(cls: Type[T], args: argparse.Namespace) -> T:
         field_set = set(f.name for f in fields(cls))
         kwargs = {k: v for k, v in vars(args).items() if k in field_set and v is not None}
         return cls(**kwargs)  # type: ignore[call-arg]
 
-    @final
+    # @final, python 3.7 compat
     @classmethod
     def to_arg_parser(cls: Type[T]) -> argparse.ArgumentParser:
         parser = argparse.ArgumentParser(add_help=False)

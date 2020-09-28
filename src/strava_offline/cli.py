@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Optional, Type, final
+from typing import Optional, Type
 import argparse
 
 from . import config
@@ -16,7 +16,7 @@ class BaseCommand(ABC):
 
     Config = config.BaseConfig
 
-    @final
+    # @final, python 3.7 compat
     @classmethod
     def add_subparser(cls, subparsers) -> None:
         subparser = subparsers.add_parser(

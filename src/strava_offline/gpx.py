@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import Optional
 import gzip
+import os
 import sqlite3
 
 from . import config
@@ -30,7 +31,10 @@ def link_backup_activities(
         backup = find_gpx(dir_activities_backup, activity_id) or find_gpx(dir_activities_backup, upload_id)
         if backup:
             link = Path(dir_activities, str(activity_id) + "".join(backup.suffixes))
-            backup.link_to(link)
+            if hasattr(backup, 'link_to'):
+                backup.link_to(link)  # type: ignore [attr-defined]
+            else:
+                os.link(backup, link)  # python 3.7 compat
 
 
 def download_gpx(strava: StravaWeb, activity_id: int, path: Path) -> None:
