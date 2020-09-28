@@ -22,7 +22,7 @@ Example of what you can do with the data:
 
 ```
 pipx ensurepath
-pipx install --spec git+https://github.com/liskin/strava-offline strava-offline
+pipx install --spec git+https://github.com/liskin/strava-offline strava_offline
 ```
 
 To keep a local git clone around:
