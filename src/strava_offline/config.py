@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field, fields
 from functools import partial
-from typing import Type, TypeVar, final
+from typing import Optional, Type, TypeVar, final
 import argparse
 import os
 
@@ -96,6 +96,40 @@ class DatabaseConfig(BaseConfig):
         group.add_argument(
             '--database', metavar="FILE", dest='strava_sqlite_database',
             help=f"sqlite database file (default: {cls.strava_sqlite_database})",
+        )
+
+        super().add_arguments(parser)
+
+
+@dataclass
+class SyncConfig(DatabaseConfig):
+    full: bool = False
+
+    @classmethod
+    def add_arguments(cls, parser: argparse.ArgumentParser) -> None:
+        parser.add_argument(
+            '--full', action='store_true',
+            help="perform full sync instead of incremental",
+        )
+
+        super().add_arguments(parser)
+
+
+@dataclass
+class GpxConfig(DatabaseConfig):
+    dir_activities: str = "strava_data/activities"
+    dir_activities_backup: Optional[str] = None
+
+    @classmethod
+    def add_arguments(cls, parser: argparse.ArgumentParser) -> None:
+        group = parser.add_argument_group('strava-offline gpx storage')
+        group.add_argument(
+            '--dir-activities', metavar="DIR", dest='dir_activities',
+            help=f"directory to store gpx files indexed by activity id (default: {cls.dir_activities})",
+        )
+        group.add_argument(
+            '--dir-activities-backup', metavar="DIR", dest='dir_activities_backup',
+            help="optional path to activities in Strava backup (no need to redownload these)",
         )
 
         super().add_arguments(parser)

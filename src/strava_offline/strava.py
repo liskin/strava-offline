@@ -74,6 +74,10 @@ class StravaAPI:
                 break
 
 
+class NotGpx(Exception):
+    pass
+
+
 class StravaWeb:
     def __init__(self, config: config.StravaWebConfig):
         self._config = config
@@ -83,18 +87,46 @@ class StravaWeb:
             domain="www.strava.com", secure=True,
         )
 
-    def get_gpx(self, activity_id: int) -> bytes:
-        r = self._session.get(f"https://www.strava.com/activities/{activity_id}/export_gpx")
+    def _get_gpx(self, what: str, activity_id: int) -> bytes:
+        r = self._session.get(f"https://www.strava.com/activities/{activity_id}/export_{what}")
         r.raise_for_status()
 
         content_type_ok = r.headers.get('Content-Type') == "application/octet-stream"
-        content_disposition_ok = "attachment" in r.headers.get('Content-Disposition', "")
+
+        content_disposition, content_disposition_params = _parse_content_disposition_header(
+            r.headers.get('Content-Disposition', ""))
+        content_disposition_ok = (
+            content_disposition == "attachment"
+            and content_disposition_params['filename'].endswith(".gpx"))
+
         if content_type_ok and content_disposition_ok:
             return r.content
         else:
-            raise RuntimeError(f"expected application/octet-stream attachment, got:\n{r.headers}")
+            raise NotGpx(f"expected gpx attachment, got:\n{r.headers}")
 
-    def download_gpx(self, activity_id: int, filename: str) -> None:
-        gpx = self.get_gpx(activity_id)
-        with open(filename, "wb") as f:
-            f.write(gpx)
+    def get_gpx(self, activity_id: int) -> bytes:
+        try:
+            # Try to obtain the original gpx as the export_gpx endpoint always returns a processed
+            # and stripped gpx. The original gpx may contain a longer track than shown on Strava as
+            # it's not filtered and cropped.
+            return self._get_gpx("original", activity_id)
+        except NotGpx:
+            return self._get_gpx("gpx", activity_id)
+
+
+def _parse_content_disposition_header(header):
+    tokens = header.split(';')
+    content_disposition, params = tokens[0].strip(), tokens[1:]
+    params_dict = {}
+    items_to_strip = "\"' "
+
+    for param in params:
+        param = param.strip()
+        if param:
+            key, value = param, True
+            index_of_equals = param.find("=")
+            if index_of_equals != -1:
+                key = param[:index_of_equals].strip(items_to_strip)
+                value = param[index_of_equals + 1:].strip(items_to_strip)
+            params_dict[key.lower()] = value
+    return content_disposition, params_dict

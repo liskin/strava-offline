@@ -4,6 +4,7 @@ from typing import Optional, Type, final
 import argparse
 
 from . import config
+from . import gpx
 from . import sqlite
 from .strava import StravaAPI, StravaWeb
 
@@ -40,17 +41,8 @@ class SqliteCommand(BaseCommand):
     """
 
     @dataclass
-    class Config(config.StravaApiConfig, config.DatabaseConfig):
-        full: bool = False
-
-        @classmethod
-        def add_arguments(cls, parser: argparse.ArgumentParser) -> None:
-            parser.add_argument(
-                '--full', action='store_true',
-                help="perform full sync instead of incremental",
-            )
-
-            super().add_arguments(parser)
+    class Config(config.StravaApiConfig, config.SyncConfig):
+        pass
 
     @staticmethod
     def run(config: Config) -> None:
@@ -58,11 +50,32 @@ class SqliteCommand(BaseCommand):
             config=config,
             scope=["read", "profile:read_all", "activity:read_all"],
         )
-        sqlite.sync(config=config, strava=strava, full=config.full)
+        sqlite.sync(config=config, strava=strava)
+
+
+class GpxCommand(BaseCommand):
+    name = 'gpx'
+    help = "download gpx for your activities"
+    description = """
+    Download known (previously synced using the "sqlite" command) activities in GPX format.
+    It's recommended to only use this incrementally to download the latest activities every day
+    or week, and download the bulk of your historic activities directly from Strava.
+    Use --dir-activities-backup to avoid downloading activities already downloaded in the bulk.
+    """
+
+    @dataclass
+    class Config(config.StravaWebConfig, config.GpxConfig):
+        pass
+
+    @staticmethod
+    def run(config: Config) -> None:
+        strava = StravaWeb(config=config)
+        gpx.sync(config=config, strava=strava)
 
 
 commands = [
     SqliteCommand,
+    GpxCommand,
 ]
 
 

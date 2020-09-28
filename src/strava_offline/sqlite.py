@@ -8,8 +8,8 @@ from .strava import StravaAPI
 
 
 @contextmanager
-def database(filename: str) -> Iterator[sqlite3.Connection]:
-    db = sqlite3.connect(filename)
+def database(config: config.DatabaseConfig) -> Iterator[sqlite3.Connection]:
+    db = sqlite3.connect(config.strava_sqlite_database)
     db.row_factory = sqlite3.Row
     try:
         db.execute((
@@ -127,10 +127,10 @@ def sync_activities_incremental(strava: StravaAPI, db: sqlite3.Connection):
             sync_activity(activity, db)
 
 
-def sync(config: config.DatabaseConfig, strava: StravaAPI, full: bool):
-    with database(config.strava_sqlite_database) as db:
+def sync(config: config.SyncConfig, strava: StravaAPI):
+    with database(config) as db:
         sync_bikes(strava, db)
-        if full:
+        if config.full:
             sync_activities(strava, db)
         else:
             sync_activities_incremental(strava, db)
