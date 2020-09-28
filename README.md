@@ -49,7 +49,8 @@ pip install git+https://github.com/liskin/strava-offline
   and `STRAVA_CLIENT_SECRET` environment variables.
 
   That settings page also lists Your Access Token but this won't let you
-  download private activities.
+  download private activities or see names of bikes. Therefore its use is not
+  supported in strava-offline.
 
 * For GPX downloading, you'll also need to get the `_strava4_session` cookie
   from your web browser session. Open <https://strava.com/> in your browser
