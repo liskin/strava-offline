@@ -21,6 +21,7 @@ Example of what you can do with the data:
 ## Installation
 
 ```
+pipx ensurepath
 pipx install --spec git+https://github.com/liskin/strava-offline strava-offline
 ```
 
