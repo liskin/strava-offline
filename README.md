@@ -118,3 +118,15 @@ strava-offline gpx storage:
 strava-offline database:
   --database FILE       sqlite database file (default: strava.sqlite)
 ```
+
+## Donations (♥ = €)
+
+If you like this tool and wish to support its development and maintenance,
+please consider [a small donation](https://www.paypal.me/lisknisi/10EUR).
+
+By donating, you'll also support the development of my other projects. You
+might like these:
+
+* <https://github.com/liskin/strava-map-switcher> - Map switcher for Strava website
+* <https://github.com/liskin/locus-graphhopper-gpx> - Convert GraphHopper JSON to GPX with Locus nav. instructions
+* <https://github.com/liskin/leaflet-tripreport> - A simple tool for visualization of bikepacking trips, both planned and ridden
