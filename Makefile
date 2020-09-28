@@ -6,20 +6,19 @@ VENV_PYTHON = $(VENV)/bin/python
 VENV_DONE = $(VENV)/.done
 VENV_PIP_INSTALL = '.[dev, test]'
 
+PACKAGE_SCRIPT = 'from configparser import RawConfigParser; p = RawConfigParser(); p.read("setup.cfg"); print(p["metadata"]["name"]);'
+PACKAGE = $(shell $(PYTHON) -c $(PACKAGE_SCRIPT))
+
 .PHONY: venv
 venv: $(VENV_DONE)
 
-.PHONY: venv-prod
-venv-prod: override VENV_PIP_INSTALL = '.'
-venv-prod: $(VENV_DONE)
-
 .PHONY: pipx
 pipx:
-	pipx install --editable --spec . strava-offline
+	pipx install --editable --spec . $(PACKAGE)
 
-.PHONY: pipsi
-pipsi:
-	pipsi install --editable .
+.PHONY: pipx-site-packages
+pipx-site-packages:
+	pipx install --system-site-packages --editable --spec . $(PACKAGE)
 
 .PHONY: dist
 dist: $(VENV_DONE)
@@ -29,10 +28,6 @@ dist: $(VENV_DONE)
 .PHONY: twine-upload
 twine-upload: dist
 	$(VENV_PYTHON) -m twine upload $(wildcard dist/*)
-
-.PHONY: test
-test: $(VENV_DONE)
-	$(VENV_PY_TEST) $(pytest)
 
 .PHONY: clean
 clean:
