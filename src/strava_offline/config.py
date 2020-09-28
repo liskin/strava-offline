@@ -49,11 +49,11 @@ class StravaApiConfig(BaseConfig):
         group = parser.add_argument_group('Strava API')
         group.add_argument(
             '--client-id', metavar="XXX", dest='strava_client_id',
-            help="strava oauth2 client id (default: genenv('STRAVA_CLIENT_ID'))",
+            help="strava oauth2 client id (default: getenv('STRAVA_CLIENT_ID'))",
         )
         group.add_argument(
             '--client-secret', metavar="XXX", dest='strava_client_secret',
-            help="strava oauth2 client secret (default: genenv('STRAVA_CLIENT_SECRET'))",
+            help="strava oauth2 client secret (default: getenv('STRAVA_CLIENT_SECRET'))",
         )
         group.add_argument(
             '--token-file', metavar="FILE", dest='strava_token_filename',
@@ -80,7 +80,7 @@ class StravaWebConfig(BaseConfig):
         group = parser.add_argument_group('Strava web')
         group.add_argument(
             '--strava4-session', metavar="XX", dest='strava_cookie_strava4_session:',
-            help="'_strava4_session' cookie value (default: genenv('STRAVA_COOKIE_STRAVA4_SESSION'))",
+            help="'_strava4_session' cookie value (default: getenv('STRAVA_COOKIE_STRAVA4_SESSION'))",
         )
 
         super().add_arguments(parser)
