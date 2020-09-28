@@ -1,0 +1,54 @@
+name: Lint
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - '3.8'
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Get pip cache dir
+      id: pip-cache
+      run: |
+        echo "::set-output name=dir::$(pip cache dir)"
+    - name: Persistent Github pip cache
+      uses: actions/cache@v2
+      with:
+        path: ${{ steps.pip-cache.outputs.dir }}
+        key: pip-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('pyproject.toml', 'setup.cfg', 'setup.py', 'Makefile') }}
+        restore-keys: |
+          pip-${{ runner.os }}-${{ matrix.python-version }}-
+          pip-${{ runner.os }}-
+    - name: Persistent Github venv cache
+      uses: actions/cache@v2
+      with:
+        path: .venv/
+        key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('pyproject.toml', 'setup.cfg', 'setup.py', 'Makefile') }}
+    - name: Install dependencies
+      run: |
+        make venv
+        echo "::add-path::$PWD/.venv/bin"
+    - name: flake8
+      uses: julianwachholz/flake8-action@v1.0.0
+      with:
+        checkName: flake8 (${{ matrix.python-version }})
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: mypy
+      uses: liskin/mypy-action@master
+      with:
+        check-name: mypy (${{ matrix.python-version }})
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        max-errors: 0
+        paths: src
