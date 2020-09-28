@@ -23,7 +23,12 @@ pipsi:
 
 .PHONY: dist
 dist: $(VENV_DONE)
+	rm -rf dist/
 	$(VENV_PYTHON) -m pep517.build --source --binary --out-dir dist .
+
+.PHONY: twine-upload
+twine-upload: dist
+	$(VENV_PYTHON) -m twine upload $(wildcard dist/*)
 
 .PHONY: test
 test: $(VENV_DONE)
