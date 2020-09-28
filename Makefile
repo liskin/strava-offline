@@ -15,7 +15,7 @@ venv-prod: $(VENV_DONE)
 
 .PHONY: dist
 dist: $(VENV_DONE)
-	$(VENV_PYTHON) setup.py sdist bdist_wheel
+	$(VENV_PYTHON) -m pep517.build --source --binary --out-dir dist .
 
 .PHONY: test
 test: $(VENV_DONE)
@@ -25,9 +25,8 @@ test: $(VENV_DONE)
 clean:
 	git clean -ffdX
 
-$(VENV_DONE): $(MAKEFILE_LIST) setup.py $(wildcard *-requirements.txt)
+$(VENV_DONE): $(MAKEFILE_LIST) setup.py setup.cfg pyproject.toml
 	$(PYTHON) -m venv --system-site-packages $(VENV)
-	$(VENV_PIP) install -r setup-requirements.txt
 	$(VENV_PIP) install -e $(VENV_PIP_INSTALL)
 	touch $@
 

@@ -1,2 +1,0 @@
-mypy
-python-language-server

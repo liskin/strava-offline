@@ -1,3 +1,0 @@
-bottle
-requests
-requests_oauthlib
