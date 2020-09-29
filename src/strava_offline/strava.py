@@ -8,7 +8,6 @@ import pytz
 from . import redirect_server
 from . import config
 
-
 class StravaAPI:
     def __init__(self, config: config.StravaApiConfig, scope: List[str]):
         self._config = config
