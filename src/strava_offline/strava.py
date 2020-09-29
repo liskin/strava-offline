@@ -1,6 +1,6 @@
 from datetime import datetime
 from requests import Session
-from requests_oauthlib import OAuth2Session  # type: ignore [import]
+from requests_oauthlib import OAuth2Session
 from typing import List
 import json
 import pytz
