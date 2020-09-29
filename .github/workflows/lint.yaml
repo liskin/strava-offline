@@ -41,15 +41,12 @@ jobs:
         make venv
         echo "::add-path::$PWD/.venv/bin"
     - name: flake8
-      uses: julianwachholz/flake8-action@v1.0.0
+      uses: liskin/gh-problem-matcher-wrap@v1
       with:
-        checkName: flake8 (${{ matrix.python-version }})
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        linters: flake8
+        run: flake8 src/
     - name: mypy
-      uses: liskin/mypy-action@master
+      uses: liskin/gh-problem-matcher-wrap@v1
       with:
-        check-name: mypy (${{ matrix.python-version }})
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        max-errors: 0
-        paths: src
+        linters: mypy
+        run: mypy --show-column-numbers src/
