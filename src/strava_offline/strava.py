@@ -105,7 +105,7 @@ class StravaWeb:
 
     def get_gpx(self, activity_id: int) -> bytes:
         try:
-            # Try to obtain the original gpx as the export_gpx endpoint always returns a processed
+            #Try to obtain the original gpx as the export_gpx endpoint always returns a processed
             # and stripped gpx. The original gpx may contain a longer track than shown on Strava as
             # it's not filtered and cropped.
             return self._get_gpx("original", activity_id)
