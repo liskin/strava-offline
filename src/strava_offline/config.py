@@ -5,11 +5,14 @@ import argparse
 import os
 
 
-def _getenv(var: str) -> str:
+def _getenv(var: str, default: Optional[str] = None) -> str:
     val = os.getenv(var)
-    if val is None:
+    if val:
+        return val
+    elif default:
+        return default
+    else:
         raise RuntimeError(var + " not specified")
-    return val
 
 
 T = TypeVar('T', bound='BaseConfig')
@@ -38,8 +41,10 @@ class BaseConfig:
 
 @dataclass
 class StravaApiConfig(BaseConfig):
-    strava_client_id: str = field(default_factory=partial(_getenv, 'STRAVA_CLIENT_ID'))
-    strava_client_secret: str = field(default_factory=partial(_getenv, 'STRAVA_CLIENT_SECRET'))
+    strava_client_id: str = field(
+        default_factory=partial(_getenv, 'STRAVA_CLIENT_ID', default='54316'))
+    strava_client_secret: str = field(
+        default_factory=partial(_getenv, 'STRAVA_CLIENT_SECRET', default='3cfc2260d03472baca90d49fc4bc1d9714711771'))
     strava_token_filename: str = "token.json"
     http_host: str = '127.0.0.1'
     http_port: int = 12345
@@ -49,11 +54,11 @@ class StravaApiConfig(BaseConfig):
         group = parser.add_argument_group('Strava API')
         group.add_argument(
             '--client-id', metavar="XXX", dest='strava_client_id',
-            help="strava oauth2 client id (default: getenv('STRAVA_CLIENT_ID'))",
+            help="strava oauth2 client id (default: getenv('STRAVA_CLIENT_ID') or a built-in default)",
         )
         group.add_argument(
             '--client-secret', metavar="XXX", dest='strava_client_secret',
-            help="strava oauth2 client secret (default: getenv('STRAVA_CLIENT_SECRET'))",
+            help="strava oauth2 client secret (default: getenv('STRAVA_CLIENT_SECRET') or a built-in default)",
         )
         group.add_argument(
             '--token-file', metavar="FILE", dest='strava_token_filename',

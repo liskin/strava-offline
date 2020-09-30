@@ -43,22 +43,31 @@ pip install git+https://github.com/liskin/strava-offline
 
 ## Preparation
 
-* You'll need to obtain Client ID and Client Secret from
-  <https://www.strava.com/settings/api> and then pass these as `--client-id`
-  and `--client-secret` command line arguments or export as `STRAVA_CLIENT_ID`
-  and `STRAVA_CLIENT_SECRET` environment variables.
-
-  That settings page also lists Your Access Token but this won't let you
-  download private activities or see names of bikes. Therefore its use is not
-  supported in strava-offline.
-
-* For GPX downloading, you'll also need to get the `_strava4_session` cookie
-  from your web browser session. Open <https://strava.com/> in your browser
-  and then follow a guide for your browser to obtain the cookie value:
+* For GPX downloading, you'll need to get the `_strava4_session` cookie from
+  your web browser session. Open <https://strava.com/> in your browser and
+  then follow a guide for your browser to obtain the cookie value:
 
   * [Chrome](https://developers.google.com/web/tools/chrome-devtools/storage/cookies)
   * [Firefox](https://developer.mozilla.org/en-US/docs/Tools/Storage_Inspector)
   * [Edge](https://docs.microsoft.com/en-us/microsoft-edge/devtools-guide-chromium/storage/cookies)
+
+* You may also need to obtain your own Client ID and Client Secret from
+  <https://www.strava.com/settings/api> because the built-in ID/Secret is
+  shared with other users and may hit [rate limits][] (HTTP 429 Too Many
+  Requests). Pass these as `--client-id` and `--client-secret` command line
+  arguments or export as `STRAVA_CLIENT_ID` and `STRAVA_CLIENT_SECRET`
+  environment variables.
+
+  Alternatively, you may just wait a couple minutes and try again, but the
+  rate limits are rather strict, so in the unlikely event this tool gets
+  popular, serious users will have to get their own API application
+  registered.
+
+  (That settings page also lists Your Access Token but this won't let you
+  download private activities or see names of bikes. Therefore its use is not
+  supported in strava-offline.)
+
+[rate limits]: http://developers.strava.com/docs/rate-limits/
 
 ## Mirror activities metadata
 
@@ -75,8 +84,10 @@ optional arguments:
   --full               perform full sync instead of incremental
 
 Strava API:
-  --client-id XXX      strava oauth2 client id (default: genenv('STRAVA_CLIENT_ID'))
-  --client-secret XXX  strava oauth2 client secret (default: genenv('STRAVA_CLIENT_SECRET'))
+  --client-id XXX      strava oauth2 client id (default: getenv('STRAVA_CLIENT_ID') or a built-in
+                       default)
+  --client-secret XXX  strava oauth2 client secret (default: getenv('STRAVA_CLIENT_SECRET') or a
+                       built-in default)
   --token-file FILE    strava oauth2 token store (default: token.json)
   --http-host HOST     oauth2 http server host (default: 127.0.0.1)
   --http-port PORT     oauth2 http server port (default: 12345)
