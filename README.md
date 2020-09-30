@@ -88,12 +88,14 @@ Strava API:
                        default)
   --client-secret XXX  strava oauth2 client secret (default: getenv('STRAVA_CLIENT_SECRET') or a
                        built-in default)
-  --token-file FILE    strava oauth2 token store (default: token.json)
+  --token-file FILE    strava oauth2 token store (default:
+                       /home/user/.config/strava_offline/token.json)
   --http-host HOST     oauth2 http server host (default: 127.0.0.1)
   --http-port PORT     oauth2 http server port (default: 12345)
 
 strava-offline database:
-  --database FILE      sqlite database file (default: strava.sqlite)
+  --database FILE      sqlite database file (default:
+                       /home/user/.local/share/strava_offline/strava.sqlite)
 ```
 
 ## Mirror activities as GPX
@@ -129,7 +131,8 @@ strava-offline gpx storage:
                         optional path to activities in Strava backup (no need to redownload these)
 
 strava-offline database:
-  --database FILE       sqlite database file (default: strava.sqlite)
+  --database FILE      sqlite database file (default:
+                       /home/user/.local/share/strava_offline/strava.sqlite)
 ```
 
 ## Donations (♥ = €)

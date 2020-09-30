@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field, fields
 from functools import partial
 from typing import Optional, Type, TypeVar
+import appdirs  # type: ignore [import]
 import argparse
 import os
 
@@ -45,7 +46,7 @@ class StravaApiConfig(BaseConfig):
         default_factory=partial(_getenv, 'STRAVA_CLIENT_ID', default='54316'))
     strava_client_secret: str = field(
         default_factory=partial(_getenv, 'STRAVA_CLIENT_SECRET', default='3cfc2260d03472baca90d49fc4bc1d9714711771'))
-    strava_token_filename: str = "token.json"
+    strava_token_filename: str = os.path.join(appdirs.user_config_dir(appname=__package__), 'token.json')
     http_host: str = '127.0.0.1'
     http_port: int = 12345
 
@@ -93,7 +94,7 @@ class StravaWebConfig(BaseConfig):
 
 @dataclass
 class DatabaseConfig(BaseConfig):
-    strava_sqlite_database: str = "strava.sqlite"
+    strava_sqlite_database: str = os.path.join(appdirs.user_data_dir(appname=__package__), "strava.sqlite")
 
     @classmethod
     def add_arguments(cls, parser: argparse.ArgumentParser) -> None:
@@ -122,7 +123,7 @@ class SyncConfig(DatabaseConfig):
 
 @dataclass
 class GpxConfig(DatabaseConfig):
-    dir_activities: str = "strava_data/activities"
+    dir_activities: str = os.path.join("strava_data", "activities")
     dir_activities_backup: Optional[str] = None
 
     @classmethod
