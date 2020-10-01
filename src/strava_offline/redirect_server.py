@@ -1,11 +1,12 @@
-from multiprocessing import Process, Queue
+from multiprocessing import Process
+from multiprocessing import Queue
 from time import sleep
 from types import SimpleNamespace
-import bottle  # type: ignore [import]
 import webbrowser
 
-from . import config
+import bottle  # type: ignore [import]
 
+from . import config
 
 shared = SimpleNamespace()
 

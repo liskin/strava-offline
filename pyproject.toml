@@ -8,4 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
 
+[tool.isort]
+profile = "open_stack"
+
 # vim:set et:

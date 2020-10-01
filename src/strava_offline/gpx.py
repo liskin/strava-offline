@@ -1,8 +1,8 @@
-from pathlib import Path
-from typing import Optional
 import gzip
 import os
+from pathlib import Path
 import sqlite3
+from typing import Optional
 
 from . import config
 from .sqlite import database

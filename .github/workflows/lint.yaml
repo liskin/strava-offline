@@ -50,3 +50,8 @@ jobs:
       with:
         linters: mypy
         run: mypy --show-column-numbers src/
+    - name: isort
+      uses: liskin/gh-problem-matcher-wrap@v1
+      with:
+        linters: isort
+        run: isort --check src/

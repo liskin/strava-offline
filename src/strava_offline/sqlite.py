@@ -1,8 +1,8 @@
 from contextlib import contextmanager
-from pathlib import Path
-from typing import Iterator
 import json
+from pathlib import Path
 import sqlite3
+from typing import Iterator
 
 from . import config
 from .strava import StravaAPI

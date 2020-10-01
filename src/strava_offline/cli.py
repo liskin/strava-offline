@@ -1,12 +1,15 @@
-from abc import ABC, abstractmethod
-from dataclasses import dataclass
-from typing import Optional, Type
+from abc import ABC
+from abc import abstractmethod
 import argparse
+from dataclasses import dataclass
+from typing import Optional
+from typing import Type
 
 from . import config
 from . import gpx
 from . import sqlite
-from .strava import StravaAPI, StravaWeb
+from .strava import StravaAPI
+from .strava import StravaWeb
 
 
 class BaseCommand(ABC):

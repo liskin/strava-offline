@@ -1,9 +1,14 @@
-from dataclasses import dataclass, field, fields
-from functools import partial
-from typing import Optional, Type, TypeVar
-import appdirs  # type: ignore [import]
 import argparse
+from dataclasses import dataclass
+from dataclasses import field
+from dataclasses import fields
+from functools import partial
 import os
+from typing import Optional
+from typing import Type
+from typing import TypeVar
+
+import appdirs  # type: ignore [import]
 
 
 def _getenv(var: str, default: Optional[str] = None) -> str:

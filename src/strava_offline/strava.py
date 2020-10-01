@@ -1,13 +1,14 @@
 from datetime import datetime
+import json
 from pathlib import Path
+from typing import List
+
+import pytz
 from requests import Session
 from requests_oauthlib import OAuth2Session  # type: ignore [import]
-from typing import List
-import json
-import pytz
 
-from . import redirect_server
 from . import config
+from . import redirect_server
 
 
 class StravaAPI:
