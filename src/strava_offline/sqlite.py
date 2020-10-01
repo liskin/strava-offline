@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+from pathlib import Path
 from typing import Iterator
 import json
 import sqlite3
@@ -9,6 +10,7 @@ from .strava import StravaAPI
 
 @contextmanager
 def database(config: config.DatabaseConfig) -> Iterator[sqlite3.Connection]:
+    Path(config.strava_sqlite_database).parent.mkdir(parents=True, exist_ok=True)
     db = sqlite3.connect(config.strava_sqlite_database)
     db.row_factory = sqlite3.Row
     try:

@@ -1,4 +1,5 @@
 from datetime import datetime
+from pathlib import Path
 from requests import Session
 from requests_oauthlib import OAuth2Session  # type: ignore [import]
 from typing import List
@@ -39,6 +40,7 @@ class StravaAPI:
             return None
 
     def _save_token(self, token) -> None:
+        Path(self._config.strava_token_filename).parent.mkdir(parents=True, exist_ok=True)
         with open(self._config.strava_token_filename, "w") as f:
             json.dump(token, f)
 
