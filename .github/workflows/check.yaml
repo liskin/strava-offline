@@ -37,21 +37,19 @@ jobs:
         path: .venv/
         key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('pyproject.toml', 'setup.cfg', 'setup.py', 'Makefile') }}
     - name: Install dependencies
-      run: |
-        make venv
-        echo "::add-path::$PWD/.venv/bin"
+      run: make venv
     - name: flake8
       uses: liskin/gh-problem-matcher-wrap@v1
       with:
         linters: flake8
-        run: flake8 src/
+        run: make lint-flake8
     - name: mypy
       uses: liskin/gh-problem-matcher-wrap@v1
       with:
         linters: mypy
-        run: mypy --show-column-numbers src/
+        run: make lint-mypy
     - name: isort
       uses: liskin/gh-problem-matcher-wrap@v1
       with:
         linters: isort
-        run: isort --check src/
+        run: make lint-isort

@@ -23,6 +23,24 @@ pipx:
 pipx-site-packages:
 	pipx install --system-site-packages --editable --spec . $(PACKAGE)
 
+.PHONY: check
+check: lint
+
+.PHONY: lint
+lint: lint-flake8 lint-mypy lint-isort
+
+.PHONY: lint-flake8
+lint-flake8: $(VENV_DONE)
+	$(VENV_PYTHON) -m flake8 src/ tests/
+
+.PHONY: lint-mypy
+lint-mypy: $(VENV_DONE)
+	$(VENV_PYTHON) -m mypy --show-column-numbers src/ tests/
+
+.PHONY: lint-isort
+lint-isort: $(VENV_DONE)
+	$(VENV_PYTHON) -m isort --check src/ tests/
+
 .PHONY: dist
 dist: $(VENV_DONE)
 	rm -rf dist/
