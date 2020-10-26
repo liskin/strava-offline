@@ -1,0 +1,50 @@
+interactions:
+- request:
+    body:
+    headers:
+    method: GET
+    uri: https://www.strava.com/activities/123/export_original
+  response:
+    body:
+      string: 'dummy'
+    headers:
+      Content-Disposition:
+      - attachment; filename="_commute.fit"; filename*=UTF-8''_commute.fit
+      Content-Type:
+      - application/octet-stream
+    status:
+      code: 200
+      message: OK
+- request:
+    body:
+    headers:
+    method: GET
+    uri: https://www.strava.com/activities/123/export_gpx
+  response:
+    body:
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <gpx creator="StravaGPX Android" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" xmlns="http://www.topografix.com/GPX/1/1">
+         <metadata>
+          <time>2020-10-26T08:00:00Z</time>
+         </metadata>
+         <trk>
+          <name>Morning Ride</name>
+          <type>1</type>
+          <trkseg>
+           <trkpt lat="49.1234567" lon="16.1234567">
+            <ele>200.0</ele>
+            <time>2020-10-26T08:00:00Z</time>
+           </trkpt>
+          </trkseg>
+         </trk>
+        </gpx>
+    headers:
+      Content-Disposition:
+      - attachment; filename="_commute.gpx"; filename*=UTF-8''_commute.gpx
+      Content-Type:
+      - application/octet-stream
+    status:
+      code: 200
+      message: OK
+version: 1

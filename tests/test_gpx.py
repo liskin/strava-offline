@@ -1,6 +1,9 @@
+import pytest  # type: ignore [import]
+
 from strava_offline import config
 from strava_offline import gpx
 from strava_offline import sqlite
+from strava_offline.strava import StravaWeb
 
 
 def database():
@@ -35,3 +38,12 @@ def test_link_backup_activities(tmp_path):
     assert (activities / "3.gpx").samefile(backup / "4.gpx")
     assert not (activities / "5.gpx").samefile(backup / "6.gpx")
     assert (activities / "7.gpx.gz").samefile(backup / "7.gpx.gz")
+
+
+@pytest.mark.vcr
+def test_download_gpx(tmp_path):
+    cfg = config.StravaWebConfig(strava_cookie_strava4_session="TEST")
+    strava = StravaWeb(config=cfg)
+    gpx.download_gpx(strava=strava, activity_id=123, path=tmp_path)
+
+    assert (tmp_path / "123.gpx.gz").exists()
