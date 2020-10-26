@@ -54,6 +54,11 @@ jobs:
       with:
         linters: isort
         run: make lint-isort
+    - name: pytest
+      uses: liskin/gh-problem-matcher-wrap@v1
+      with:
+        linters: pytest
+        run: make test
     - name: Check README examples
       run: |
         make update-readme
