@@ -73,21 +73,23 @@ pip install git+https://github.com/liskin/strava-offline
 
 ```
 $ strava-offline sqlite --help
-usage: strava-offline sqlite [-h] [--client-id XXX] [--client-secret XXX] [--token-file FILE]
-                             [--http-host HOST] [--http-port PORT] [--full] [--database FILE]
+usage: strava-offline sqlite [-h] [--client-id XXX] [--client-secret XXX]
+                             [--token-file FILE] [--http-host HOST]
+                             [--http-port PORT] [--full] [--database FILE]
 
-Synchronize bikes and activities metadata to local sqlite3 database. Unless --full is given, the
-sync is incremental, i.e. only new activities are synchronized and deletions aren't detected.
+Synchronize bikes and activities metadata to local sqlite3 database. Unless
+--full is given, the sync is incremental, i.e. only new activities are
+synchronized and deletions aren't detected.
 
 optional arguments:
   -h, --help           show this help message and exit
   --full               perform full sync instead of incremental
 
 Strava API:
-  --client-id XXX      strava oauth2 client id (default: getenv('STRAVA_CLIENT_ID') or a built-in
-                       default)
-  --client-secret XXX  strava oauth2 client secret (default: getenv('STRAVA_CLIENT_SECRET') or a
-                       built-in default)
+  --client-id XXX      strava oauth2 client id (default:
+                       getenv('STRAVA_CLIENT_ID') or a built-in default)
+  --client-secret XXX  strava oauth2 client secret (default:
+                       getenv('STRAVA_CLIENT_SECRET') or a built-in default)
   --token-file FILE    strava oauth2 token store (default:
                        /home/user/.config/strava_offline/token.json)
   --http-host HOST     oauth2 http server host (default: 127.0.0.1)
@@ -112,27 +114,29 @@ $ strava-offline gpx --help
 usage: strava-offline gpx [-h] [--strava4-session XX] [--dir-activities DIR]
                           [--dir-activities-backup DIR] [--database FILE]
 
-Download known (previously synced using the "sqlite" command) activities in GPX format. It's
-recommended to only use this incrementally to download the latest activities every day or week,
-and download the bulk of your historic activities directly from Strava. Use --dir-activities-
-backup to avoid downloading activities already downloaded in the bulk.
+Download known (previously synced using the "sqlite" command) activities in
+GPX format. It's recommended to only use this incrementally to download the
+latest activities every day or week, and download the bulk of your historic
+activities directly from Strava. Use --dir-activities-backup to avoid
+downloading activities already downloaded in the bulk.
 
 optional arguments:
   -h, --help            show this help message and exit
 
 Strava web:
   --strava4-session XX  '_strava4_session' cookie value (default:
-                        genenv('STRAVA_COOKIE_STRAVA4_SESSION'))
+                        getenv('STRAVA_COOKIE_STRAVA4_SESSION'))
 
 strava-offline gpx storage:
-  --dir-activities DIR  directory to store gpx files indexed by activity id (default:
-                        strava_data/activities)
+  --dir-activities DIR  directory to store gpx files indexed by activity id
+                        (default: strava_data/activities)
   --dir-activities-backup DIR
-                        optional path to activities in Strava backup (no need to redownload these)
+                        optional path to activities in Strava backup (no need
+                        to redownload these)
 
 strava-offline database:
-  --database FILE      sqlite database file (default:
-                       /home/user/.local/share/strava_offline/strava.sqlite)
+  --database FILE       sqlite database file (default:
+                        /home/user/.local/share/strava_offline/strava.sqlite)
 ```
 
 ## Donations (♥ = €)
