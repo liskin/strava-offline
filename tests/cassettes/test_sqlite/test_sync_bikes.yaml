@@ -1,0 +1,71 @@
+interactions:
+- &req
+  request:
+    body:
+    headers:
+    method: GET
+    uri: https://www.strava.com/api/v3/athlete
+  response:
+    body:
+      string: |
+        {
+          "id": 123,
+          "username": "dummy",
+          "resource_state": 3,
+          "firstname": "John",
+          "lastname": "Doe",
+          "city": "London",
+          "state": "England",
+          "country": "United Kingdom",
+          "sex": "M",
+          "premium": true,
+          "summit": true,
+          "created_at": "2010-01-01T08:00:00Z",
+          "updated_at": "2020-01-01T08:00:00Z",
+          "badge_type_id": 1,
+          "profile_medium": "",
+          "profile": "",
+          "friend": null,
+          "follower": null,
+          "follower_count": 123,
+          "friend_count": 123,
+          "mutual_friend_count": 0,
+          "athlete_type": 0,
+          "date_preference": "%d/%m/%Y",
+          "measurement_preference": "meters",
+          "clubs": [],
+          "ftp": null,
+          "weight": 70,
+          "bikes": [
+            {
+              "id": "b123456",
+              "primary": false,
+              "name": "bike1",
+              "resource_state": 2,
+              "distance": 1234567
+            },
+            {
+              "id": "b234567",
+              "primary": false,
+              "name": "bike2",
+              "resource_state": 2,
+              "distance": 1234567
+            },
+            {
+              "id": "b345678",
+              "primary": true,
+              "name": "bike3",
+              "resource_state": 2,
+              "distance": 12345
+            }
+          ],
+          "shoes": []
+        }
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    status:
+      code: 200
+      message: OK
+- *req
+version: 1
