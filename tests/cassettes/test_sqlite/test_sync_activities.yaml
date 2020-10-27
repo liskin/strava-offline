@@ -1,0 +1,254 @@
+interactions:
+- &req1
+  request:
+    body:
+    headers:
+    method: GET
+    uri: https://www.strava.com/api/v3/athlete/activities?before=1610000000&per_page=200&page=1
+  response:
+    body:
+      string: |
+        [
+          {
+            "resource_state": 2,
+            "athlete": {"id": 123456, "resource_state": 1},
+            "id": 1234567912, "external_id": "1234567913.fit", "upload_id": 1234567913, "upload_id_str": "1234567913",
+            "name": "name1",
+            "distance": 1234.5, "moving_time": 123, "elapsed_time": 123, "total_elevation_gain": 12.3,
+            "type": "Ride", "workout_type": 10,
+            "gear_id": "b1234567",
+            "start_date": "2020-01-01T08:00:00Z", "start_date_local": "2020-01-01T09:00:00Z", "timezone": "(GMT+00:00) Europe/London",
+            "utc_offset": 3600,
+            "start_latlng": [51.234567, -0.123456], "end_latlng": [51.234567, -0.123456],
+            "location_city": null, "location_state": null, "location_country": "United Kingdom",
+            "start_latitude": 51.234567, "start_longitude": -0.123456,
+            "achievement_count": 0, "kudos_count": 0, "comment_count": 0, "athlete_count": 1, "photo_count": 0, "pr_count": 0, "total_photo_count": 0,
+            "map": {},
+            "trainer": false, "commute": true, "manual": false, "private": true, "visibility": "only_me", "flagged": false, "from_accepted_tag": false, "device_watts": false, "has_heartrate": false, "heartrate_opt_out": false, "display_hide_heartrate_option": false, "has_kudoed": false,
+            "average_speed": 4.567, "max_speed": 9.9, "average_watts": 99, "kilojoules": 45.6, "elev_high": 67.8, "elev_low": 56.7, "suffer_score": null
+          },
+          {
+            "resource_state": 2,
+            "athlete": {"id": 123456, "resource_state": 1},
+            "id": 1234567910, "external_id": "1234567911.fit", "upload_id": 1234567911, "upload_id_str": "1234567911",
+            "name": "name1",
+            "distance": 1234.5, "moving_time": 123, "elapsed_time": 123, "total_elevation_gain": 12.3,
+            "type": "Ride", "workout_type": 10,
+            "gear_id": "b1234567",
+            "start_date": "2020-01-01T08:00:00Z", "start_date_local": "2020-01-01T09:00:00Z", "timezone": "(GMT+00:00) Europe/London",
+            "utc_offset": 3600,
+            "start_latlng": [51.234567, -0.123456], "end_latlng": [51.234567, -0.123456],
+            "location_city": null, "location_state": null, "location_country": "United Kingdom",
+            "start_latitude": 51.234567, "start_longitude": -0.123456,
+            "achievement_count": 0, "kudos_count": 0, "comment_count": 0, "athlete_count": 1, "photo_count": 0, "pr_count": 0, "total_photo_count": 0,
+            "map": {},
+            "trainer": false, "commute": true, "manual": false, "private": true, "visibility": "only_me", "flagged": false, "from_accepted_tag": false, "device_watts": false, "has_heartrate": false, "heartrate_opt_out": false, "display_hide_heartrate_option": false, "has_kudoed": false,
+            "average_speed": 4.567, "max_speed": 9.9, "average_watts": 99, "kilojoules": 45.6, "elev_high": 67.8, "elev_low": 56.7, "suffer_score": null
+          },
+          {
+            "resource_state": 2,
+            "athlete": {"id": 123456, "resource_state": 1},
+            "id": 1234567908, "external_id": "1234567909.fit", "upload_id": 1234567909, "upload_id_str": "1234567909",
+            "name": "name1",
+            "distance": 1234.5, "moving_time": 123, "elapsed_time": 123, "total_elevation_gain": 12.3,
+            "type": "Ride", "workout_type": 10,
+            "gear_id": "b1234567",
+            "start_date": "2020-01-01T08:00:00Z", "start_date_local": "2020-01-01T09:00:00Z", "timezone": "(GMT+00:00) Europe/London",
+            "utc_offset": 3600,
+            "start_latlng": [51.234567, -0.123456], "end_latlng": [51.234567, -0.123456],
+            "location_city": null, "location_state": null, "location_country": "United Kingdom",
+            "start_latitude": 51.234567, "start_longitude": -0.123456,
+            "achievement_count": 0, "kudos_count": 0, "comment_count": 0, "athlete_count": 1, "photo_count": 0, "pr_count": 0, "total_photo_count": 0,
+            "map": {},
+            "trainer": false, "commute": true, "manual": false, "private": true, "visibility": "only_me", "flagged": false, "from_accepted_tag": false, "device_watts": false, "has_heartrate": false, "heartrate_opt_out": false, "display_hide_heartrate_option": false, "has_kudoed": false,
+            "average_speed": 4.567, "max_speed": 9.9, "average_watts": 99, "kilojoules": 45.6, "elev_high": 67.8, "elev_low": 56.7, "suffer_score": null
+          },
+          {
+            "resource_state": 2,
+            "athlete": {"id": 123456, "resource_state": 1},
+            "id": 1234567906, "external_id": "1234567907.fit", "upload_id": 1234567907, "upload_id_str": "1234567907",
+            "name": "name1",
+            "distance": 1234.5, "moving_time": 123, "elapsed_time": 123, "total_elevation_gain": 12.3,
+            "type": "Ride", "workout_type": 10,
+            "gear_id": "b1234567",
+            "start_date": "2020-01-01T08:00:00Z", "start_date_local": "2020-01-01T09:00:00Z", "timezone": "(GMT+00:00) Europe/London",
+            "utc_offset": 3600,
+            "start_latlng": [51.234567, -0.123456], "end_latlng": [51.234567, -0.123456],
+            "location_city": null, "location_state": null, "location_country": "United Kingdom",
+            "start_latitude": 51.234567, "start_longitude": -0.123456,
+            "achievement_count": 0, "kudos_count": 0, "comment_count": 0, "athlete_count": 1, "photo_count": 0, "pr_count": 0, "total_photo_count": 0,
+            "map": {},
+            "trainer": false, "commute": true, "manual": false, "private": true, "visibility": "only_me", "flagged": false, "from_accepted_tag": false, "device_watts": false, "has_heartrate": false, "heartrate_opt_out": false, "display_hide_heartrate_option": false, "has_kudoed": false,
+            "average_speed": 4.567, "max_speed": 9.9, "average_watts": 99, "kilojoules": 45.6, "elev_high": 67.8, "elev_low": 56.7, "suffer_score": null
+          },
+          {
+            "resource_state": 2,
+            "athlete": {"id": 123456, "resource_state": 1},
+            "id": 1234567904, "external_id": "1234567905.fit", "upload_id": 1234567905, "upload_id_str": "1234567905",
+            "name": "name1",
+            "distance": 1234.5, "moving_time": 123, "elapsed_time": 123, "total_elevation_gain": 12.3,
+            "type": "Ride", "workout_type": 10,
+            "gear_id": "b1234567",
+            "start_date": "2020-01-01T08:00:00Z", "start_date_local": "2020-01-01T09:00:00Z", "timezone": "(GMT+00:00) Europe/London",
+            "utc_offset": 3600,
+            "start_latlng": [51.234567, -0.123456], "end_latlng": [51.234567, -0.123456],
+            "location_city": null, "location_state": null, "location_country": "United Kingdom",
+            "start_latitude": 51.234567, "start_longitude": -0.123456,
+            "achievement_count": 0, "kudos_count": 0, "comment_count": 0, "athlete_count": 1, "photo_count": 0, "pr_count": 0, "total_photo_count": 0,
+            "map": {},
+            "trainer": false, "commute": true, "manual": false, "private": true, "visibility": "only_me", "flagged": false, "from_accepted_tag": false, "device_watts": false, "has_heartrate": false, "heartrate_opt_out": false, "display_hide_heartrate_option": false, "has_kudoed": false,
+            "average_speed": 4.567, "max_speed": 9.9, "average_watts": 99, "kilojoules": 45.6, "elev_high": 67.8, "elev_low": 56.7, "suffer_score": null
+          },
+          {
+            "resource_state": 2,
+            "athlete": {"id": 123456, "resource_state": 1},
+            "id": 1234567902, "external_id": "1234567903.fit", "upload_id": 1234567903, "upload_id_str": "1234567903",
+            "name": "name1",
+            "distance": 1234.5, "moving_time": 123, "elapsed_time": 123, "total_elevation_gain": 12.3,
+            "type": "Ride", "workout_type": 10,
+            "gear_id": "b1234567",
+            "start_date": "2020-01-01T08:00:00Z", "start_date_local": "2020-01-01T09:00:00Z", "timezone": "(GMT+00:00) Europe/London",
+            "utc_offset": 3600,
+            "start_latlng": [51.234567, -0.123456], "end_latlng": [51.234567, -0.123456],
+            "location_city": null, "location_state": null, "location_country": "United Kingdom",
+            "start_latitude": 51.234567, "start_longitude": -0.123456,
+            "achievement_count": 0, "kudos_count": 0, "comment_count": 0, "athlete_count": 1, "photo_count": 0, "pr_count": 0, "total_photo_count": 0,
+            "map": {},
+            "trainer": false, "commute": true, "manual": false, "private": true, "visibility": "only_me", "flagged": false, "from_accepted_tag": false, "device_watts": false, "has_heartrate": false, "heartrate_opt_out": false, "display_hide_heartrate_option": false, "has_kudoed": false,
+            "average_speed": 4.567, "max_speed": 9.9, "average_watts": 99, "kilojoules": 45.6, "elev_high": 67.8, "elev_low": 56.7, "suffer_score": null
+          },
+          {
+            "resource_state": 2,
+            "athlete": {"id": 123456, "resource_state": 1},
+            "id": 1234567900, "external_id": "1234567901.fit", "upload_id": 1234567901, "upload_id_str": "1234567901",
+            "name": "name1",
+            "distance": 1234.5, "moving_time": 123, "elapsed_time": 123, "total_elevation_gain": 12.3,
+            "type": "Ride", "workout_type": 10,
+            "gear_id": "b1234567",
+            "start_date": "2020-01-01T08:00:00Z", "start_date_local": "2020-01-01T09:00:00Z", "timezone": "(GMT+00:00) Europe/London",
+            "utc_offset": 3600,
+            "start_latlng": [51.234567, -0.123456], "end_latlng": [51.234567, -0.123456],
+            "location_city": null, "location_state": null, "location_country": "United Kingdom",
+            "start_latitude": 51.234567, "start_longitude": -0.123456,
+            "achievement_count": 0, "kudos_count": 0, "comment_count": 0, "athlete_count": 1, "photo_count": 0, "pr_count": 0, "total_photo_count": 0,
+            "map": {},
+            "trainer": false, "commute": true, "manual": false, "private": true, "visibility": "only_me", "flagged": false, "from_accepted_tag": false, "device_watts": false, "has_heartrate": false, "heartrate_opt_out": false, "display_hide_heartrate_option": false, "has_kudoed": false,
+            "average_speed": 4.567, "max_speed": 9.9, "average_watts": 99, "kilojoules": 45.6, "elev_high": 67.8, "elev_low": 56.7, "suffer_score": null
+          },
+          {
+            "resource_state": 2,
+            "athlete": {"id": 123456, "resource_state": 1},
+            "id": 1234567898, "external_id": "1234567899.fit", "upload_id": 1234567899, "upload_id_str": "1234567899",
+            "name": "name1",
+            "distance": 1234.5, "moving_time": 123, "elapsed_time": 123, "total_elevation_gain": 12.3,
+            "type": "Ride", "workout_type": 10,
+            "gear_id": "b1234567",
+            "start_date": "2020-01-01T08:00:00Z", "start_date_local": "2020-01-01T09:00:00Z", "timezone": "(GMT+00:00) Europe/London",
+            "utc_offset": 3600,
+            "start_latlng": [51.234567, -0.123456], "end_latlng": [51.234567, -0.123456],
+            "location_city": null, "location_state": null, "location_country": "United Kingdom",
+            "start_latitude": 51.234567, "start_longitude": -0.123456,
+            "achievement_count": 0, "kudos_count": 0, "comment_count": 0, "athlete_count": 1, "photo_count": 0, "pr_count": 0, "total_photo_count": 0,
+            "map": {},
+            "trainer": false, "commute": true, "manual": false, "private": true, "visibility": "only_me", "flagged": false, "from_accepted_tag": false, "device_watts": false, "has_heartrate": false, "heartrate_opt_out": false, "display_hide_heartrate_option": false, "has_kudoed": false,
+            "average_speed": 4.567, "max_speed": 9.9, "average_watts": 99, "kilojoules": 45.6, "elev_high": 67.8, "elev_low": 56.7, "suffer_score": null
+          },
+          {
+            "resource_state": 2,
+            "athlete": {"id": 123456, "resource_state": 1},
+            "id": 1234567896, "external_id": "1234567897.fit", "upload_id": 1234567897, "upload_id_str": "1234567897",
+            "name": "name1",
+            "distance": 1234.5, "moving_time": 123, "elapsed_time": 123, "total_elevation_gain": 12.3,
+            "type": "Ride", "workout_type": 10,
+            "gear_id": "b1234567",
+            "start_date": "2020-01-01T08:00:00Z", "start_date_local": "2020-01-01T09:00:00Z", "timezone": "(GMT+00:00) Europe/London",
+            "utc_offset": 3600,
+            "start_latlng": [51.234567, -0.123456], "end_latlng": [51.234567, -0.123456],
+            "location_city": null, "location_state": null, "location_country": "United Kingdom",
+            "start_latitude": 51.234567, "start_longitude": -0.123456,
+            "achievement_count": 0, "kudos_count": 0, "comment_count": 0, "athlete_count": 1, "photo_count": 0, "pr_count": 0, "total_photo_count": 0,
+            "map": {},
+            "trainer": false, "commute": true, "manual": false, "private": true, "visibility": "only_me", "flagged": false, "from_accepted_tag": false, "device_watts": false, "has_heartrate": false, "heartrate_opt_out": false, "display_hide_heartrate_option": false, "has_kudoed": false,
+            "average_speed": 4.567, "max_speed": 9.9, "average_watts": 99, "kilojoules": 45.6, "elev_high": 67.8, "elev_low": 56.7, "suffer_score": null
+          },
+          {
+            "resource_state": 2,
+            "athlete": {"id": 123456, "resource_state": 1},
+            "id": 1234567894, "external_id": "1234567895.fit", "upload_id": 1234567895, "upload_id_str": "1234567895",
+            "name": "name1",
+            "distance": 1234.5, "moving_time": 123, "elapsed_time": 123, "total_elevation_gain": 12.3,
+            "type": "Ride", "workout_type": 10,
+            "gear_id": "b1234567",
+            "start_date": "2020-01-01T08:00:00Z", "start_date_local": "2020-01-01T09:00:00Z", "timezone": "(GMT+00:00) Europe/London",
+            "utc_offset": 3600,
+            "start_latlng": [51.234567, -0.123456], "end_latlng": [51.234567, -0.123456],
+            "location_city": null, "location_state": null, "location_country": "United Kingdom",
+            "start_latitude": 51.234567, "start_longitude": -0.123456,
+            "achievement_count": 0, "kudos_count": 0, "comment_count": 0, "athlete_count": 1, "photo_count": 0, "pr_count": 0, "total_photo_count": 0,
+            "map": {},
+            "trainer": false, "commute": true, "manual": false, "private": true, "visibility": "only_me", "flagged": false, "from_accepted_tag": false, "device_watts": false, "has_heartrate": false, "heartrate_opt_out": false, "display_hide_heartrate_option": false, "has_kudoed": false,
+            "average_speed": 4.567, "max_speed": 9.9, "average_watts": 99, "kilojoules": 45.6, "elev_high": 67.8, "elev_low": 56.7, "suffer_score": null
+          },
+          {
+            "resource_state": 2,
+            "athlete": {"id": 123456, "resource_state": 1},
+            "id": 1234567892, "external_id": "1234567893.fit", "upload_id": 1234567893, "upload_id_str": "1234567893",
+            "name": "name1",
+            "distance": 1234.5, "moving_time": 123, "elapsed_time": 123, "total_elevation_gain": 12.3,
+            "type": "Ride", "workout_type": 10,
+            "gear_id": "b1234567",
+            "start_date": "2020-01-01T08:00:00Z", "start_date_local": "2020-01-01T09:00:00Z", "timezone": "(GMT+00:00) Europe/London",
+            "utc_offset": 3600,
+            "start_latlng": [51.234567, -0.123456], "end_latlng": [51.234567, -0.123456],
+            "location_city": null, "location_state": null, "location_country": "United Kingdom",
+            "start_latitude": 51.234567, "start_longitude": -0.123456,
+            "achievement_count": 0, "kudos_count": 0, "comment_count": 0, "athlete_count": 1, "photo_count": 0, "pr_count": 0, "total_photo_count": 0,
+            "map": {},
+            "trainer": false, "commute": true, "manual": false, "private": true, "visibility": "only_me", "flagged": false, "from_accepted_tag": false, "device_watts": false, "has_heartrate": false, "heartrate_opt_out": false, "display_hide_heartrate_option": false, "has_kudoed": false,
+            "average_speed": 4.567, "max_speed": 9.9, "average_watts": 99, "kilojoules": 45.6, "elev_high": 67.8, "elev_low": 56.7, "suffer_score": null
+          },
+          {
+            "resource_state": 2,
+            "athlete": {"id": 123456, "resource_state": 1},
+            "id": 1234567890, "external_id": "1234567891.fit", "upload_id": 1234567891, "upload_id_str": "1234567891",
+            "name": "name1",
+            "distance": 1234.5, "moving_time": 123, "elapsed_time": 123, "total_elevation_gain": 12.3,
+            "type": "Ride", "workout_type": 10,
+            "gear_id": "b1234567",
+            "start_date": "2020-01-01T08:00:00Z", "start_date_local": "2020-01-01T09:00:00Z", "timezone": "(GMT+00:00) Europe/London",
+            "utc_offset": 3600,
+            "start_latlng": [51.234567, -0.123456], "end_latlng": [51.234567, -0.123456],
+            "location_city": null, "location_state": null, "location_country": "United Kingdom",
+            "start_latitude": 51.234567, "start_longitude": -0.123456,
+            "achievement_count": 0, "kudos_count": 0, "comment_count": 0, "athlete_count": 1, "photo_count": 0, "pr_count": 0, "total_photo_count": 0,
+            "map": {},
+            "trainer": false, "commute": true, "manual": false, "private": true, "visibility": "only_me", "flagged": false, "from_accepted_tag": false, "device_watts": false, "has_heartrate": false, "heartrate_opt_out": false, "display_hide_heartrate_option": false, "has_kudoed": false,
+            "average_speed": 4.567, "max_speed": 9.9, "average_watts": 99, "kilojoules": 45.6, "elev_high": 67.8, "elev_low": 56.7, "suffer_score": null
+          }
+        ]
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    status:
+      code: 200
+      message: OK
+- &req2
+  request:
+    body:
+    headers:
+    method: GET
+    uri: https://www.strava.com/api/v3/athlete/activities?before=1610000000&per_page=200&page=2
+  response:
+    body:
+      string: |
+        []
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    status:
+      code: 200
+      message: OK
+- *req1
+- *req2
+- *req1
+version: 1

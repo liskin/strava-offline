@@ -1,8 +1,10 @@
 from contextlib import contextmanager
+from datetime import datetime
 import json
 from pathlib import Path
 import sqlite3
 from typing import Iterator
+from typing import Optional
 
 from . import config
 from .strava import StravaAPI
@@ -97,11 +99,13 @@ def sync_activity(activity, db: sqlite3.Connection):
     )
 
 
-def sync_activities(strava: StravaAPI, db: sqlite3.Connection):
+def sync_activities(
+    strava: StravaAPI, db: sqlite3.Connection, before: Optional[datetime] = None
+):
     with db:  # transaction
         old_activities = set(a['id'] for a in db.execute("SELECT id FROM activity"))
 
-        for activity in strava.get_activities():
+        for activity in strava.get_activities(before=before):
             status = "seen: " if activity['id'] in old_activities else "new:  "
             print(status + str(activity['id']) + " - " + activity['start_date'])
 
@@ -112,12 +116,14 @@ def sync_activities(strava: StravaAPI, db: sqlite3.Connection):
         db.executemany("DELETE FROM activity WHERE id = ?", delete)
 
 
-def sync_activities_incremental(strava: StravaAPI, db: sqlite3.Connection):
+def sync_activities_incremental(
+    strava: StravaAPI, db: sqlite3.Connection, before: Optional[datetime] = None
+):
     with db:  # transaction
         old_activities = set(a['id'] for a in db.execute("SELECT id FROM activity"))
 
         seen = 0
-        for activity in strava.get_activities():
+        for activity in strava.get_activities(before=before):
             status = "seen: " if activity['id'] in old_activities else "new:  "
             print(status + str(activity['id']) + " - " + activity['start_date'])
 

@@ -2,6 +2,7 @@ from datetime import datetime
 import json
 from pathlib import Path
 from typing import List
+from typing import Optional
 
 import pytz
 from requests import Session
@@ -63,9 +64,10 @@ class StravaAPI:
     def get_bikes(self):
         return self.get_athlete()['bikes']
 
-    def get_activities(self):
-        now = int(datetime.now(pytz.utc).timestamp())
-        params = {'before': now, 'per_page': 200, 'page': 0}
+    def get_activities(self, before: Optional[datetime] = None):
+        if not before:
+            before = datetime.now(pytz.utc)
+        params = {'before': int(before.timestamp()), 'per_page': 200, 'page': 0}
         while True:
             params['page'] += 1
             r = self._session.get("https://www.strava.com/api/v3/athlete/activities", params=params)
