@@ -11,6 +11,7 @@ from . import config
 shared = SimpleNamespace()
 
 
+@bottle.route("/")
 @bottle.route("/authorize")
 def authorize():
     global shared
