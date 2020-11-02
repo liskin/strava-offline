@@ -41,7 +41,21 @@ pip install git+https://github.com/liskin/strava-offline
 
 [pipx]: https://github.com/pipxproject/pipx
 
-## Preparation
+## Setup and usage
+
+* Run `strava-offline sqlite`. The first time you do this, it will open Strava
+  in a browser and ask for permissions. The token is then saved and it
+  proceeds to sync activities metadata (this may take a couple dozen seconds
+  the first time). Next time you run this, it uses the saved token and
+  incrementally syncs latest activities (this takes a few seconds).
+
+* Now you can use [sqlite3][] to query the activity database, which is placed
+  at `~/.local/share/strava_offline/strava.sqlite` by default. Try for example:
+
+  ```
+  sqlite3 ~/.local/share/strava_offline/strava.sqlite \
+    "SELECT CAST(SUM(distance)/1000 AS INT) || ' km' FROM activity"
+  ```
 
 * For GPX downloading, you'll need to get the `_strava4_session` cookie from
   your web browser session. Open <https://strava.com/> in your browser and
@@ -67,9 +81,10 @@ pip install git+https://github.com/liskin/strava-offline
   download private activities or see names of bikes. Therefore its use is not
   supported in strava-offline.)
 
+[sqlite3]: https://manpages.debian.org/buster/sqlite3/sqlite3.1.en.html
 [rate limits]: http://developers.strava.com/docs/rate-limits/
 
-## Mirror activities metadata
+### Mirror activities metadata
 
 ```
 $ strava-offline sqlite --help
@@ -100,7 +115,7 @@ strava-offline database:
                        /home/user/.local/share/strava_offline/strava.sqlite)
 ```
 
-## Mirror activities as GPX
+### Mirror activities as GPX
 
 **Important:** To avoid overloading Strava servers (and possibly getting
 noticed), first download all your existing activities using the [Bulk Export
