@@ -157,7 +157,8 @@ strava-offline database:
 ## Donations (♥ = €)
 
 If you like this tool and wish to support its development and maintenance,
-please consider [a small donation](https://www.paypal.me/lisknisi/10EUR).
+please consider [a small donation](https://www.paypal.me/lisknisi/10EUR) or
+[recurrent support through GitHub Sponsors](https://github.com/sponsors/liskin).
 
 By donating, you'll also support the development of my other projects. You
 might like these:
