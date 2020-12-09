@@ -53,6 +53,7 @@ class StravaAPI:
             "https://www.strava.com/oauth/token",
             code=code,
             client_secret=self._config.strava_client_secret,
+            include_client_id=True,
         )
         self._save_token(token)
 
