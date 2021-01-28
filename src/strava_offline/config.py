@@ -90,7 +90,7 @@ class StravaWebConfig(BaseConfig):
     def add_arguments(cls, parser: argparse.ArgumentParser) -> None:
         group = parser.add_argument_group('Strava web')
         group.add_argument(
-            '--strava4-session', metavar="XX", dest='strava_cookie_strava4_session:',
+            '--strava4-session', metavar="XX", dest='strava_cookie_strava4_session',
             help="'_strava4_session' cookie value (default: getenv('STRAVA_COOKIE_STRAVA4_SESSION'))",
         )
 
