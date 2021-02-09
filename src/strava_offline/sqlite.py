@@ -35,7 +35,7 @@ def database(config: config.DatabaseConfig) -> Iterator[sqlite3.Connection]:
 #  * sync_activity
 #
 # The tables will be recreated using the stored json data and the new schema.
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 
 
 def schema_init(db: sqlite3.Connection) -> None:
@@ -60,6 +60,7 @@ def schema_init(db: sqlite3.Connection) -> None:
         ", gear_id TEXT"
         ", type TEXT"
         ", commute BOOLEAN"
+        ", has_location_data BOOLEAN"
         ")"
     ))
 
@@ -150,8 +151,9 @@ def sync_activity(activity, db: sqlite3.Connection):
             ", gear_id"
             ", type"
             ", commute"
+            ", has_location_data"
             ")"
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         ),
         (
             activity['id'],
@@ -166,6 +168,7 @@ def sync_activity(activity, db: sqlite3.Connection):
             activity['gear_id'],
             activity['type'],
             activity['commute'],
+            activity['start_latlng'] is not None,
         )
     )
 
