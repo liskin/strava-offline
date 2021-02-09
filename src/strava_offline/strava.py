@@ -79,6 +79,11 @@ class StravaAPI:
             else:
                 break
 
+    def get_activity_detail(self, activity_id: int):
+        r = self._session.get(f"https://www.strava.com/api/v3/activities/{activity_id}")
+        r.raise_for_status()
+        return r.json()
+
 
 class NotGpx(Exception):
     pass
