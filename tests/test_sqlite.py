@@ -1,4 +1,5 @@
 from datetime import datetime
+import sqlite3
 
 import pytest  # type: ignore [import]
 import pytz
@@ -123,3 +124,45 @@ def test_sync_activities(tmp_path):
             [1234567910],
             [1234567912],
         ]
+
+
+@pytest.mark.vcr
+def test_migration_bikes(tmp_path):
+    db_uri = "file:test_migration_bikes?mode=memory&cache=shared"
+    cfg = config.DatabaseConfig(strava_sqlite_database=db_uri)
+    db_keep_in_memory = sqlite3.connect(db_uri)
+
+    with sqlite.database(cfg) as db:
+        sqlite.sync_bikes(strava=strava(tmp_path), db=db)
+        db.execute("UPDATE bike SET name = 'xxx'")
+        db.execute("PRAGMA user_version = 0")
+        db.commit()
+
+    with sqlite.database(cfg) as db:
+        bikes = [row['name'] for row in db.execute(
+            "SELECT name FROM bike ORDER BY id LIMIT 1")]
+        assert bikes == ['bike1']
+
+    db_keep_in_memory.close()
+
+
+@pytest.mark.vcr
+def test_migration_activities(tmp_path):
+    db_uri = "file:test_migration_activities?mode=memory&cache=shared"
+    cfg = config.DatabaseConfig(strava_sqlite_database=db_uri)
+    db_keep_in_memory = sqlite3.connect(db_uri)
+
+    before = datetime.fromtimestamp(1610000000, tz=pytz.utc)
+
+    with sqlite.database(cfg) as db:
+        sqlite.sync_activities(strava=strava(tmp_path), db=db, before=before)
+        db.execute("UPDATE activity SET name = 'xxx'")
+        db.execute("PRAGMA user_version = 0")
+        db.commit()
+
+    with sqlite.database(cfg) as db:
+        activities = [row['name'] for row in db.execute(
+            "SELECT name FROM activity ORDER BY id LIMIT 1")]
+        assert activities == ['name1']
+
+    db_keep_in_memory.close()
