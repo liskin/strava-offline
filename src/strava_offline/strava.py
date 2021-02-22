@@ -1,6 +1,7 @@
 from datetime import datetime
 import json
 from pathlib import Path
+import sys
 from typing import List
 from typing import Optional
 
@@ -32,7 +33,10 @@ class StravaAPI:
         )
 
         if not token:
-            self._authorize()
+            if sys.stdin.isatty():
+                self._authorize()
+            else:
+                raise RuntimeError("not interactive, cannot authorize")
 
     def _load_token(self):
         try:
