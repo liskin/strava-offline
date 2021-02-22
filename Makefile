@@ -17,11 +17,11 @@ venv: $(VENV_DONE)
 
 .PHONY: pipx
 pipx:
-	pipx install --editable --spec . $(PACKAGE)
+	pipx install --editable .
 
 .PHONY: pipx-site-packages
 pipx-site-packages:
-	pipx install --system-site-packages --editable --spec . $(PACKAGE)
+	pipx install --system-site-packages --editable .
 
 .PHONY: check
 check: lint test

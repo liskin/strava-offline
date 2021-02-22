@@ -20,9 +20,11 @@ Example of what you can do with the data:
 
 ## Installation
 
+Using [pipx][]:
+
 ```
 pipx ensurepath
-pipx install --spec git+https://github.com/liskin/strava-offline strava-offline
+pipx install git+https://github.com/liskin/strava-offline
 ```
 
 To keep a local git clone around:
