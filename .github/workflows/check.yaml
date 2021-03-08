@@ -17,6 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
+      id: setup-python
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
@@ -36,7 +37,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: .venv/
-        key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('pyproject.toml', 'setup.cfg', 'setup.py', 'Makefile') }}
+        key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('pyproject.toml', 'setup.cfg', 'setup.py', 'Makefile') }}
     - name: Install dependencies
       run: make venv
     - name: flake8
