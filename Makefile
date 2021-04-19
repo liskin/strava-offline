@@ -24,7 +24,7 @@ pipx-site-packages:
 	pipx install --system-site-packages --editable .
 
 .PHONY: check
-check: lint test
+check: lint test readme
 
 .PHONY: lint
 lint: lint-flake8 lint-mypy lint-isort
@@ -47,6 +47,16 @@ lint-isort: $(VENV_DONE)
 test: $(VENV_DONE)
 	$(VENV_PYTHON) -m pytest $(PYTEST_FLAGS) tests/
 
+.PHONY: readme
+readme: README.md
+
+%.md: INTERACTIVE=$(shell [ -t 0 ] && echo --interactive)
+%.md: $(VENV_DONE) _phony
+	PATH="$(CURDIR)/$(VENV)/bin:$$PATH" \
+	XDG_DATA_HOME=/home/user/.local/share \
+	XDG_CONFIG_HOME=/home/user/.config \
+	$(VENV_PYTHON) -m cram --indent=4 $(INTERACTIVE) $@
+
 .PHONY: dist
 dist: $(VENV_DONE)
 	rm -rf dist/
@@ -56,10 +66,6 @@ dist: $(VENV_DONE)
 twine-upload: dist
 	$(VENV_PYTHON) -m twine upload $(wildcard dist/*)
 
-.PHONY: update-readme
-update-readme: venv
-	HOME=/home/user perl -0777 -i -pe 's|(\`\`\`\n\$$ (strava-offline .*?--help)\n).*?(\`\`\`\n)|$$1 . `./.venv/bin/$$2` . $$3|gmse' README.md
-
 .PHONY: clean
 clean:
 	git clean -ffdX
@@ -68,6 +74,8 @@ $(VENV_DONE): $(MAKEFILE_LIST) setup.py setup.cfg pyproject.toml
 	$(PYTHON) -m venv --system-site-packages $(VENV)
 	$(VENV_PIP) install -e $(VENV_PIP_INSTALL)
 	touch $@
+
+.PHONY: _phony
 
 # ---
 
