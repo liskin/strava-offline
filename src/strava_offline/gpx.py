@@ -57,13 +57,13 @@ def download_activities(db: sqlite3.Connection, strava: StravaWeb, dir_activitie
 
 
 def sync(config: config.GpxConfig, strava: StravaWeb):
-    dir_activities = Path(config.dir_activities)
-    dir_activities.mkdir(parents=True, exist_ok=True)
-
-    dir_activities_backup = config.dir_activities_backup and Path(config.dir_activities_backup)
+    config.dir_activities.mkdir(parents=True, exist_ok=True)
 
     with database(config) as db:
-        if dir_activities_backup:
-            link_backup_activities(db=db, dir_activities=dir_activities, dir_activities_backup=dir_activities_backup)
+        if config.dir_activities_backup:
+            link_backup_activities(
+                db=db,
+                dir_activities=config.dir_activities,
+                dir_activities_backup=config.dir_activities_backup)
 
-        download_activities(db=db, strava=strava, dir_activities=dir_activities)
+        download_activities(db=db, strava=strava, dir_activities=config.dir_activities)

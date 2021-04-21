@@ -1,115 +1,118 @@
-import argparse
 from dataclasses import dataclass
-from dataclasses import field
-from dataclasses import fields
-from functools import partial
-import os
+from functools import reduce
+from functools import wraps
+from pathlib import Path
+from typing import Callable
 from typing import Optional
 from typing import Type
 from typing import TypeVar
 
 import appdirs  # type: ignore [import]
+import click
+from click_option_group import OptionGroup  # type: ignore [import]
+
+data_dir = Path(appdirs.user_data_dir(appname=__package__))
+config_dir = Path(appdirs.user_config_dir(appname=__package__))
+
+ConfigT = TypeVar('ConfigT', bound='BaseConfig')
 
 
-def _getenv(var: str, default: Optional[str] = None) -> str:
-    val = os.getenv(var)
-    if val:
-        return val
-    elif default:
-        return default
-    else:
-        raise RuntimeError(var + " not specified")
+class PathType(click.Path):
+    def convert(self, value, param, ctx):
+        rv = super().convert(value, param, ctx)
+        return Path(rv) if rv is not None else None
 
 
-T = TypeVar('T', bound='BaseConfig')
+def compose_decorators(*decorators):
+    return lambda f: reduce(lambda x, g: g(x), reversed(decorators), f)
+
+
+def wrap_kwargs_into_config(config_class: Type[ConfigT]):
+    def decorator(f: Callable[[ConfigT], None]) -> Callable[..., None]:
+        @wraps(f)
+        def wrapper(**kwargs):
+            return f(config_class(**kwargs))
+        return wrapper
+    return decorator
 
 
 @dataclass
 class BaseConfig:
-    # @final, python 3.7 compat
     @classmethod
-    def from_args(cls: Type[T], args: argparse.Namespace) -> T:
-        field_set = set(f.name for f in fields(cls))
-        kwargs = {k: v for k, v in vars(args).items() if k in field_set and v is not None}
-        return cls(**kwargs)  # type: ignore[call-arg]
-
-    # @final, python 3.7 compat
-    @classmethod
-    def to_arg_parser(cls: Type[T]) -> argparse.ArgumentParser:
-        parser = argparse.ArgumentParser(add_help=False)
-        cls.add_arguments(parser)
-        return parser
-
-    @classmethod
-    def add_arguments(cls: Type[T], parser: argparse.ArgumentParser) -> None:
-        assert not hasattr(super(), 'add_arguments')
+    def options(cls):
+        assert not hasattr(super(), 'options')
+        return wrap_kwargs_into_config(cls)
 
 
 @dataclass
 class StravaApiConfig(BaseConfig):
-    strava_client_id: str = field(
-        default_factory=partial(_getenv, 'STRAVA_CLIENT_ID', default='54316'))
-    strava_client_secret: str = field(
-        default_factory=partial(_getenv, 'STRAVA_CLIENT_SECRET', default='3cfc2260d03472baca90d49fc4bc1d9714711771'))
-    strava_token_filename: str = os.path.join(appdirs.user_config_dir(appname=__package__), 'token.json')
+    strava_client_id: str = '54316'
+    strava_client_secret: str = '3cfc2260d03472baca90d49fc4bc1d9714711771'
+    strava_token_filename: Path = config_dir / 'token.json'
     http_host: str = '127.0.0.1'
     http_port: int = 12345
 
     @classmethod
-    def add_arguments(cls, parser: argparse.ArgumentParser) -> None:
-        group = parser.add_argument_group('Strava API')
-        group.add_argument(
-            '--client-id', metavar="XXX", dest='strava_client_id',
-            help="strava oauth2 client id (default: getenv('STRAVA_CLIENT_ID') or a built-in default)",
+    def options(cls):
+        group = OptionGroup("Strava API")
+        return compose_decorators(
+            group.option(
+                '--client-id', 'strava_client_id', type=str,
+                envvar='STRAVA_CLIENT_ID', show_envvar=True,
+                default=cls.strava_client_id,
+                help="Strava OAuth 2 client id"),
+            group.option(
+                '--client-secret', 'strava_client_secret', type=str,
+                envvar='STRAVA_CLIENT_SECRET', show_envvar=True,
+                default=cls.strava_client_secret,
+                help="Strava OAuth 2 client secret"),
+            group.option(
+                '--token-file', 'strava_token_filename', type=PathType(dir_okay=False),
+                default=cls.strava_token_filename, show_default=True,
+                help="Strava OAuth 2 token store"),
+            group.option(
+                '--http-host', type=str,
+                default=cls.http_host, show_default=True,
+                help="OAuth 2 HTTP server host"),
+            group.option(
+                '--http-port', type=int,
+                default=cls.http_port, show_default=True,
+                help="OAuth 2 HTTP server port"),
+            super().options()
         )
-        group.add_argument(
-            '--client-secret', metavar="XXX", dest='strava_client_secret',
-            help="strava oauth2 client secret (default: getenv('STRAVA_CLIENT_SECRET') or a built-in default)",
-        )
-        group.add_argument(
-            '--token-file', metavar="FILE", dest='strava_token_filename',
-            help=f"strava oauth2 token store (default: {cls.strava_token_filename})",
-        )
-        group.add_argument(
-            '--http-host', metavar="HOST", dest='http_host',
-            help=f"oauth2 http server host (default: {cls.http_host})",
-        )
-        group.add_argument(
-            '--http-port', metavar="PORT", dest='http_port', type=int,
-            help=f"oauth2 http server port (default: {cls.http_port})",
-        )
-
-        super().add_arguments(parser)
 
 
 @dataclass
 class StravaWebConfig(BaseConfig):
-    strava_cookie_strava4_session: str = field(default_factory=partial(_getenv, 'STRAVA_COOKIE_STRAVA4_SESSION'))
+    strava_cookie_strava4_session: str = ""
 
     @classmethod
-    def add_arguments(cls, parser: argparse.ArgumentParser) -> None:
-        group = parser.add_argument_group('Strava web')
-        group.add_argument(
-            '--strava4-session', metavar="XX", dest='strava_cookie_strava4_session',
-            help="'_strava4_session' cookie value (default: getenv('STRAVA_COOKIE_STRAVA4_SESSION'))",
+    def options(cls):
+        group = OptionGroup("Strava web")
+        return compose_decorators(
+            group.option(
+                '--strava4-session', 'strava_cookie_strava4_session', type=str,
+                envvar='STRAVA_COOKIE_STRAVA4_SESSION', show_envvar=True,
+                required=True,
+                help="'_strava4_session' cookie value"),
+            super().options()
         )
-
-        super().add_arguments(parser)
 
 
 @dataclass
 class DatabaseConfig(BaseConfig):
-    strava_sqlite_database: str = os.path.join(appdirs.user_data_dir(appname=__package__), "strava.sqlite")
+    strava_sqlite_database: Path = data_dir / 'strava.sqlite'
 
     @classmethod
-    def add_arguments(cls, parser: argparse.ArgumentParser) -> None:
-        group = parser.add_argument_group('strava-offline database')
-        group.add_argument(
-            '--database', metavar="FILE", dest='strava_sqlite_database',
-            help=f"sqlite database file (default: {cls.strava_sqlite_database})",
+    def options(cls):
+        group = OptionGroup("Database")
+        return compose_decorators(
+            group.option(
+                '--database', 'strava_sqlite_database', type=PathType(dir_okay=False),
+                default=cls.strava_sqlite_database, show_default=True,
+                help="Sqlite database file"),
+            super().options()
         )
-
-        super().add_arguments(parser)
 
 
 @dataclass
@@ -117,30 +120,31 @@ class SyncConfig(DatabaseConfig):
     full: bool = False
 
     @classmethod
-    def add_arguments(cls, parser: argparse.ArgumentParser) -> None:
-        parser.add_argument(
-            '--full', action='store_true',
-            help="perform full sync instead of incremental",
+    def options(cls):
+        group = OptionGroup("Sync options")
+        return compose_decorators(
+            group.option(
+                '--full / --no-full', default=cls.full, show_default=True,
+                help="Perform full sync instead of incremental"),
+            super().options()
         )
-
-        super().add_arguments(parser)
 
 
 @dataclass
 class GpxConfig(DatabaseConfig):
-    dir_activities: str = os.path.join("strava_data", "activities")
-    dir_activities_backup: Optional[str] = None
+    dir_activities: Path = Path("strava_data", "activities")
+    dir_activities_backup: Optional[Path] = None
 
     @classmethod
-    def add_arguments(cls, parser: argparse.ArgumentParser) -> None:
-        group = parser.add_argument_group('strava-offline gpx storage')
-        group.add_argument(
-            '--dir-activities', metavar="DIR", dest='dir_activities',
-            help=f"directory to store gpx files indexed by activity id (default: {cls.dir_activities})",
+    def options(cls):
+        group = OptionGroup("GPX storage")
+        return compose_decorators(
+            group.option(
+                '--dir-activities', type=PathType(file_okay=False),
+                default=cls.dir_activities, show_default=True,
+                help="Directory to store gpx files indexed by activity id"),
+            group.option(
+                '--dir-activities-backup', type=PathType(file_okay=False),
+                help="Optional path to activities in Strava backup (no need to redownload these)"),
+            super().options()
         )
-        group.add_argument(
-            '--dir-activities-backup', metavar="DIR", dest='dir_activities_backup',
-            help="optional path to activities in Strava backup (no need to redownload these)",
-        )
-
-        super().add_arguments(parser)

@@ -14,7 +14,8 @@ from .strava import StravaAPI
 
 @contextmanager
 def database(config: config.DatabaseConfig) -> Iterator[sqlite3.Connection]:
-    Path(config.strava_sqlite_database).parent.mkdir(parents=True, exist_ok=True)
+    if isinstance(config.strava_sqlite_database, Path):
+        config.strava_sqlite_database.parent.mkdir(parents=True, exist_ok=True)
     db = sqlite3.connect(config.strava_sqlite_database, isolation_level=None)
     db.row_factory = sqlite3.Row
     try:

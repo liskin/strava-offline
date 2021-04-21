@@ -1,6 +1,5 @@
 from datetime import datetime
 import json
-from pathlib import Path
 import sys
 from typing import List
 from typing import Optional
@@ -40,14 +39,14 @@ class StravaAPI:
 
     def _load_token(self):
         try:
-            with open(self._config.strava_token_filename, "r") as f:
+            with self._config.strava_token_filename.open("r") as f:
                 return json.load(f)
         except Exception:
             return None
 
     def _save_token(self, token) -> None:
-        Path(self._config.strava_token_filename).parent.mkdir(parents=True, exist_ok=True)
-        with open(self._config.strava_token_filename, "w") as f:
+        self._config.strava_token_filename.parent.mkdir(parents=True, exist_ok=True)
+        with self._config.strava_token_filename.open("w") as f:
             json.dump(token, f)
 
     def _authorize(self) -> None:
