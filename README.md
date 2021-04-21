@@ -143,8 +143,8 @@ least once to let strava-offline reuse these downloaded files.
     
       GPX storage: 
         --dir-activities DIRECTORY    Directory to store gpx files indexed by
-                                      activity id  [default:
-                                      strava_data/activities]
+                                      activity id  [default: /home/user/.local/sha
+                                      re/strava_offline/activities]
     
         --dir-activities-backup DIRECTORY
                                       Optional path to activities in Strava backup

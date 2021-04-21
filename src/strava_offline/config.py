@@ -132,7 +132,7 @@ class SyncConfig(DatabaseConfig):
 
 @dataclass
 class GpxConfig(DatabaseConfig):
-    dir_activities: Path = Path("strava_data", "activities")
+    dir_activities: Path = data_dir / 'activities'
     dir_activities_backup: Optional[Path] = None
 
     @classmethod
