@@ -1,7 +1,6 @@
 PYTHON = python3
 
 VENV = .venv
-VENV_PIP = $(VENV)/bin/pip
 VENV_PYTHON = $(VENV)/bin/python
 VENV_DONE = $(VENV)/.done
 VENV_PIP_INSTALL = '.[dev, test]'
@@ -71,8 +70,8 @@ clean:
 	git clean -ffdX
 
 $(VENV_DONE): $(MAKEFILE_LIST) setup.py setup.cfg pyproject.toml
-	$(PYTHON) -m venv --system-site-packages $(VENV)
-	$(VENV_PIP) install -e $(VENV_PIP_INSTALL)
+	$(PYTHON) -m venv --system-site-packages --without-pip $(VENV)
+	$(VENV_PYTHON) -m pip install -e $(VENV_PIP_INSTALL)
 	touch $@
 
 .PHONY: _phony
