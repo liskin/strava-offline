@@ -47,17 +47,18 @@ def yaml_config_sample(
 ) -> str:
     sample_hidden = sample_hidden | {'config', 'config_sample'}
 
-    def collect_options(cmd: click.Command) -> Iterator[click.Option]:
+    def collect_options(cmd: click.Command, seen: Set[str] = set()) -> Iterator[click.Option]:
         for p in cmd.params:
             if not isinstance(p, click.Option):
                 continue
-            if p.hidden or p.name in sample_hidden:
+            if p.hidden or p.name in sample_hidden or p.name in seen:
                 continue
+            seen.add(p.name)
             yield p
 
         if isinstance(cmd, click.Group):
             for c in cmd.commands.values():
-                yield from collect_options(c)
+                yield from collect_options(c, seen=seen)
 
     def sample_value(opt: click.Option):
         if sample_get_value:

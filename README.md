@@ -200,9 +200,6 @@ Sample config file can be generated using the `--config-sample` flag:
     
     # Optional path to activities in Strava backup (no need to redownload these)
     dir_activities_backup: DIRECTORY
-    
-    # Sqlite database file
-    strava_sqlite_database: /home/user/.local/share/strava_offline/strava.sqlite
 
 ## Donations (♥ = €)
 
