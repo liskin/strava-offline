@@ -11,6 +11,8 @@ import appdirs  # type: ignore [import]
 import click
 from click_option_group import OptionGroup  # type: ignore [import]
 
+from . import config_file
+
 data_dir = Path(appdirs.user_data_dir(appname=__package__))
 config_dir = Path(appdirs.user_config_dir(appname=__package__))
 
@@ -41,7 +43,10 @@ class BaseConfig:
     @classmethod
     def options(cls):
         assert not hasattr(super(), 'options')
-        return wrap_kwargs_into_config(cls)
+        return compose_decorators(
+            config_file.yaml_config_option(),
+            wrap_kwargs_into_config(cls)
+        )
 
 
 @dataclass
@@ -148,3 +153,14 @@ class GpxConfig(DatabaseConfig):
                 help="Optional path to activities in Strava backup (no need to redownload these)"),
             super().options()
         )
+
+
+def yaml_config_sample_option():
+    def sample_get_value(opt: click.Option) -> Optional[str]:
+        if opt.name == 'strava_client_id':
+            return '12345'
+        elif opt.name == 'strava_client_secret':
+            return 'SECRET'
+        return None
+
+    return config_file.yaml_config_sample_option(sample_get_value=sample_get_value)

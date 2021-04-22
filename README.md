@@ -116,6 +116,9 @@ pip install git+https://github.com/liskin/strava-offline
         --database FILE       Sqlite database file  [default: /home/user/.local/sh
                               are/strava_offline/strava.sqlite]
     
+      --config FILE           Read configuration from FILE.  [default:
+                              /home/user/.config/strava_offline/config.yaml]
+    
       --help                  Show this message and exit.
 
 ### Mirror activities as GPX
@@ -154,7 +157,52 @@ least once to let strava-offline reuse these downloaded files.
         --database FILE               Sqlite database file  [default: /home/user/.
                                       local/share/strava_offline/strava.sqlite]
     
+      --config FILE                   Read configuration from FILE.  [default: /ho
+                                      me/user/.config/strava_offline/config.yaml]
+    
       --help                          Show this message and exit.
+
+### Configuration file
+
+Secrets (and other options) can be set permanently in a config file,
+which is located at `~/.config/strava_offline/config.yaml` by default
+(on Linux; on other platforms see output of `--help`).
+
+Sample config file can be generated using the `--config-sample` flag:
+
+    $ strava-offline --config-sample
+    # Strava OAuth 2 client id
+    strava_client_id: '12345'
+    
+    # Strava OAuth 2 client secret
+    strava_client_secret: SECRET
+    
+    # Strava OAuth 2 token store
+    strava_token_filename: /home/user/.config/strava_offline/token.json
+    
+    # OAuth 2 HTTP server host
+    http_host: 127.0.0.1
+    
+    # OAuth 2 HTTP server port
+    http_port: 12345
+    
+    # Perform full sync instead of incremental
+    full: false
+    
+    # Sqlite database file
+    strava_sqlite_database: /home/user/.local/share/strava_offline/strava.sqlite
+    
+    # '_strava4_session' cookie value
+    strava_cookie_strava4_session: TEXT
+    
+    # Directory to store gpx files indexed by activity id
+    dir_activities: /home/user/.local/share/strava_offline/activities
+    
+    # Optional path to activities in Strava backup (no need to redownload these)
+    dir_activities_backup: DIRECTORY
+    
+    # Sqlite database file
+    strava_sqlite_database: /home/user/.local/share/strava_offline/strava.sqlite
 
 ## Donations (♥ = €)
 

@@ -10,6 +10,7 @@ from .strava import StravaWeb
 
 
 @click.group(context_settings={'max_content_width': 120})
+@config.yaml_config_sample_option()
 def cli() -> None:
     pass
 
