@@ -5,12 +5,6 @@ VENV_PYTHON = $(VENV)/bin/python
 VENV_DONE = $(VENV)/.done
 VENV_PIP_INSTALL = '.[dev, test]'
 
-PACKAGE_SCRIPT = 'from configparser import RawConfigParser; p = RawConfigParser(); p.read("setup.cfg"); print(p["metadata"]["name"]);'
-PACKAGE = $(shell $(PYTHON) -c $(PACKAGE_SCRIPT))
-
-USER_DATA_DIR_SCRIPT = 'import appdirs; print(appdirs.user_data_dir(appname="$(PACKAGE)"))'
-USER_DATA_DIR = $(shell $(VENV_PYTHON) -c $(USER_DATA_DIR_SCRIPT))
-
 .PHONY: venv
 venv: $(VENV_DONE)
 
@@ -79,12 +73,3 @@ $(VENV_DONE): $(MAKEFILE_LIST) setup.py setup.cfg pyproject.toml
 	touch $@
 
 .PHONY: _phony
-
-# ---
-
-.PHONY: yearly
-yearly: YEAR=$(shell date +%Y)
-yearly:
-	m4 -DYEAR=$(YEAR) yearly_summary.sql.m4 \
-		| sqlite3 $(USER_DATA_DIR)/strava.sqlite \
-		| perl -0777 -pe 's/(SELECT.*?;)/`tput setaf 246` . $$1 . `tput sgr0`/gse'

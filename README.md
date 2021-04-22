@@ -162,6 +162,25 @@ least once to let strava-offline reuse these downloaded files.
     
       --help                          Show this message and exit.
 
+### Reports
+
+    $ strava-offline --help | grep report-
+      report-bikes         Show all-time report by bike
+      report-yearly        Show yearly report by activity type
+      report-yearly-bikes  Show yearly report by bike
+
+```
+$ strava-offline report-yearly 2020
+Activity type      Distance (km)    Moving time (hour)
+---------------  ---------------  --------------------
+Ride                        4888                   243
+InlineSkate                   76                     4
+Walk                          59                    13
+Hike                          38                     9
+StandUpPaddling                9                     1
+Canoeing                       2                     1
+```
+
 ### Configuration file
 
 Secrets (and other options) can be set permanently in a config file,

@@ -1,16 +1,19 @@
 from dataclasses import dataclass
+import datetime
+from typing import TextIO
 
 import click
 
 from . import config
 from . import gpx
+from . import reports
 from . import sqlite
 from .strava import StravaAPI
 from .strava import StravaWeb
 
 
 @click.group(context_settings={'max_content_width': 120})
-@config.yaml_config_sample_option()
+@config.yaml_config_sample_option(sample_hidden={'output'})
 def cli() -> None:
     pass
 
@@ -51,3 +54,36 @@ def cli_gpx(config: GpxCommandConfig) -> None:
     """
     strava = StravaWeb(config=config)
     gpx.sync(config=config, strava=strava)
+
+
+option_output = click.option('-o', '--output', type=click.File('w'), default='-', help="Output file")
+option_year = click.argument('year', type=int, default=datetime.datetime.now().year)
+
+
+@cli.command(name='report-yearly')
+@config.DatabaseConfig.options()
+@option_output
+@option_year
+def cli_report_yearly(config: config.DatabaseConfig, output: TextIO, year: int) -> None:
+    "Show yearly report by activity type"
+    with sqlite.database(config) as db:
+        print(reports.yearly(db, year), file=output)
+
+
+@cli.command(name='report-yearly-bikes')
+@config.DatabaseConfig.options()
+@option_output
+@option_year
+def cli_report_yearly_bikes(config: config.DatabaseConfig, output: TextIO, year: int) -> None:
+    "Show yearly report by bike"
+    with sqlite.database(config) as db:
+        print(reports.yearly_bikes(db, year), file=output)
+
+
+@cli.command(name='report-bikes')
+@config.DatabaseConfig.options()
+@option_output
+def cli_report_bikes(config: config.DatabaseConfig, output: TextIO) -> None:
+    "Show all-time report by bike"
+    with sqlite.database(config) as db:
+        print(reports.bikes(db), file=output)

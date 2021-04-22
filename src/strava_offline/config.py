@@ -1,9 +1,10 @@
 from dataclasses import dataclass
+from dataclasses import fields
 from functools import reduce
 from functools import wraps
 from pathlib import Path
-from typing import Callable
 from typing import Optional
+from typing import Set
 from typing import Type
 from typing import TypeVar
 
@@ -30,11 +31,17 @@ def compose_decorators(*decorators):
 
 
 def wrap_kwargs_into_config(config_class: Type[ConfigT]):
-    def decorator(f: Callable[[ConfigT], None]) -> Callable[..., None]:
+    field_set = set(f.name for f in fields(config_class))
+
+    def decorator(f):
         @wraps(f)
         def wrapper(**kwargs):
-            return f(config_class(**kwargs))
+            config_kwargs = {k: v for k, v in kwargs.items() if k in field_set}
+            f_kwargs = {k: v for k, v in kwargs.items() if k not in field_set}
+            return f(config_class(**config_kwargs), **f_kwargs)
+
         return wrapper
+
     return decorator
 
 
@@ -155,7 +162,7 @@ class GpxConfig(DatabaseConfig):
         )
 
 
-def yaml_config_sample_option():
+def yaml_config_sample_option(sample_hidden: Set[str] = set()):
     def sample_get_value(opt: click.Option) -> Optional[str]:
         if opt.name == 'strava_client_id':
             return '12345'
@@ -163,4 +170,6 @@ def yaml_config_sample_option():
             return 'SECRET'
         return None
 
-    return config_file.yaml_config_sample_option(sample_get_value=sample_get_value)
+    return config_file.yaml_config_sample_option(
+        sample_get_value=sample_get_value,
+        sample_hidden=sample_hidden)
