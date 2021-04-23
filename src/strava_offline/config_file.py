@@ -79,7 +79,7 @@ def yaml_config_sample(
         if opt.help:
             sample += "\n".join(f"# {line}" for line in opt.help.splitlines()) + "\n"
 
-        sample += yaml.safe_dump({opt.name: sample_value(opt)})
+        sample += yaml.safe_dump({opt.name: sample_value(opt)}, default_flow_style=False)
         return sample
 
     return "\n".join(sample_yaml(opt) for opt in collect_options(command))

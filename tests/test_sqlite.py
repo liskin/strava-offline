@@ -1,7 +1,7 @@
 from datetime import datetime
 import sqlite3
 
-import pytest
+import pytest  # type: ignore [import]
 import pytz
 
 from strava_offline import config

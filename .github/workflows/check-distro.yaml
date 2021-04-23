@@ -1,0 +1,60 @@
+name: Check (deps from distro)
+
+on: [push, pull_request]
+
+jobs:
+  check-distro:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - 'debian:unstable'
+          - 'debian:bullseye'
+          - 'debian:10'
+          - 'ubuntu:20.04'
+          - 'ubuntu:20.10'
+          - 'ubuntu:21.04'
+
+    container: ${{ matrix.image }}
+
+    steps:
+    - name: Install dependencies via apt
+      run: |
+        set -ex
+        export DEBIAN_FRONTEND=noninteractive
+        apt update
+        apt-cache --generate pkgnames \
+          | grep --line-regexp --fixed-strings \
+            -e git \
+            -e python-pip-whl \
+            -e python3-appdirs \
+            -e python3-bottle \
+            -e python3-click \
+            -e python3-configobj \
+            -e python3-cram \
+            -e python3-flake8 \
+            -e python3-isort \
+            -e python3-multidict \
+            -e python3-mypy \
+            -e python3-pep517 \
+            -e python3-pip \
+            -e python3-pyls \
+            -e python3-pytest \
+            -e python3-requests \
+            -e python3-requests-oauthlib \
+            -e python3-tabulate \
+            -e python3-tz \
+            -e python3-ujson \
+            -e python3-vcr \
+            -e python3-venv \
+            -e python3-yaml \
+            -e python3-yarl \
+            -e twine \
+          | xargs apt install -y
+    - uses: actions/checkout@v2
+    - name: Install remaining dependencies
+      run: make venv
+    - name: make check
+      run: make check
