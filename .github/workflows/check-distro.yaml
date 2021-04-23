@@ -1,6 +1,12 @@
 name: Check (deps from distro)
 
-on: [push, pull_request]
+on:
+  pull_request:
+  push:
+  workflow_dispatch:
+  schedule:
+    # Re-test every month
+    - cron: '0 2 1 * *'
 
 jobs:
   check-distro:
