@@ -11,9 +11,10 @@ from typing import Iterable
 from typing import Iterator
 from typing import List
 from typing import Mapping
-from typing import Protocol
 from typing import Tuple
 from typing import Union
+
+from typing_extensions import Protocol
 
 
 class FromDict(Protocol):
@@ -116,7 +117,7 @@ class Schema:
         if db_version >= self.version:
             return []
 
-        migrations = []
+        migrations: List[Callable] = []
         for table in self.tables:
             migrations += table.prepare_migration(db)
         migrations.append(lambda db: db.execute(f"PRAGMA user_version = {self.version}"))

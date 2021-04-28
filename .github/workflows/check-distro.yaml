@@ -51,6 +51,7 @@ jobs:
             -e python3-requests \
             -e python3-requests-oauthlib \
             -e python3-tabulate \
+            -e python3-typing-extensions \
             -e python3-tz \
             -e python3-ujson \
             -e python3-vcr \
