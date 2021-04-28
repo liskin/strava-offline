@@ -35,8 +35,9 @@ def test_sync_bikes(tmp_path):
             ['b345678', 'bike3'],
         ]
 
-        # delete one bike
+        # delete one bike, insert extra bike
         db.execute("DELETE FROM bike WHERE id = 'b123456'")
+        db.execute("INSERT INTO bike (id) VALUES ('b456789')")
 
         # sync again
         sqlite.sync_bikes(strava=strava(tmp_path), db=db)
@@ -75,10 +76,13 @@ def test_sync_activities(tmp_path):
             [1234567908],
             [1234567910],
             [1234567912],
+            [1234567914],
+            [1234567916],
         ]
 
-        # delete newest and oldest activity
-        db.execute("DELETE FROM activity WHERE id = 1234567890 OR id = 1234567912")
+        # delete newest and oldest activity, insert extra activity
+        db.execute("DELETE FROM activity WHERE id = 1234567890 OR id = 1234567916")
+        db.execute("INSERT INTO activity (id) VALUES (1234567999)")
 
         # sync again
         sqlite.sync_activities(strava=strava(tmp_path), db=db, before=before)
@@ -99,19 +103,22 @@ def test_sync_activities(tmp_path):
             [1234567908],
             [1234567910],
             [1234567912],
+            [1234567914],
+            [1234567916],
         ]
 
-        # delete newest activity
-        db.execute("DELETE FROM activity WHERE id = 1234567912")
+        # delete newest and oldest activity, insert extra activity
+        db.execute("DELETE FROM activity WHERE id = 1234567890 OR id = 1234567916")
+        db.execute("INSERT INTO activity (id) VALUES (1234567999)")
 
         # sync again, but only incrementally
-        sqlite.sync_activities_incremental(strava=strava(tmp_path), db=db, before=before)
+        sqlite.sync_activities(strava=strava(tmp_path), db=db, before=before, incremental=True)
 
         # recheck that we have all the activities we expect
         activities = [list(row) for row in db.execute(
             "SELECT id FROM activity ORDER BY id")]
         assert activities == [
-            [1234567890],
+            # no 1234567890, incremental sync doesn't go that far
             [1234567892],
             [1234567894],
             [1234567896],
@@ -123,6 +130,9 @@ def test_sync_activities(tmp_path):
             [1234567908],
             [1234567910],
             [1234567912],
+            [1234567914],
+            [1234567916],
+            [1234567999],  # incremental doesn't delete extra entries
         ]
 
 
