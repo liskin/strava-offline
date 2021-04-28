@@ -25,10 +25,7 @@ def cli_sqlite(config: config.SyncConfig) -> None:
     Unless --full is given, the sync is incremental, i.e. only new activities
     are synchronized and deletions aren't detected.
     """
-    strava = StravaAPI(
-        config=config,
-        scope=["read", "profile:read_all", "activity:read_all"],
-    )
+    strava = StravaAPI(config=config)
     sync.sync(config=config, strava=strava)
 
 

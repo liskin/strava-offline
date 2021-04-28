@@ -16,7 +16,11 @@ from . import redirect_server
 
 
 class StravaAPI:
-    def __init__(self, config: config.StravaApiConfig, scope: List[str]):
+    def __init__(
+        self,
+        config: config.StravaApiConfig,
+        scope: List[str] = ["read", "profile:read_all", "activity:read_all"],
+    ):
         self._config = config
 
         token = self._load_token()

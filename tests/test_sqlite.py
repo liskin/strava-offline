@@ -17,7 +17,7 @@ def strava(tmp_path):
     token = tmp_path / "token.json"
     token.write_text('{"access_token": "token"}')
     cfg = config.StravaApiConfig(strava_token_filename=token)
-    return StravaAPI(config=cfg, scope=[])
+    return StravaAPI(config=cfg)
 
 
 @pytest.mark.vcr
