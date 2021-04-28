@@ -116,6 +116,7 @@ pip install git+https://github.com/liskin/strava-offline
         --database FILE       Sqlite database file  [default: /home/user/.local/sh
                               are/strava_offline/strava.sqlite]
     
+      -v, --verbose           Logging verbosity (0 = WARNING, 1 = INFO, 2 = DEBUG)
       --config FILE           Read configuration from FILE.  [default:
                               /home/user/.config/strava_offline/config.yaml]
     
@@ -156,6 +157,9 @@ least once to let strava-offline reuse these downloaded files.
       Database: 
         --database FILE               Sqlite database file  [default: /home/user/.
                                       local/share/strava_offline/strava.sqlite]
+    
+      -v, --verbose                   Logging verbosity (0 = WARNING, 1 = INFO, 2
+                                      = DEBUG)
     
       --config FILE                   Read configuration from FILE.  [default: /ho
                                       me/user/.config/strava_offline/config.yaml]
@@ -210,6 +214,9 @@ Sample config file can be generated using the `--config-sample` flag:
     
     # Sqlite database file
     strava_sqlite_database: /home/user/.local/share/strava_offline/strava.sqlite
+    
+    # Logging verbosity (0 = WARNING, 1 = INFO, 2 = DEBUG)
+    verbose: 0
     
     # '_strava4_session' cookie value
     strava_cookie_strava4_session: TEXT

@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from dataclasses import fields
 from functools import reduce
 from functools import wraps
+import logging
 from pathlib import Path
 from typing import Optional
 from typing import Set
@@ -45,12 +46,27 @@ def wrap_kwargs_into_config(config_class: Type[ConfigT]):
     return decorator
 
 
+def verbose_logging_option():
+    return click.option(
+        '-v', '--verbose', count=True, expose_value=False,
+        callback=lambda _ctx, _param, value: logging.basicConfig(
+            level=(
+                logging.DEBUG if value >= 2 else
+                logging.INFO if value >= 1 else
+                logging.WARNING),
+            format="%(levelname)s - %(message)s",
+        ),
+        help="Logging verbosity (0 = WARNING, 1 = INFO, 2 = DEBUG)",
+    )
+
+
 @dataclass
 class BaseConfig:
     @classmethod
     def options(cls):
         assert not hasattr(super(), 'options')
         return compose_decorators(
+            verbose_logging_option(),
             config_file.yaml_config_option(),
             wrap_kwargs_into_config(cls)
         )

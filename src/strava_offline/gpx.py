@@ -1,4 +1,5 @@
 import gzip
+import logging
 import os
 from pathlib import Path
 import sqlite3
@@ -47,13 +48,18 @@ def download_gpx(strava: StravaWeb, activity_id: int, path: Path) -> None:
 
 
 def download_activities(db: sqlite3.Connection, strava: StravaWeb, dir_activities: Path) -> None:
+    new = 0
+
     for activity in db.execute("SELECT id FROM activity WHERE upload_id IS NOT NULL AND has_location_data"):
         activity_id = int(activity['id'])
         if find_gpx(dir_activities, activity_id):
             continue
 
-        print("downloading: " + str(activity_id))
+        logging.debug(f"downloading gpx for activity {activity_id}")
         download_gpx(strava=strava, activity_id=activity_id, path=dir_activities)
+        new += 1
+
+    logging.info(f"downloaded gpx for {new} new activities")
 
 
 def sync(config: config.GpxConfig, strava: StravaWeb):

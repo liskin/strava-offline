@@ -2,6 +2,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from itertools import chain
 import json
+import logging
 from pathlib import Path
 import sqlite3
 from typing import Any
@@ -70,11 +71,11 @@ class Table:
 
             old_ids = set(r['id'] for r in db.execute(f"SELECT id FROM {self.name}"))
             seen = 0
+            new = 0
+            deleted = 0
 
             for row in rows:
-                # TODO: use logging
-                status = "seen: " if row['id'] in old_ids else "new:  "
-                print(status + str(row['id']))
+                logging.debug(f"{self.name}: {row['id']} {'seen' if row['id'] in old_ids else 'new'}")
 
                 if row['id'] in old_ids:
                     old_ids.discard(row['id'])
@@ -82,12 +83,17 @@ class Table:
                     seen += 1
                     if incremental and seen > 10:
                         break
+                else:
+                    new += 1
 
                 self.upsert_row(db, row)
 
             if not incremental:
                 delete = ((i,) for i in old_ids)
                 db.executemany(f"DELETE FROM {self.name} WHERE id = ?", delete)
+                deleted += len(old_ids)
+
+            logging.info(f"{self.name} upsert stats: {new} new, {seen} seen, {deleted} deleted")
 
 
 @dataclass(frozen=True)
