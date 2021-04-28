@@ -2,9 +2,9 @@ from datetime import datetime
 import json
 import sys
 from typing import Any
-from typing import Dict
 from typing import Iterable
 from typing import List
+from typing import Mapping
 from typing import Optional
 
 import pytz
@@ -63,15 +63,15 @@ class StravaAPI:
         )
         self._save_token(token)
 
-    def get_athlete(self) -> Dict[str, Any]:
+    def get_athlete(self) -> Mapping[str, Any]:
         r = self._session.get("https://www.strava.com/api/v3/athlete")
         r.raise_for_status()
         return r.json()
 
-    def get_bikes(self) -> Iterable[Dict[str, Any]]:
+    def get_bikes(self) -> Iterable[Mapping[str, Any]]:
         return self.get_athlete()['bikes']
 
-    def get_activities(self, before: Optional[datetime] = None) -> Iterable[Dict[str, Any]]:
+    def get_activities(self, before: Optional[datetime] = None) -> Iterable[Mapping[str, Any]]:
         if not before:
             before = datetime.now(pytz.utc)
         params = {'before': int(before.timestamp()), 'per_page': 200, 'page': 0}

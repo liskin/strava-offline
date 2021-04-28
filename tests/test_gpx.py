@@ -2,12 +2,12 @@ import pytest  # type: ignore [import]
 
 from strava_offline import config
 from strava_offline import gpx
-from strava_offline import sqlite
 from strava_offline.strava import StravaWeb
+from strava_offline import sync
 
 
 def database():
-    return sqlite.database(config.DatabaseConfig(strava_sqlite_database=":memory:"))
+    return sync.database(config.DatabaseConfig(strava_sqlite_database=":memory:"))
 
 
 def test_link_backup_activities(tmp_path):

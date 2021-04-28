@@ -5,12 +5,12 @@ import pytest  # type: ignore [import]
 import pytz
 
 from strava_offline import config
-from strava_offline import sqlite
 from strava_offline.strava import StravaAPI
+from strava_offline import sync
 
 
 def database():
-    return sqlite.database(config.DatabaseConfig(strava_sqlite_database=":memory:"))
+    return sync.database(config.DatabaseConfig(strava_sqlite_database=":memory:"))
 
 
 def strava(tmp_path):
@@ -24,7 +24,7 @@ def strava(tmp_path):
 def test_sync_bikes(tmp_path):
     with database() as db:
         # initial sync
-        sqlite.sync_bikes(strava=strava(tmp_path), db=db)
+        sync.sync_bikes(strava=strava(tmp_path), db=db)
 
         # check that we have all the bikes we expect
         bikes = [list(row) for row in db.execute(
@@ -40,7 +40,7 @@ def test_sync_bikes(tmp_path):
         db.execute("INSERT INTO bike (id) VALUES ('b456789')")
 
         # sync again
-        sqlite.sync_bikes(strava=strava(tmp_path), db=db)
+        sync.sync_bikes(strava=strava(tmp_path), db=db)
 
         # recheck that we have all the bikes we expect
         bikes = [list(row) for row in db.execute(
@@ -58,7 +58,7 @@ def test_sync_activities(tmp_path):
 
     with database() as db:
         # initial sync
-        sqlite.sync_activities(strava=strava(tmp_path), db=db, before=before)
+        sync.sync_activities(strava=strava(tmp_path), db=db, before=before)
 
         # check that we have all the activities we expect
         activities = [list(row) for row in db.execute(
@@ -85,7 +85,7 @@ def test_sync_activities(tmp_path):
         db.execute("INSERT INTO activity (id) VALUES (1234567999)")
 
         # sync again
-        sqlite.sync_activities(strava=strava(tmp_path), db=db, before=before)
+        sync.sync_activities(strava=strava(tmp_path), db=db, before=before)
 
         # recheck that we have all the activities we expect
         activities = [list(row) for row in db.execute(
@@ -112,7 +112,7 @@ def test_sync_activities(tmp_path):
         db.execute("INSERT INTO activity (id) VALUES (1234567999)")
 
         # sync again, but only incrementally
-        sqlite.sync_activities(strava=strava(tmp_path), db=db, before=before, incremental=True)
+        sync.sync_activities(strava=strava(tmp_path), db=db, before=before, incremental=True)
 
         # recheck that we have all the activities we expect
         activities = [list(row) for row in db.execute(
@@ -142,13 +142,13 @@ def test_migration_bikes(tmp_path):
     cfg = config.DatabaseConfig(strava_sqlite_database=db_uri)
     db_keep_in_memory = sqlite3.connect(db_uri)
 
-    with sqlite.database(cfg) as db:
-        sqlite.sync_bikes(strava=strava(tmp_path), db=db)
+    with sync.database(cfg) as db:
+        sync.sync_bikes(strava=strava(tmp_path), db=db)
         db.execute("UPDATE bike SET name = 'xxx'")
         db.execute("PRAGMA user_version = 0")
         db.commit()
 
-    with sqlite.database(cfg) as db:
+    with sync.database(cfg) as db:
         bikes = [row['name'] for row in db.execute(
             "SELECT name FROM bike ORDER BY id LIMIT 1")]
         assert bikes == ['bike1']
@@ -164,13 +164,13 @@ def test_migration_activities(tmp_path):
 
     before = datetime.fromtimestamp(1610000000, tz=pytz.utc)
 
-    with sqlite.database(cfg) as db:
-        sqlite.sync_activities(strava=strava(tmp_path), db=db, before=before)
+    with sync.database(cfg) as db:
+        sync.sync_activities(strava=strava(tmp_path), db=db, before=before)
         db.execute("UPDATE activity SET name = 'xxx'")
         db.execute("PRAGMA user_version = 0")
         db.commit()
 
-    with sqlite.database(cfg) as db:
+    with sync.database(cfg) as db:
         activities = [row['name'] for row in db.execute(
             "SELECT name FROM activity ORDER BY id LIMIT 1")]
         assert activities == ['name1']

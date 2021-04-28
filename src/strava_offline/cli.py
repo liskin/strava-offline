@@ -7,7 +7,7 @@ import click
 from . import config
 from . import gpx
 from . import reports
-from . import sqlite
+from . import sync
 from .strava import StravaAPI
 from .strava import StravaWeb
 
@@ -35,7 +35,7 @@ def cli_sqlite(config: SqliteCommandConfig) -> None:
         config=config,
         scope=["read", "profile:read_all", "activity:read_all"],
     )
-    sqlite.sync(config=config, strava=strava)
+    sync.sync(config=config, strava=strava)
 
 
 @dataclass
@@ -66,7 +66,7 @@ option_year = click.argument('year', type=int, default=datetime.datetime.now().y
 @option_year
 def cli_report_yearly(config: config.DatabaseConfig, output: TextIO, year: int) -> None:
     "Show yearly report by activity type"
-    with sqlite.database(config) as db:
+    with sync.database(config) as db:
         print(reports.yearly(db, year), file=output)
 
 
@@ -76,7 +76,7 @@ def cli_report_yearly(config: config.DatabaseConfig, output: TextIO, year: int) 
 @option_year
 def cli_report_yearly_bikes(config: config.DatabaseConfig, output: TextIO, year: int) -> None:
     "Show yearly report by bike"
-    with sqlite.database(config) as db:
+    with sync.database(config) as db:
         print(reports.yearly_bikes(db, year), file=output)
 
 
@@ -85,5 +85,5 @@ def cli_report_yearly_bikes(config: config.DatabaseConfig, output: TextIO, year:
 @option_output
 def cli_report_bikes(config: config.DatabaseConfig, output: TextIO) -> None:
     "Show all-time report by bike"
-    with sqlite.database(config) as db:
+    with sync.database(config) as db:
         print(reports.bikes(db), file=output)

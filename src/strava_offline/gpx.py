@@ -5,8 +5,8 @@ import sqlite3
 from typing import Optional
 
 from . import config
-from .sqlite import database
 from .strava import StravaWeb
+from .sync import database
 
 
 def find_gpx(d: Path, i: int) -> Optional[Path]:
