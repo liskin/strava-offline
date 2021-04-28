@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 import datetime
 from typing import TextIO
 
@@ -18,14 +17,9 @@ def cli() -> None:
     pass
 
 
-@dataclass
-class SqliteCommandConfig(config.StravaApiConfig, config.SyncConfig):
-    pass
-
-
 @cli.command(name='sqlite', short_help="Sync bikes/activities to sqlite")
-@SqliteCommandConfig.options()
-def cli_sqlite(config: SqliteCommandConfig) -> None:
+@config.SyncConfig.options()
+def cli_sqlite(config: config.SyncConfig) -> None:
     """
     Synchronize bikes and activities metadata to local sqlite3 database.
     Unless --full is given, the sync is incremental, i.e. only new activities
@@ -38,14 +32,9 @@ def cli_sqlite(config: SqliteCommandConfig) -> None:
     sync.sync(config=config, strava=strava)
 
 
-@dataclass
-class GpxCommandConfig(config.StravaWebConfig, config.GpxConfig):
-    pass
-
-
 @cli.command(name='gpx', short_help="Download gpx for your activities")
-@GpxCommandConfig.options()
-def cli_gpx(config: GpxCommandConfig) -> None:
+@config.GpxConfig.options()
+def cli_gpx(config: config.GpxConfig) -> None:
     """
     Download known (previously synced using the "sqlite" command) activities in GPX format.
     It's recommended to only use this incrementally to download the latest activities every day

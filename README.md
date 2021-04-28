@@ -96,6 +96,10 @@ pip install git+https://github.com/liskin/strava-offline
       are synchronized and deletions aren't detected.
     
     Options:
+      Sync options: 
+        --full / --no-full    Perform full sync instead of incremental  [default:
+                              False]
+    
       Strava API: 
         --client-id TEXT      Strava OAuth 2 client id  [env var:
                               STRAVA_CLIENT_ID]
@@ -108,10 +112,6 @@ pip install git+https://github.com/liskin/strava-offline
     
         --http-host TEXT      OAuth 2 HTTP server host  [default: 127.0.0.1]
         --http-port INTEGER   OAuth 2 HTTP server port  [default: 12345]
-      Sync options: 
-        --full / --no-full    Perform full sync instead of incremental  [default:
-                              False]
-    
       Database: 
         --database FILE       Sqlite database file  [default: /home/user/.local/sh
                               are/strava_offline/strava.sqlite]
@@ -141,10 +141,6 @@ least once to let strava-offline reuse these downloaded files.
       avoid downloading activities already downloaded in the bulk.
     
     Options:
-      Strava web: 
-        --strava4-session TEXT        '_strava4_session' cookie value  [env var:
-                                      STRAVA_COOKIE_STRAVA4_SESSION; required]
-    
       GPX storage: 
         --dir-activities DIRECTORY    Directory to store gpx files indexed by
                                       activity id  [default: /home/user/.local/sha
@@ -153,6 +149,10 @@ least once to let strava-offline reuse these downloaded files.
         --dir-activities-backup DIRECTORY
                                       Optional path to activities in Strava backup
                                       (no need to redownload these)
+    
+      Strava web: 
+        --strava4-session TEXT        '_strava4_session' cookie value  [env var:
+                                      STRAVA_COOKIE_STRAVA4_SESSION; required]
     
       Database: 
         --database FILE               Sqlite database file  [default: /home/user/.
@@ -194,6 +194,9 @@ which is located at `~/.config/strava_offline/config.yaml` by default
 Sample config file can be generated using the `--config-sample` flag:
 
     $ strava-offline --config-sample
+    # Perform full sync instead of incremental
+    full: false
+    
     # Strava OAuth 2 client id
     strava_client_id: '12345'
     
@@ -209,23 +212,20 @@ Sample config file can be generated using the `--config-sample` flag:
     # OAuth 2 HTTP server port
     http_port: 12345
     
-    # Perform full sync instead of incremental
-    full: false
-    
     # Sqlite database file
     strava_sqlite_database: /home/user/.local/share/strava_offline/strava.sqlite
     
     # Logging verbosity (0 = WARNING, 1 = INFO, 2 = DEBUG)
     verbose: 0
     
-    # '_strava4_session' cookie value
-    strava_cookie_strava4_session: TEXT
-    
     # Directory to store gpx files indexed by activity id
     dir_activities: /home/user/.local/share/strava_offline/activities
     
     # Optional path to activities in Strava backup (no need to redownload these)
     dir_activities_backup: DIRECTORY
+    
+    # '_strava4_session' cookie value
+    strava_cookie_strava4_session: TEXT
 
 ## Donations (♥ = €)
 

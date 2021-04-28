@@ -144,7 +144,7 @@ class DatabaseConfig(BaseConfig):
 
 
 @dataclass
-class SyncConfig(DatabaseConfig):
+class SyncConfig(StravaApiConfig, DatabaseConfig):
     full: bool = False
 
     @classmethod
@@ -159,7 +159,7 @@ class SyncConfig(DatabaseConfig):
 
 
 @dataclass
-class GpxConfig(DatabaseConfig):
+class GpxConfig(StravaWebConfig, DatabaseConfig):
     dir_activities: Path = data_dir / 'activities'
     dir_activities_backup: Optional[Path] = None
 
