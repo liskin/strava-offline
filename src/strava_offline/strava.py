@@ -1,6 +1,5 @@
 from datetime import datetime
 import json
-import sys
 from typing import Any
 from typing import Iterable
 from typing import List
@@ -39,10 +38,7 @@ class StravaAPI:
         )
 
         if not token:
-            if sys.stdin.isatty():
-                self._authorize()
-            else:
-                raise RuntimeError("not interactive, cannot authorize")
+            self._authorize()
 
     def _load_token(self):
         try:

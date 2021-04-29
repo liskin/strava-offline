@@ -1,0 +1,80 @@
+interactions:
+- request:
+    body:
+      grant_type=authorization_code&client_id=12345&client_secret=SECRET&code=CODE&redirect_uri=http%3A%2F%2F127.0.0.1%3A12345%2Fcode
+    headers:
+    method: POST
+    uri: https://www.strava.com/oauth/token
+  response:
+    &res1
+    body:
+      string: |
+        {
+          "token_type": "Bearer",
+          "expires_at": 1600000000,
+          "expires_in": 600,
+          "refresh_token": "REFRESH_TOKEN",
+          "access_token": "ACCESS_TOKEN",
+          "athlete": {"id": 123}
+        }
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    status:
+      code: 200
+      message: OK
+- request:
+    # alternative for oauthlib < 3
+    body:
+      grant_type=authorization_code&code=CODE&client_id=12345&redirect_uri=http%3A%2F%2F127.0.0.1%3A12345%2Fcode&client_secret=SECRET&include_client_id=True
+    headers:
+    method: POST
+    uri: https://www.strava.com/oauth/token
+  response: *res1
+- request:
+    body:
+      grant_type=refresh_token&client_id=12345&client_secret=SECRET&scope=read%2Cprofile%3Aread_all%2Cactivity%3Aread_all&refresh_token=REFRESH_TOKEN&allow_redirects=True
+    headers:
+    method: POST
+    uri: https://www.strava.com/oauth/token
+  response:
+    &res2
+    body:
+      string: |
+        {
+          "token_type": "Bearer",
+          "expires_at": 2600000000,
+          "expires_in": 600,
+          "refresh_token": "REFRESH_TOKEN",
+          "access_token": "NEW_ACCESS_TOKEN"
+        }
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    status:
+      code: 200
+      message: OK
+- request:
+    # alternative for oauthlib < 3
+    body:
+      grant_type=refresh_token&scope=read%2Cprofile%3Aread_all%2Cactivity%3Aread_all&refresh_token=REFRESH_TOKEN&allow_redirects=True&client_id=12345&client_secret=SECRET
+    headers:
+    method: POST
+    uri: https://www.strava.com/oauth/token
+  response: *res2
+- request:
+    body:
+    headers:
+    method: GET
+    uri: https://www.strava.com/api/v3/athlete
+  response:
+    body:
+      string: |
+        {"id": 123}
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    status:
+      code: 200
+      message: OK
+version: 1

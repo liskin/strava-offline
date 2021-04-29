@@ -1,5 +1,6 @@
 from multiprocessing import Process
 from multiprocessing import Queue
+import sys
 from time import sleep
 from types import SimpleNamespace
 import webbrowser
@@ -34,6 +35,9 @@ def server(_shared: SimpleNamespace) -> None:
 
 
 def get_code(config: config.StravaApiConfig, authorization_url: str) -> str:
+    if not sys.stdin.isatty():
+        raise RuntimeError("not interactive, cannot authorize")
+
     queue: Queue[str] = Queue()
 
     shared = SimpleNamespace()
