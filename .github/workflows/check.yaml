@@ -126,7 +126,7 @@ jobs:
             | xargs apt install -y
       - uses: actions/checkout@v2
       - name: Install remaining dependencies
-        run: make venv
+        run: make venv-system-site-packages
       - name: flake8
         uses: liskin/gh-problem-matcher-wrap@v1
         with:

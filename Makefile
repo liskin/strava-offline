@@ -4,6 +4,12 @@ VENV = .venv
 VENV_PYTHON = $(VENV)/bin/python
 VENV_DONE = $(VENV)/.done
 VENV_PIP_INSTALL = '.[dev, test]'
+VENV_SYSTEM_SITE_PACKAGES = $(VENV)/.venv-system-site-packages
+VENV_USE_SYSTEM_SITE_PACKAGES = $(wildcard $(VENV_SYSTEM_SITE_PACKAGES))
+
+.PHONY: venv-system-site-packages
+venv-system-site-packages: override VENV_USE_SYSTEM_SITE_PACKAGES := 1
+venv-system-site-packages: $(VENV_DONE)
 
 .PHONY: venv
 venv: $(VENV_DONE)
@@ -67,9 +73,19 @@ ipython: $(VENV_DONE)
 clean:
 	git clean -ffdX
 
-$(VENV_DONE): $(MAKEFILE_LIST) setup.py setup.cfg pyproject.toml
+define VENV_CREATE
+	$(PYTHON) -m venv $(VENV)
+	$(VENV_PYTHON) -m pip install wheel
+endef
+
+define VENV_CREATE_SYSTEM_SITE_PACKAGES
 	$(PYTHON) -m venv --system-site-packages --without-pip $(VENV)
 	$(VENV_PYTHON) -m pip --version || $(PYTHON) -m venv --system-site-packages $(VENV)
+	touch $(VENV_SYSTEM_SITE_PACKAGES)
+endef
+
+$(VENV_DONE): $(MAKEFILE_LIST) setup.py setup.cfg pyproject.toml
+	$(if $(VENV_USE_SYSTEM_SITE_PACKAGES),$(VENV_CREATE_SYSTEM_SITE_PACKAGES),$(VENV_CREATE))
 	$(VENV_PYTHON) -m pip install -e $(VENV_PIP_INSTALL)
 	touch $@
 
