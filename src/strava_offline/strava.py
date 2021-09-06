@@ -1,4 +1,5 @@
 from datetime import datetime
+from datetime import timezone
 import json
 from typing import Any
 from typing import Iterable
@@ -6,7 +7,6 @@ from typing import List
 from typing import Mapping
 from typing import Optional
 
-import pytz
 from requests import Session
 from requests_oauthlib import OAuth2Session  # type: ignore [import]
 
@@ -73,7 +73,7 @@ class StravaAPI:
 
     def get_activities(self, before: Optional[datetime] = None) -> Iterable[Mapping[str, Any]]:
         if not before:
-            before = datetime.now(pytz.utc)
+            before = datetime.now(timezone.utc)
         params = {'before': int(before.timestamp()), 'per_page': 200, 'page': 0}
         while True:
             params['page'] += 1

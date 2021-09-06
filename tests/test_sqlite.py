@@ -1,8 +1,8 @@
 from datetime import datetime
+from datetime import timezone
 import sqlite3
 
 import pytest  # type: ignore [import]
-import pytz
 
 from strava_offline import config
 from strava_offline.strava import StravaAPI
@@ -54,7 +54,7 @@ def test_sync_bikes(tmp_path):
 
 @pytest.mark.vcr
 def test_sync_activities(tmp_path):
-    before = datetime.fromtimestamp(1610000000, tz=pytz.utc)
+    before = datetime.fromtimestamp(1610000000, tz=timezone.utc)
 
     with database() as db:
         # initial sync
@@ -162,7 +162,7 @@ def test_migration_activities(tmp_path):
     cfg = config.DatabaseConfig(strava_sqlite_database=db_uri)
     db_keep_in_memory = sqlite3.connect(db_uri)
 
-    before = datetime.fromtimestamp(1610000000, tz=pytz.utc)
+    before = datetime.fromtimestamp(1610000000, tz=timezone.utc)
 
     with sync.database(cfg) as db:
         sync.sync_activities(strava=strava(tmp_path), db=db, before=before)
