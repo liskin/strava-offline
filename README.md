@@ -24,7 +24,7 @@ Using [pipx][]:
 
 ```
 pipx ensurepath
-pipx install git+https://github.com/liskin/strava-offline
+pipx install strava-offline
 ```
 
 To keep a local git clone around:
@@ -38,10 +38,10 @@ Alternatively, if you don't need the isolated virtualenv that [pipx][]
 provides, feel free to just:
 
 ```
-pip install git+https://github.com/liskin/strava-offline
+pip install strava-offline
 ```
 
-[pipx]: https://github.com/pipxproject/pipx
+[pipx]: https://github.com/pypa/pipx
 
 ## Setup and usage
 
