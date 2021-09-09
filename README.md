@@ -237,5 +237,5 @@ By donating, you'll also support the development of my other projects. You
 might like these:
 
 * <https://github.com/liskin/strava-map-switcher> - Map switcher for Strava website
-* <https://github.com/liskin/locus-graphhopper-gpx> - Convert GraphHopper JSON to GPX with Locus nav. instructions
+* <https://github.com/liskin/strava-gear> - Rule based tracker of gear and component wear primarily for Strava
 * <https://github.com/liskin/leaflet-tripreport> - A simple tool for visualization of bikepacking trips, both planned and ridden
