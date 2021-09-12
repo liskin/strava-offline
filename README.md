@@ -16,7 +16,7 @@ further analysis/processing:
 
 Example of what you can do with the data:
 
-![sql-yearly-summary](https://user-images.githubusercontent.com/300342/94435822-ec3e5a00-019b-11eb-84db-01d61eacfb56.png)
+![sample-reports](https://user-images.githubusercontent.com/300342/132984440-3a45365a-0ad2-4310-a02b-6adb669d892e.png)
 
 ## Installation
 
