@@ -112,7 +112,6 @@ jobs:
               -e python3-mypy \
               -e python3-pep517 \
               -e python3-pip \
-              -e python3-pyls \
               -e python3-pytest \
               -e python3-requests \
               -e python3-requests-oauthlib \
