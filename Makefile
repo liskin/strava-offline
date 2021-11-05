@@ -59,7 +59,7 @@ readme: README.md
 .PHONY: dist
 dist: $(VENV_DONE)
 	rm -rf dist/
-	$(VENV_PYTHON) -m pep517.build --source --binary --out-dir dist .
+	$(VENV_PYTHON) -m build --outdir dist
 
 .PHONY: twine-upload
 twine-upload: dist
