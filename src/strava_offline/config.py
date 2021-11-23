@@ -9,14 +9,14 @@ from typing import Set
 from typing import Type
 from typing import TypeVar
 
-import appdirs  # type: ignore [import]
 import click
 from click_option_group import OptionGroup  # type: ignore [import]
+import platformdirs
 
 from . import config_file
 
-data_dir = Path(appdirs.user_data_dir(appname=__package__))
-config_dir = Path(appdirs.user_config_dir(appname=__package__))
+data_dir = platformdirs.user_data_path(appname=__package__)
+config_dir = platformdirs.user_config_path(appname=__package__)
 
 ConfigT = TypeVar('ConfigT', bound='BaseConfig')
 

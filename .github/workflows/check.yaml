@@ -101,7 +101,6 @@ jobs:
             | grep --line-regexp --fixed-strings \
               -e git \
               -e python-pip-whl \
-              -e python3-appdirs \
               -e python3-bottle \
               -e python3-click \
               -e python3-configobj \
@@ -112,6 +111,7 @@ jobs:
               -e python3-mypy \
               -e python3-pep517 \
               -e python3-pip \
+              -e python3-platformdirs \
               -e python3-pytest \
               -e python3-requests \
               -e python3-requests-oauthlib \
