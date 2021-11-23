@@ -91,35 +91,29 @@ pip install strava-offline
     $ strava-offline sqlite --help
     Usage: strava-offline sqlite [OPTIONS]
     
-      Synchronize bikes and activities metadata to local sqlite3 database.
-      Unless --full is given, the sync is incremental, i.e. only new activities
-      are synchronized and deletions aren't detected.
+      Synchronize bikes and activities metadata to local sqlite3 database. Unless
+      --full is given, the sync is incremental, i.e. only new activities are
+      synchronized and deletions aren't detected.
     
     Options:
       Sync options: 
         --full / --no-full    Perform full sync instead of incremental  [default:
-                              False]
-    
+                              no-full]
       Strava API: 
         --client-id TEXT      Strava OAuth 2 client id  [env var:
                               STRAVA_CLIENT_ID]
-    
         --client-secret TEXT  Strava OAuth 2 client secret  [env var:
                               STRAVA_CLIENT_SECRET]
-    
         --token-file FILE     Strava OAuth 2 token store  [default:
                               /home/user/.config/strava_offline/token.json]
-    
         --http-host TEXT      OAuth 2 HTTP server host  [default: 127.0.0.1]
         --http-port INTEGER   OAuth 2 HTTP server port  [default: 12345]
       Database: 
         --database FILE       Sqlite database file  [default: /home/user/.local/sh
                               are/strava_offline/strava.sqlite]
-    
       -v, --verbose           Logging verbosity (0 = WARNING, 1 = INFO, 2 = DEBUG)
       --config FILE           Read configuration from FILE.  [default:
                               /home/user/.config/strava_offline/config.yaml]
-    
       --help                  Show this message and exit.
 
 ### Mirror activities as GPX
@@ -134,36 +128,30 @@ least once to let strava-offline reuse these downloaded files.
     $ strava-offline gpx --help
     Usage: strava-offline gpx [OPTIONS]
     
-      Download known (previously synced using the "sqlite" command) activities
-      in GPX format. It's recommended to only use this incrementally to download
-      the latest activities every day or week, and download the bulk of your
-      historic activities directly from Strava. Use --dir-activities-backup to
-      avoid downloading activities already downloaded in the bulk.
+      Download known (previously synced using the "sqlite" command) activities in
+      GPX format. It's recommended to only use this incrementally to download the
+      latest activities every day or week, and download the bulk of your historic
+      activities directly from Strava. Use --dir-activities-backup to avoid
+      downloading activities already downloaded in the bulk.
     
     Options:
       GPX storage: 
         --dir-activities DIRECTORY    Directory to store gpx files indexed by
                                       activity id  [default: /home/user/.local/sha
                                       re/strava_offline/activities]
-    
         --dir-activities-backup DIRECTORY
                                       Optional path to activities in Strava backup
                                       (no need to redownload these)
-    
       Strava web: 
         --strava4-session TEXT        '_strava4_session' cookie value  [env var:
                                       STRAVA_COOKIE_STRAVA4_SESSION; required]
-    
       Database: 
         --database FILE               Sqlite database file  [default: /home/user/.
                                       local/share/strava_offline/strava.sqlite]
-    
       -v, --verbose                   Logging verbosity (0 = WARNING, 1 = INFO, 2
                                       = DEBUG)
-    
       --config FILE                   Read configuration from FILE.  [default: /ho
                                       me/user/.config/strava_offline/config.yaml]
-    
       --help                          Show this message and exit.
 
 ### Reports

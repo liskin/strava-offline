@@ -21,12 +21,6 @@ config_dir = platformdirs.user_config_path(appname=__package__)
 ConfigT = TypeVar('ConfigT', bound='BaseConfig')
 
 
-class PathType(click.Path):
-    def convert(self, value, param, ctx):
-        rv = super().convert(value, param, ctx)
-        return Path(rv) if rv is not None else None
-
-
 def compose_decorators(*decorators):
     return lambda f: reduce(lambda x, g: g(x), reversed(decorators), f)
 
@@ -95,7 +89,7 @@ class StravaApiConfig(BaseConfig):
                 default=cls.strava_client_secret,
                 help="Strava OAuth 2 client secret"),
             group.option(
-                '--token-file', 'strava_token_filename', type=PathType(dir_okay=False),
+                '--token-file', 'strava_token_filename', type=click.Path(path_type=Path, dir_okay=False),
                 default=cls.strava_token_filename, show_default=True,
                 help="Strava OAuth 2 token store"),
             group.option(
@@ -136,7 +130,7 @@ class DatabaseConfig(BaseConfig):
         group = OptionGroup("Database")
         return compose_decorators(
             group.option(
-                '--database', 'strava_sqlite_database', type=PathType(dir_okay=False),
+                '--database', 'strava_sqlite_database', type=click.Path(path_type=Path, dir_okay=False),
                 default=cls.strava_sqlite_database, show_default=True,
                 help="Sqlite database file"),
             super().options()
@@ -168,11 +162,11 @@ class GpxConfig(StravaWebConfig, DatabaseConfig):
         group = OptionGroup("GPX storage")
         return compose_decorators(
             group.option(
-                '--dir-activities', type=PathType(file_okay=False),
+                '--dir-activities', type=click.Path(path_type=Path, file_okay=False),
                 default=cls.dir_activities, show_default=True,
                 help="Directory to store gpx files indexed by activity id"),
             group.option(
-                '--dir-activities-backup', type=PathType(file_okay=False),
+                '--dir-activities-backup', type=click.Path(path_type=Path, file_okay=False),
                 help="Optional path to activities in Strava backup (no need to redownload these)"),
             super().options()
         )
