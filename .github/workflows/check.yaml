@@ -82,12 +82,12 @@ jobs:
       matrix:
         image:
           - 'debian:unstable'
-          - 'debian:bookworm'
-          - 'debian:11'
-          - 'debian:10'
-          - 'ubuntu:20.04'
-          - 'ubuntu:20.10'
-          - 'ubuntu:21.04'
+          - 'debian:testing'
+          - 'debian:stable'
+          - 'debian:oldstable'
+          - 'ubuntu:devel'
+          - 'ubuntu:rolling'
+          - 'ubuntu:latest'
 
     container: ${{ matrix.image }}
 
