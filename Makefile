@@ -84,6 +84,11 @@ define VENV_CREATE_SYSTEM_SITE_PACKAGES
 	touch $(VENV_SYSTEM_SITE_PACKAGES)
 endef
 
+# workaround for https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1003252 and/or https://github.com/pypa/pip/issues/6264
+ifdef VENV_USE_SYSTEM_SITE_PACKAGES
+$(VENV_DONE): export SETUPTOOLS_USE_DISTUTILS := stdlib
+endif
+
 $(VENV_DONE): $(MAKEFILE_LIST) setup.py setup.cfg pyproject.toml
 	$(if $(VENV_USE_SYSTEM_SITE_PACKAGES),$(VENV_CREATE_SYSTEM_SITE_PACKAGES),$(VENV_CREATE))
 	$(VENV_PYTHON) -m pip install -e $(VENV_PIP_INSTALL)
