@@ -81,6 +81,7 @@ endef
 define VENV_CREATE_SYSTEM_SITE_PACKAGES
 	$(PYTHON) -m venv --system-site-packages --without-pip $(VENV)
 	$(VENV_PYTHON) -m pip --version || $(PYTHON) -m venv --system-site-packages $(VENV)
+	$(VENV_PYTHON) -m pip install 'pip >= 20.3'
 	touch $(VENV_SYSTEM_SITE_PACKAGES)
 endef
 
