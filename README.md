@@ -56,7 +56,7 @@ pip install strava-offline
 
   ```
   sqlite3 ~/.local/share/strava_offline/strava.sqlite \
-  ​  "SELECT CAST(SUM(distance)/1000 AS INT) || ' km' FROM activity"
+    "SELECT CAST(SUM(distance)/1000 AS INT) || ' km' FROM activity"
   ```
 
 * For GPX downloading, you'll need to get the `_strava4_session` cookie from
@@ -88,6 +88,7 @@ pip install strava-offline
 
 ### Mirror activities metadata
 
+<!-- include .readme.md/help-sqlite.md -->
     $ strava-offline sqlite --help
     Usage: strava-offline sqlite [OPTIONS]
     
@@ -115,6 +116,7 @@ pip install strava-offline
       --config FILE           Read configuration from FILE.  [default:
                               /home/user/.config/strava_offline/config.yaml]
       --help                  Show this message and exit.
+<!-- end include -->
 
 ### Mirror activities as GPX
 
@@ -125,6 +127,7 @@ least once to let strava-offline reuse these downloaded files.
 
 [strava-bulk-export]: https://support.strava.com/hc/en-us/articles/216918437-Exporting-your-Data-and-Bulk-Export#Bulk
 
+<!-- include .readme.md/help-gpx.md -->
     $ strava-offline gpx --help
     Usage: strava-offline gpx [OPTIONS]
     
@@ -153,13 +156,16 @@ least once to let strava-offline reuse these downloaded files.
       --config FILE                   Read configuration from FILE.  [default: /ho
                                       me/user/.config/strava_offline/config.yaml]
       --help                          Show this message and exit.
+<!-- end include -->
 
 ### Reports
 
+<!-- include .readme.md/help-report.md -->
     $ strava-offline --help | grep report-
       report-bikes         Show all-time report by bike
       report-yearly        Show yearly report by activity type
       report-yearly-bikes  Show yearly report by bike
+<!-- end include -->
 
 ```
 $ strava-offline report-yearly 2020
@@ -181,6 +187,7 @@ which is located at `~/.config/strava_offline/config.yaml` by default
 
 Sample config file can be generated using the `--config-sample` flag:
 
+<!-- include .readme.md/config-sample.md -->
     $ strava-offline --config-sample
     # Perform full sync instead of incremental
     full: false
@@ -214,6 +221,7 @@ Sample config file can be generated using the `--config-sample` flag:
     
     # '_strava4_session' cookie value
     strava_cookie_strava4_session: TEXT
+<!-- end include -->
 
 ## Donations (♥ = €)
 
