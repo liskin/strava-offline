@@ -223,6 +223,22 @@ Sample config file can be generated using the `--config-sample` flag:
     strava_cookie_strava4_session: TEXT
 <!-- end include -->
 
+### Note about incremental synchronization
+
+Synchronization of activities (`strava-offline sqlite`) performs an
+incremental sync by default. We request recent activities from the Strava API
+and stop processing or asking for more as soon as we've seen 10 activities
+that had already been in the local database.
+
+This means that if you change an older activity, it may not be synced unless
+you ask for a `--full` sync. The upside is that the incremental sync is faster
+and makes fewer API calls.
+
+(You may be wondering why other tools like VeloViewer don't need this. Strava
+API supports webhooks so that a service can subscribe to be notified of new
+activities and changes to existing activities, but `strava-offline` is not a
+web service, it's a local tool, so it can't do that.)
+
 ## Donations (♥ = €)
 
 If you like this tool and wish to support its development and maintenance,
