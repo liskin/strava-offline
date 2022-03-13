@@ -48,14 +48,14 @@ table_activity = sqlite.Table(
         'gear_id': activity['gear_id'],
         'type': activity['type'],
         'commute': activity['commute'],
-        'has_location_data': activity['start_latlng'] is not None,
+        'has_location_data': isinstance(activity['start_latlng'], list) and len(activity['start_latlng']) >= 2,
     },
 )
 
 schema = sqlite.Schema(
     # Version of database schema. Bump this whenever the schema changes,
     # tables will be recreated using the stored json data and the new schema.
-    version=2,
+    version=3,
 
     tables=[
         table_bike,
