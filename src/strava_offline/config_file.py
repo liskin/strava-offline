@@ -49,7 +49,7 @@ def yaml_config_sample(
 
     def collect_options(cmd: click.Command, seen: Set[str] = set()) -> Iterator[click.Option]:
         for p in cmd.params:
-            if not isinstance(p, click.Option):
+            if not isinstance(p, click.Option) or not isinstance(p.name, str):
                 continue
             if p.hidden or p.name in sample_hidden or p.name in seen:
                 continue
