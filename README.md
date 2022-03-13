@@ -1,5 +1,9 @@
 # strava-offline
 
+[![PyPI Python Version badge](https://img.shields.io/pypi/pyversions/strava-offline)](https://pypi.org/project/strava-offline/)
+[![PyPI Version badge](https://img.shields.io/pypi/v/strava-offline)](https://pypi.org/project/strava-offline/)
+![License badge](https://img.shields.io/github/license/liskin/strava-offline)
+
 ## Overview
 
 strava-offline is a tool to keep a local mirror of Strava activities for
