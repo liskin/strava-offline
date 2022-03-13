@@ -101,6 +101,7 @@ jobs:
             | grep --line-regexp --fixed-strings \
               -e git \
               -e python3-bottle \
+              -e python3-build \
               -e python3-click \
               -e python3-configobj \
               -e python3-cram \
