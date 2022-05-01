@@ -127,6 +127,8 @@ jobs:
               -e twine \
             | xargs apt install -y
       - uses: actions/checkout@v2
+      - name: Workaround for https://github.com/actions/checkout/pull/762 not persisting
+        run: git config --global --add safe.directory "$PWD"
       - name: Install remaining dependencies
         run: make venv-system-site-packages
       - name: flake8
