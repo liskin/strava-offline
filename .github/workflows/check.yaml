@@ -154,3 +154,12 @@ jobs:
           run: make test
       - name: readme
         run: make readme
+
+  workflow-keepalive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Re-enable workflow
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api -X PUT repos/${{ github.repository }}/actions/workflows/check.yaml/enable
