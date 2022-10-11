@@ -156,6 +156,7 @@ jobs:
         run: make readme
 
   workflow-keepalive:
+    if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
     steps:
       - name: Re-enable workflow
