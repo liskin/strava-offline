@@ -1,7 +1,10 @@
-# isort: skip_file
-from pkg_resources import get_distribution, DistributionNotFound
 try:
-    __version__ = get_distribution(__name__).version
-except DistributionNotFound:
+    from importlib.metadata import version, PackageNotFoundError  # type: ignore # isort: skip
+except ImportError:
+    from importlib_metadata import version, PackageNotFoundError  # type: ignore # isort: skip
+
+try:
+    __version__ = version(__name__)
+except PackageNotFoundError:
     # package is not installed
     pass
