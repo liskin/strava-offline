@@ -8,8 +8,8 @@ VENV_SYSTEM_SITE_PACKAGES = $(VENV)/.venv-system-site-packages
 VENV_USE_SYSTEM_SITE_PACKAGES = $(wildcard $(VENV_SYSTEM_SITE_PACKAGES))
 
 .PHONY: venv-system-site-packages
-venv-system-site-packages: override VENV_USE_SYSTEM_SITE_PACKAGES := 1
-venv-system-site-packages: $(VENV_DONE)
+venv-system-site-packages:
+	$(MAKE) VENV_USE_SYSTEM_SITE_PACKAGES=1 venv
 
 .PHONY: venv
 venv: $(VENV_DONE)
@@ -95,8 +95,11 @@ define VENV_CREATE_SYSTEM_SITE_PACKAGES
 endef
 
 # workaround for https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1003252 and/or https://github.com/pypa/pip/issues/6264
-ifdef VENV_USE_SYSTEM_SITE_PACKAGES
+ifneq ($(VENV_USE_SYSTEM_SITE_PACKAGES),)
+ifneq ($(shell test -f /etc/debian_version && python3 -c 'import sys; exit(not(sys.version_info < (3, 10)))' && echo x),)
+$(info XXX: using SETUPTOOLS_USE_DISTUTILS=stdlib workaround)
 $(VENV_DONE): export SETUPTOOLS_USE_DISTUTILS := stdlib
+endif
 endif
 
 $(VENV_DONE): $(MAKEFILE_LIST) setup.py setup.cfg pyproject.toml
