@@ -7,6 +7,11 @@ VENV_PIP_INSTALL = '.[dev, test]'
 VENV_SYSTEM_SITE_PACKAGES = $(VENV)/.venv-system-site-packages
 VENV_USE_SYSTEM_SITE_PACKAGES = $(wildcard $(VENV_SYSTEM_SITE_PACKAGES))
 
+VENV_WHEEL = .venv-wheel
+VENV_WHEEL_PYTHON = $(VENV_WHEEL)/bin/python
+
+PACKAGE = $(eval PACKAGE := $$(subst -,_,$$(shell python3 -c 'import setuptools; setuptools.setup()' --name)))$(PACKAGE)
+
 .PHONY: venv-system-site-packages
 venv-system-site-packages:
 	$(MAKE) VENV_USE_SYSTEM_SITE_PACKAGES=1 venv
@@ -81,6 +86,13 @@ ipython: $(VENV_DONE)
 .PHONY: clean
 clean:
 	git clean -ffdX
+
+.PHONY: check-wheel
+check-wheel: dist
+	$(PYTHON) -m venv --clear --without-pip $(VENV_WHEEL)
+	cd $(VENV_WHEEL) && $(PYTHON) -m pip --isolated download pip
+	set -- $(VENV_WHEEL)/pip-*-py3-none-any.whl && $(VENV_WHEEL_PYTHON) $$1/pip install dist/$(PACKAGE)-*.whl
+	$(VENV_WHEEL_PYTHON) -m $(PACKAGE) --help
 
 define VENV_CREATE
 	$(PYTHON) -m venv $(VENV)

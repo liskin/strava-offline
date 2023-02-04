@@ -74,33 +74,8 @@ jobs:
           run: make test
       - name: readme
         run: make readme
-
-  check-wheel:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Get pip cache dir
-        id: pip-cache
-        run: |
-          echo "dir=$(pip cache dir)" >> $GITHUB_OUTPUT
-      - name: Persistent Github pip cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.pip-cache.outputs.dir }}
-          key: pip-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('pyproject.toml', 'setup.cfg', 'setup.py', 'Makefile') }}
-          restore-keys: |
-            pip-${{ runner.os }}-${{ matrix.python-version }}-
-            pip-${{ runner.os }}-
-      - name: Build wheel
-        run: make dist
-      - name: Install & run wheel
-        run: |
-          set -ex
-          PIP_WHEEL=(/usr/share/python-wheels/pip-*-py3-none-any.whl)
-          python3 -m venv --without-pip .venv-wheel
-          .venv-wheel/bin/python "$PIP_WHEEL"/pip install "$PIP_WHEEL"
-          .venv-wheel/bin/python -m pip install dist/strava_offline-*-py3-none-any.whl
-          .venv-wheel/bin/strava-offline --help
+      - name: check-wheel
+        run: make check-wheel
 
   check-distro:
     runs-on: ubuntu-latest
