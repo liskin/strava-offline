@@ -1,10 +1,10 @@
 try:
-    from importlib.metadata import version, PackageNotFoundError  # type: ignore # isort: skip
+    import importlib.metadata as importlib_metadata  # type: ignore # isort: skip
 except ImportError:
-    from importlib_metadata import version, PackageNotFoundError  # type: ignore # isort: skip
+    import importlib_metadata  # type: ignore # isort: skip
 
 try:
-    __version__ = version(__name__)
-except PackageNotFoundError:
+    __version__ = importlib_metadata.version(__name__)
+except importlib_metadata.PackageNotFoundError:
     # package is not installed
     pass
