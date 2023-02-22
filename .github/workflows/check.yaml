@@ -110,6 +110,7 @@ jobs:
               -e python3-configobj \
               -e python3-cram \
               -e python3-flake8 \
+              -e python3-importlib-metadata \
               -e python3-isort \
               -e python3-multidict \
               -e python3-mypy \
