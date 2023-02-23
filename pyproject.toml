@@ -1,12 +1,80 @@
 [build-system]
 requires = [
-    "setuptools >= 42",
-    "setuptools_scm[toml] >= 3.4",
-    "wheel",
+    "setuptools >= 64.0",
+    "setuptools_scm[toml] >= 6.2",
 ]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "strava-offline"
+dynamic = ["version"]
+authors = [{name = "Tomáš Janoušek", email = "tomi@nomi.cz"}]
+license = {text = "MIT"}
+description = "Leep a local mirror of Strava activities for further analysis/processing"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Database",
+    "Topic :: Utilities",
+]
+urls = {Homepage = "https://github.com/liskin/strava-offline"}
+requires-python = "~= 3.7"
+dependencies = [
+    "PyYAML",
+    "bottle",
+    "click ~= 8.0",
+    "click-config-file",
+    "click-option-group",
+    "importlib-metadata; python_version<'3.10'",
+    "platformdirs >= 2.1",
+    "requests",
+    "requests_oauthlib",
+    "tabulate",
+    "typing-extensions", # python 3.7 compat
+]
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[project.optional-dependencies]
+dev = [
+    "build >= 0.7",
+    "cram",
+    "flake8",
+    "isort >= 5.0",
+    "mypy >= 0.900",
+    "pyflakes >= 2.2.0",
+    "twine",
+    "types-PyYAML",
+    "types-requests",
+    "types-tabulate",
+]
+test = [
+    "pytest",
+    "pytest-recording",
+    "vcrpy >= 2.1.0",
+]
+
+[project.scripts]
+strava-offline = "strava_offline.cli:cli"
+
 [tool.setuptools_scm]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+namespaces = false
+
+[tool.mypy]
+python_executable = ".venv/bin/python3"
+show_error_codes = true
 
 [tool.isort]
 profile = "open_stack"

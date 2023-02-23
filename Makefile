@@ -10,7 +10,7 @@ VENV_USE_SYSTEM_SITE_PACKAGES = $(wildcard $(VENV_SYSTEM_SITE_PACKAGES))
 VENV_WHEEL = .venv-wheel
 VENV_WHEEL_PYTHON = $(VENV_WHEEL)/bin/python
 
-PACKAGE = $(eval PACKAGE := $$(subst -,_,$$(shell python3 -c 'import setuptools; setuptools.setup()' --name)))$(PACKAGE)
+PACKAGE := $(shell sed -ne '/^name / { y/-/_/; s/^.*=\s*"\(.*\)"/\1/p }' pyproject.toml)
 
 .PHONY: venv-system-site-packages
 venv-system-site-packages:
@@ -101,6 +101,7 @@ endef
 define VENV_CREATE_SYSTEM_SITE_PACKAGES
 	$(PYTHON) -m venv --system-site-packages --without-pip $(VENV)
 	$(VENV_PYTHON) -m pip --version || $(PYTHON) -m venv --system-site-packages $(VENV)
+	$(VENV_PYTHON) -m pip install 'pip >= 22.3' # PEP-660 (editable without setup.py)
 	touch $(VENV_SYSTEM_SITE_PACKAGES)
 endef
 
@@ -112,7 +113,7 @@ $(VENV_DONE): export SETUPTOOLS_USE_DISTUTILS := stdlib
 endif
 endif
 
-$(VENV_DONE): $(MAKEFILE_LIST) setup.py setup.cfg pyproject.toml
+$(VENV_DONE): $(MAKEFILE_LIST) pyproject.toml
 	$(if $(VENV_USE_SYSTEM_SITE_PACKAGES),$(VENV_CREATE_SYSTEM_SITE_PACKAGES),$(VENV_CREATE))
 	$(VENV_PYTHON) -m pip install -e $(VENV_PIP_INSTALL)
 	touch $@
