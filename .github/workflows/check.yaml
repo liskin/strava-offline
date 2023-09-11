@@ -27,7 +27,7 @@ jobs:
           - '3.11'
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
         id: setup-python
         uses: actions/setup-python@v4
@@ -131,7 +131,7 @@ jobs:
               -e python3-yarl \
               -e twine \
             | xargs apt install -y
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Workaround for https://github.com/actions/checkout/pull/762 not persisting
         run: git config --global --add safe.directory "$PWD"
       - name: Install remaining dependencies
