@@ -16,7 +16,6 @@ classifiers = [
     "Environment :: Console",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -25,7 +24,7 @@ classifiers = [
     "Topic :: Utilities",
 ]
 urls = {Homepage = "https://github.com/liskin/strava-offline"}
-requires-python = "~= 3.7"
+requires-python = "~= 3.8"
 dependencies = [
     "PyYAML",
     "bottle",
@@ -37,7 +36,7 @@ dependencies = [
     "requests",
     "requests_oauthlib",
     "tabulate",
-    "typing-extensions", # python 3.7 compat
+    "typing-extensions",
 ]
 
 [project.readme]
