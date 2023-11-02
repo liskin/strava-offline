@@ -32,10 +32,10 @@ def link_backup_activities(
         backup = find_gpx(dir_activities_backup, activity_id) or find_gpx(dir_activities_backup, upload_id)
         if backup:
             link = Path(dir_activities, str(activity_id) + "".join(backup.suffixes))
-            if hasattr(backup, 'link_to'):
-                backup.link_to(link)  # type: ignore [attr-defined]
+            if hasattr(backup, 'hardlink_to'):
+                link.hardlink_to(backup)  # type: ignore [attr-defined]
             else:
-                os.link(backup, link)  # python 3.7 compat
+                os.link(backup, link)  # python 3.9 compat
 
 
 def download_gpx(strava: StravaWeb, activity_id: int, path: Path) -> None:
