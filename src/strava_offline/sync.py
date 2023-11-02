@@ -33,7 +33,9 @@ table_activity = sqlite.Table(
         'total_elevation_gain': "REAL",
         'gear_id': "TEXT",
         'type': "TEXT",
+        'sport_type': "TEXT",
         'commute': "BOOLEAN",
+        'trainer': "BOOLEAN",
         'has_location_data': "BOOLEAN",
     },
     from_dict=lambda activity: {
@@ -47,7 +49,9 @@ table_activity = sqlite.Table(
         'total_elevation_gain': activity['total_elevation_gain'],
         'gear_id': activity['gear_id'],
         'type': activity['type'],
+        'sport_type': activity.get('sport_type'),
         'commute': activity['commute'],
+        'trainer': activity['trainer'],
         'has_location_data': isinstance(activity['start_latlng'], list) and len(activity['start_latlng']) >= 2,
     },
 )
@@ -55,7 +59,7 @@ table_activity = sqlite.Table(
 schema = sqlite.Schema(
     # Version of database schema. Bump this whenever the schema changes,
     # tables will be recreated using the stored json data and the new schema.
-    version=3,
+    version=4,
 
     tables=[
         table_bike,
