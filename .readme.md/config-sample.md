@@ -1,0 +1,1 @@
+    $ strava-offline --config-sample

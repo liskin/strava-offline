@@ -1,0 +1,161 @@
+name: Check
+
+on:
+  pull_request:
+  push:
+  workflow_dispatch:
+  schedule:
+    # Re-test every month
+    - cron: '0 2 1 * *'
+
+env:
+  # more verbosity to make it easier to understand failures
+  PYTEST_FLAGS: -v --log-level=DEBUG
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - '3.8'
+          - '3.9'
+          - '3.10'
+          - '3.11'
+          - '3.12'
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        id: setup-python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Get pip cache dir
+        id: pip-cache
+        run: |
+          echo "dir=$(pip cache dir)" >> $GITHUB_OUTPUT
+      - name: Persistent Github pip cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key: pip-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('pyproject.toml', 'setup.cfg', 'setup.py', 'Makefile') }}
+          restore-keys: |
+            pip-${{ runner.os }}-${{ matrix.python-version }}-
+            pip-${{ runner.os }}-
+      - name: Persistent Github venv cache
+        uses: actions/cache@v3
+        with:
+          path: .venv/
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('pyproject.toml', 'setup.cfg', 'setup.py', 'Makefile') }}
+      - name: Install dependencies
+        run: make venv
+      - name: flake8
+        uses: liskin/gh-problem-matcher-wrap@v2
+        with:
+          linters: flake8
+          run: make lint-flake8
+      - name: mypy
+        uses: liskin/gh-problem-matcher-wrap@v2
+        with:
+          linters: mypy
+          run: make lint-mypy
+      - name: isort
+        uses: liskin/gh-problem-matcher-wrap@v2
+        with:
+          linters: isort
+          run: make lint-isort
+      - name: pytest
+        uses: liskin/gh-problem-matcher-wrap@v2
+        with:
+          linters: pytest
+          run: make test
+      - name: readme
+        run: make readme
+      - name: check-wheel
+        run: make check-wheel
+
+  check-distro:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - 'debian:unstable'
+          - 'debian:testing'
+          - 'debian:stable'
+          - 'debian:oldstable'
+          - 'ubuntu:devel'
+          - 'ubuntu:rolling'
+          - 'ubuntu:latest'
+
+    container: ${{ matrix.image }}
+
+    steps:
+      - name: Install dependencies via apt
+        run: |
+          set -ex
+          export DEBIAN_FRONTEND=noninteractive
+          apt update
+          apt-cache --generate pkgnames \
+            | grep --line-regexp --fixed-strings \
+              -e git \
+              -e python3-build \
+              -e python3-click \
+              -e python3-configobj \
+              -e python3-cram \
+              -e python3-flake8 \
+              -e python3-importlib-metadata \
+              -e python3-isort \
+              -e python3-mypy \
+              -e python3-pip \
+              -e python3-pip-whl \
+              -e python3-platformdirs \
+              -e python3-pytest \
+              -e python3-typeshed \
+              -e python3-venv \
+              -e python3-yaml \
+              -e twine \
+            | xargs apt install -y
+      - uses: actions/checkout@v4
+      - name: Workaround for https://github.com/actions/checkout/pull/762 not persisting
+        run: git config --global --add safe.directory "$PWD"
+      - name: Install remaining dependencies
+        run: make venv-system-site-packages
+      - name: flake8
+        uses: liskin/gh-problem-matcher-wrap@v2
+        with:
+          linters: flake8
+          run: make lint-flake8
+      - name: mypy
+        uses: liskin/gh-problem-matcher-wrap@v2
+        with:
+          linters: mypy
+          run: make lint-mypy
+      - name: isort
+        uses: liskin/gh-problem-matcher-wrap@v2
+        with:
+          linters: isort
+          run: make lint-isort
+      - name: pytest
+        uses: liskin/gh-problem-matcher-wrap@v2
+        with:
+          linters: pytest
+          run: make test
+      - name: readme
+        run: make readme
+      - name: check-wheel
+        run: make check-wheel
+
+  workflow-keepalive:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Re-enable workflow
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api -X PUT repos/${{ github.repository }}/actions/workflows/check.yaml/enable
