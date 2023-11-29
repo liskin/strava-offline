@@ -1,0 +1,11 @@
+{
+    "_template": "../cookiecutter-python-cli",
+    "author_email": "tomi@nomi.cz",
+    "author_github": "liskin",
+    "author_name": "Tom\u00e1\u0161 Janou\u0161ek",
+    "author_paypal": "lisknisi",
+    "dest_dir": "worktree",
+    "hyphenated": "strava-offline",
+    "name": "strava-offline",
+    "underscored": "strava_offline"
+}

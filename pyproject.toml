@@ -7,11 +7,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "strava-offline"
-dynamic = ["version"]
+description = "Keep a local mirror of Strava activities for further analysis/processing"
 authors = [{name = "Tomáš Janoušek", email = "tomi@nomi.cz"}]
 license = {text = "MIT"}
-description = "Leep a local mirror of Strava activities for further analysis/processing"
-classifiers = [
+readme = {file="README.md", content-type="text/markdown"}
+dynamic = ["version"]
+classifiers = [ # https://pypi.org/classifiers/
     "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
     "License :: OSI Approved :: MIT License",
@@ -39,10 +40,6 @@ dependencies = [
     "tabulate",
     "typing-extensions",
 ]
-
-[project.readme]
-file = "README.md"
-content-type = "text/markdown"
 
 [project.optional-dependencies]
 dev = [
