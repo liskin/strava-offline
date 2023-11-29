@@ -71,8 +71,8 @@ jobs:
         uses: liskin/gh-problem-matcher-wrap@v2
         with:
           linters: pytest
-          run: make test
-      - name: readme
+          run: make test-pytest
+      - name: cram, readme
         run: make readme
       - name: check-wheel
         run: make check-wheel
@@ -139,8 +139,8 @@ jobs:
         uses: liskin/gh-problem-matcher-wrap@v2
         with:
           linters: pytest
-          run: make test
-      - name: readme
+          run: make test-pytest
+      - name: cram, readme
         run: make readme
       - name: check-wheel
         run: make check-wheel

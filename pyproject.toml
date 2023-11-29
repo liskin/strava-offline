@@ -107,4 +107,7 @@ show_error_codes = true
 [tool.isort]
 profile = "open_stack"
 
+[tool.ruff]
+line-length = 120
+
 # vim:set et:

@@ -92,7 +92,7 @@ pip install strava-offline
 
 ### Mirror activities metadata
 
-<!-- include .readme.md/help-sqlite.md -->
+<!-- include tests/readme/help-sqlite.md -->
     $ strava-offline sqlite --help
     Usage: strava-offline sqlite [OPTIONS]
     
@@ -131,7 +131,7 @@ least once to let strava-offline reuse these downloaded files.
 
 [strava-bulk-export]: https://support.strava.com/hc/en-us/articles/216918437-Exporting-your-Data-and-Bulk-Export#Bulk
 
-<!-- include .readme.md/help-gpx.md -->
+<!-- include tests/readme/help-gpx.md -->
     $ strava-offline gpx --help
     Usage: strava-offline gpx [OPTIONS]
     
@@ -164,7 +164,7 @@ least once to let strava-offline reuse these downloaded files.
 
 ### Reports
 
-<!-- include .readme.md/help-report.md -->
+<!-- include tests/readme/help-report.md -->
     $ strava-offline --help | grep report-
       report-bikes         Show all-time report by bike
       report-yearly        Show yearly report by activity type
@@ -191,7 +191,7 @@ which is located at `~/.config/strava_offline/config.yaml` by default
 
 Sample config file can be generated using the `--config-sample` flag:
 
-<!-- include .readme.md/config-sample.md -->
+<!-- include tests/readme/config-sample.md -->
     $ strava-offline --config-sample
     # Perform full sync instead of incremental
     full: false
