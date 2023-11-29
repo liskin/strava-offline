@@ -37,7 +37,7 @@ pip install strava-offline
 
 ## Usage
 
-<!-- include .readme.md/help.md -->
+<!-- include tests/readme/help.md -->
     $ strava-offline --help
     Usage: strava-offline [OPTIONS]
     
@@ -58,7 +58,7 @@ which is located at `~/.config/strava_offline/config.yaml` by default
 
 Sample config file can be generated using the `--config-sample` flag:
 
-<!-- include .readme.md/config-sample.md -->
+<!-- include tests/readme/config-sample.md -->
     $ strava-offline --config-sample
 <!-- end include -->
 

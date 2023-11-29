@@ -48,26 +48,28 @@ lint-isort: $(VENV_DONE)
 	$(VENV_PYTHON) -m isort --check $(LINT_SOURCES)
 
 .PHONY: test
-test: $(VENV_DONE)
+test: test-pytest test-cram
+
+.PHONY: test-pytest
+test-pytest: $(VENV_DONE)
 	$(VENV_PYTHON) -m pytest $(PYTEST_FLAGS) tests/
 
 .PHONY: readme
 readme: README.md
 	git diff --exit-code $^
 
-CRAM_TARGETS := $(wildcard .readme.md/*.md)
-
-.PHONY: $(CRAM_TARGETS)
-$(CRAM_TARGETS) &: CRAM_INTERACTIVE=$(shell [ -t 0 ] && echo --interactive)
-$(CRAM_TARGETS) &: $(VENV_DONE)
+.PHONY: test-cram
+test-cram: CRAM_INTERACTIVE=$(shell [ -t 0 ] && echo --interactive)
+test-cram: $(VENV_DONE)
 	PATH="$(CURDIR)/$(VENV)/bin:$$PATH" \
 	XDG_DATA_HOME=/home/user/.local/share \
 	XDG_CONFIG_HOME=/home/user/.config \
-	$(VENV_PYTHON) -m cram --indent=4 $(CRAM_INTERACTIVE) $(CRAM_TARGETS)
+	$(VENV_PYTHON) tests/cram-noescape.py --indent=4 --shell=/bin/bash $(CRAM_INTERACTIVE) \
+		$(wildcard tests/*.md tests/*/*.md tests/*/*/*.md)
 
 .PHONY: README.md
-README.md: $(CRAM_TARGETS)
-	.readme.md/include.py < $@ > $@.tmp
+README.md: test-cram
+	tests/include.py < $@ > $@.tmp
 	mv -f $@.tmp $@
 
 .PHONY: dist
