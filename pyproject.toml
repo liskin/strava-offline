@@ -41,7 +41,6 @@ dev = [
     "flake8",
     "isort >= 5.0",
     "mypy >= 0.900",
-    "pyflakes >= 2.2.0",
     "twine",
     "types-PyYAML",
 ]
