@@ -12,6 +12,9 @@ VENV_WHEEL_PYTHON = $(VENV_WHEEL)/bin/python
 
 PACKAGE := $(shell sed -ne '/^name / { y/-/_/; s/^.*=\s*"\(.*\)"/\1/p }' pyproject.toml)
 
+TEMPLATES_DIR = $(HOME)/src
+TEMPLATE := $(shell realpath --relative-to=. $(TEMPLATES_DIR)/cookiecutter-python-cli)
+
 .PHONY: venv-system-site-packages
 venv-system-site-packages:
 	$(MAKE) VENV_USE_SYSTEM_SITE_PACKAGES=1 venv
@@ -88,6 +91,14 @@ ipython: $(VENV_DONE)
 .PHONY: clean
 clean:
 	git clean -ffdX
+
+.PHONY: template-update
+template-update:
+	$(TEMPLATE)/update.sh -t $(TEMPLATE) -p . -b template -i .cookiecutter.json
+
+.PHONY: template-merge
+template-merge: template-update
+	git merge template
 
 .PHONY: check-wheel
 check-wheel: dist
