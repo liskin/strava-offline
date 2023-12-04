@@ -24,7 +24,6 @@ classifiers = [ # https://pypi.org/classifiers/
     "Programming Language :: Python :: 3.12",
     # FIXME: "Topic :: …",
 ]
-urls = {Homepage = "https://github.com/liskin/strava-offline"}
 requires-python = "~= 3.8"
 dependencies = [
     "PyYAML",
@@ -47,6 +46,14 @@ dev = [
 test = [
     "pytest",
 ]
+
+[project.urls]
+"Homepage" = "https://github.com/liskin/strava-offline"
+"Release Notes" = "https://github.com/liskin/strava-offline/releases"
+"Issues" = "https://github.com/liskin/strava-offline/issues"
+"CI" = "https://github.com/liskin/strava-offline/actions"
+"Donations (GitHub)" = "https://github.com/sponsors/liskin"
+"Donations (PayPal)" = "https://www.paypal.me/lisknisi/10EUR"
 
 [project.scripts]
 strava-offline = "strava_offline.cli:cli"
