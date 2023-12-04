@@ -53,27 +53,27 @@ jobs:
       - name: Install dependencies
         run: make venv
       - name: flake8
-        uses: liskin/gh-problem-matcher-wrap@v2
+        uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: flake8
           run: make lint-flake8
       - name: mypy
-        uses: liskin/gh-problem-matcher-wrap@v2
+        uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: mypy
           run: make lint-mypy
       - name: isort
-        uses: liskin/gh-problem-matcher-wrap@v2
+        uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: isort
           run: make lint-isort
       - name: pytest
-        uses: liskin/gh-problem-matcher-wrap@v2
+        uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: pytest
           run: make test-pytest
       - name: cram, readme
-        run: make readme
+        run: make test-cram readme
       - name: check-wheel
         run: make check-wheel
 
@@ -121,22 +121,22 @@ jobs:
       - name: Install remaining dependencies
         run: make venv-system-site-packages
       - name: flake8
-        uses: liskin/gh-problem-matcher-wrap@v2
+        uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: flake8
           run: make lint-flake8
       - name: mypy
-        uses: liskin/gh-problem-matcher-wrap@v2
+        uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: mypy
           run: make lint-mypy
       - name: isort
-        uses: liskin/gh-problem-matcher-wrap@v2
+        uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: isort
           run: make lint-isort
       - name: pytest
-        uses: liskin/gh-problem-matcher-wrap@v2
+        uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: pytest
           run: make test-pytest
