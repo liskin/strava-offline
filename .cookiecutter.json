@@ -1,5 +1,6 @@
 {
     "_dest_dir": "worktree",
+    "_setuptools_scm_root": "",
     "_template": "../cookiecutter-python-cli",
     "_template_name": "cookiecutter-python-cli",
     "author_email": "tomi@nomi.cz",

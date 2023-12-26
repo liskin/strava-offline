@@ -72,8 +72,8 @@ jobs:
         with:
           linters: pytest
           run: make test-pytest
-      - name: cram, readme
-        run: make test-cram readme
+      - name: prysk, readme
+        run: make test-prysk readme
       - name: check-wheel
         run: make check-wheel
 
@@ -140,7 +140,7 @@ jobs:
         with:
           linters: pytest
           run: make test-pytest
-      - name: cram, readme
+      - name: prysk, readme
         run: make readme
       - name: check-wheel
         run: make check-wheel

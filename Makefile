@@ -51,7 +51,7 @@ lint-isort: $(VENV_DONE)
 	$(VENV_PYTHON) -m isort --check $(LINT_SOURCES)
 
 .PHONY: test
-test: test-pytest test-cram
+test: test-pytest test-prysk
 
 .PHONY: test-pytest
 test-pytest: $(VENV_DONE)
@@ -61,17 +61,17 @@ test-pytest: $(VENV_DONE)
 readme: README.md
 	git diff --exit-code $^
 
-.PHONY: test-cram
-test-cram: CRAM_INTERACTIVE=$(shell [ -t 0 ] && echo --interactive)
-test-cram: $(VENV_DONE)
+.PHONY: test-prysk
+test-prysk: PRYSK_INTERACTIVE=$(shell [ -t 0 ] && echo --interactive)
+test-prysk: $(VENV_DONE)
 	PATH="$(CURDIR)/$(VENV)/bin:$$PATH" \
 	XDG_DATA_HOME=/home/user/.local/share \
 	XDG_CONFIG_HOME=/home/user/.config \
-	$(VENV_PYTHON) tests/cram-noescape.py --indent=4 --shell=/bin/bash $(CRAM_INTERACTIVE) \
+	$(VENV_PYTHON) tests/prysk-noescape.py --indent=4 --shell=/bin/bash $(PRYSK_INTERACTIVE) \
 		$(wildcard tests/*.md tests/*/*.md tests/*/*/*.md)
 
 .PHONY: README.md
-README.md: test-cram
+README.md: test-prysk
 	tests/include.py < $@ > $@.tmp
 	mv -f $@.tmp $@
 
