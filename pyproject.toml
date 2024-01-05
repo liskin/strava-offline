@@ -1,14 +1,118 @@
 [build-system]
 requires = [
-    "setuptools >= 42",
-    "setuptools_scm[toml] >= 3.4",
-    "wheel",
+    "setuptools >= 64.0",
+    "setuptools_scm[toml] >= 6.2",
 ]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "strava-offline"
+description = "Keep a local mirror of Strava activities for further analysis/processing"
+authors = [{name = "Tomáš Janoušek", email = "tomi@nomi.cz"}]
+license = {text = "MIT"}
+readme = {file="README.md", content-type="text/markdown"}
+dynamic = ["version"]
+classifiers = [ # https://pypi.org/classifiers/
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Database",
+    "Topic :: Utilities",
+]
+requires-python = "~= 3.8"
+dependencies = [
+    "PyYAML",
+    "bottle",
+    "click ~= 8.0",
+    "click-config-file",
+    "click-option-group",
+    "importlib-metadata; python_version<'3.10'",
+    "platformdirs >= 2.1",
+    "requests",
+    "requests_oauthlib",
+    "tabulate",
+    "typing-extensions",
+]
+
+[project.optional-dependencies]
+dev = [
+    "build >= 0.7",
+    "flake8",
+    "isort >= 5.0",
+    "mypy >= 0.900",
+    "prysk == 0.16.0",
+    "twine",
+    "types-PyYAML",
+    "types-requests",
+    "types-tabulate",
+]
+test = [
+    "pytest",
+    "pytest-recording",
+    "vcrpy >= 4.3.1",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/liskin/strava-offline"
+"Release Notes" = "https://github.com/liskin/strava-offline/releases"
+"Issues" = "https://github.com/liskin/strava-offline/issues"
+"CI" = "https://github.com/liskin/strava-offline/actions"
+"Donations (GitHub)" = "https://github.com/sponsors/liskin"
+"Donations (PayPal)" = "https://www.paypal.me/lisknisi/10EUR"
+
+[project.scripts]
+strava-offline = "strava_offline.cli:cli"
+
+[tool.gha-check-distro]
+dependencies-apt = [
+    "python3-bottle",
+    "python3-build",
+    "python3-click",
+    "python3-click-option-group",
+    "python3-configobj",
+    "python3-flake8",
+    "python3-importlib-metadata",
+    "python3-isort",
+    "python3-multidict",
+    "python3-mypy",
+    "python3-pep517",
+    "python3-pip",
+    "python3-pip-whl",
+    "python3-platformdirs",
+    "python3-pytest",
+    "python3-requests",
+    "python3-requests-oauthlib",
+    "python3-tabulate",
+    "python3-typeshed",
+    "python3-typing-extensions",
+    "python3-ujson",
+    "python3-vcr",
+    "python3-venv",
+    "python3-yaml",
+    "python3-yarl",
+    "twine",
+]
+
 [tool.setuptools_scm]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+namespaces = false
+
+[tool.mypy]
+python_executable = ".venv/bin/python3"
+show_error_codes = true
 
 [tool.isort]
 profile = "open_stack"
+
+[tool.ruff]
+line-length = 120
 
 # vim:set et:

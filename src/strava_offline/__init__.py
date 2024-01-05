@@ -1,7 +1,14 @@
-# isort: skip_file
-from pkg_resources import get_distribution, DistributionNotFound
+# type: ignore
+
+import sys
+
+if sys.version_info >= (3, 10):
+    import importlib.metadata as importlib_metadata  # isort: skip
+else:
+    import importlib_metadata  # isort: skip
+
 try:
-    __version__ = get_distribution(__name__).version
-except DistributionNotFound:
+    __version__ = importlib_metadata.version(__name__)
+except importlib_metadata.PackageNotFoundError:
     # package is not installed
     pass

@@ -1,9 +1,0 @@
-#!bash
-
-# get from https://www.strava.com/settings/api
-export STRAVA_CLIENT_ID=…
-export STRAVA_CLIENT_SECRET=…
-
-# get using https://developers.google.com/web/tools/chrome-devtools or
-# https://developer.mozilla.org/en-US/docs/Tools from any request to Strava web
-export STRAVA_COOKIE_STRAVA4_SESSION=…
