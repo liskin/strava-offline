@@ -38,7 +38,7 @@ jobs:
         run: |
           echo "dir=$(pip cache dir)" >> $GITHUB_OUTPUT
       - name: Persistent Github pip cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ steps.pip-cache.outputs.dir }}
           key: pip-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('pyproject.toml', 'setup.cfg', 'setup.py', 'Makefile') }}
@@ -46,7 +46,7 @@ jobs:
             pip-${{ runner.os }}-${{ matrix.python-version }}-
             pip-${{ runner.os }}-
       - name: Persistent Github venv cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: .venv/
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('pyproject.toml', 'setup.cfg', 'setup.py', 'Makefile') }}
