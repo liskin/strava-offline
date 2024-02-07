@@ -116,6 +116,21 @@ jobs:
           apt-cache --generate pkgnames \
             | grep --line-regexp --fixed-strings "$deps" \
             | xargs apt install -y
+      - name: Workaround for https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1057968
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        shell: bash
+        run: |
+          set -ex
+          grep "Suites: testing" /etc/apt/sources.list.d/debian.sources || exit 0
+          python3_pycodestyle=$(dpkg-query --showformat='${Version}\n' --show python3-pycodestyle)
+          python3_flake8=$(dpkg-query --showformat='${Version}\n' --show python3-flake8)
+          if [[ $python3_pycodestyle == 2.11.* && $python3_flake8 == 5.* ]]; then
+            echo 'deb https://deb.debian.org/debian unstable main' >/etc/apt/sources.list.d/debian-unstable.list
+            echo 'APT::Default-Release "testing";' >/etc/apt/apt.conf.d/debian-release
+            apt update
+            apt install -t unstable -y python3-flake8
+          fi
       - name: Workaround for https://github.com/actions/checkout/pull/762 not persisting
         run: git config --global --add safe.directory "$PWD"
       - name: Install remaining dependencies
