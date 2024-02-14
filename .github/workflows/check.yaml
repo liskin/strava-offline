@@ -122,12 +122,14 @@ jobs:
         shell: bash
         run: |
           set -ex
-          grep "Suites: testing" /etc/apt/sources.list.d/debian.sources || exit 0
+          grep " noble " /etc/apt/sources.list || exit 0
+          apt install -y debian-archive-keyring
+          ln -s /usr/share/keyrings/debian-archive-keyring.gpg /etc/apt/trusted.gpg.d/
           python3_pycodestyle=$(dpkg-query --showformat='${Version}\n' --show python3-pycodestyle)
           python3_flake8=$(dpkg-query --showformat='${Version}\n' --show python3-flake8)
           if [[ $python3_pycodestyle == 2.11.* && $python3_flake8 == 5.* ]]; then
             echo 'deb https://deb.debian.org/debian unstable main' >/etc/apt/sources.list.d/debian-unstable.list
-            echo 'APT::Default-Release "testing";' >/etc/apt/apt.conf.d/debian-release
+            echo 'APT::Default-Release "noble";' >/etc/apt/apt.conf.d/debian-release
             apt update
             apt install -t unstable -y python3-flake8
           fi
