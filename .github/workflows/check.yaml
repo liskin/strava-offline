@@ -122,7 +122,7 @@ jobs:
         shell: bash
         run: |
           set -ex
-          grep " noble " /etc/apt/sources.list || exit 0
+          grep "Suites: noble" /etc/apt/sources.list.d/ubuntu.sources || exit 0
           apt install -y debian-archive-keyring
           ln -s /usr/share/keyrings/debian-archive-keyring.gpg /etc/apt/trusted.gpg.d/
           python3_pycodestyle=$(dpkg-query --showformat='${Version}\n' --show python3-pycodestyle)
