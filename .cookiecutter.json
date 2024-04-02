@@ -1,5 +1,11 @@
 {
+    "_checkout": null,
     "_dest_dir": "worktree",
+    "_extensions": [
+        "jinja2.ext.do"
+    ],
+    "_output_dir": "",
+    "_repo_dir": "../cookiecutter-python-cli",
     "_setuptools_scm_root": "",
     "_template": "../cookiecutter-python-cli",
     "_template_name": "cookiecutter-python-cli",
