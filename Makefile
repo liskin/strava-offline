@@ -67,7 +67,7 @@ test-prysk: $(VENV_DONE)
 	PATH="$(CURDIR)/$(VENV)/bin:$$PATH" \
 	XDG_DATA_HOME=/home/user/.local/share \
 	XDG_CONFIG_HOME=/home/user/.config \
-	$(VENV_PYTHON) tests/prysk-noescape.py --indent=4 --shell=/bin/bash $(PRYSK_INTERACTIVE) \
+	$(VENV_PYTHON) -m prysk --indent=4 --shell=/bin/bash $(PRYSK_INTERACTIVE) \
 		$(wildcard tests/*.md tests/*/*.md tests/*/*/*.md)
 
 .PHONY: README.md
