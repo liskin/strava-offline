@@ -120,7 +120,7 @@ pip install strava-offline
       --config FILE           Read configuration from FILE.  [default:
                               /home/user/.config/strava_offline/config.yaml]
       --help                  Show this message and exit.
-<!-- end include -->
+<!-- end include tests/readme/help.md -->
 
 ### Mirror activities as GPX
 
@@ -160,7 +160,7 @@ least once to let strava-offline reuse these downloaded files.
       --config FILE                   Read configuration from FILE.  [default: /ho
                                       me/user/.config/strava_offline/config.yaml]
       --help                          Show this message and exit.
-<!-- end include -->
+<!-- end include tests/readme/help-gpx.md -->
 
 ### Reports
 
@@ -169,7 +169,7 @@ least once to let strava-offline reuse these downloaded files.
       report-bikes         Show all-time report by bike
       report-yearly        Show yearly report by activity type
       report-yearly-bikes  Show yearly report by bike
-<!-- end include -->
+<!-- end include tests/readme/help-report.md -->
 
 ```
 $ strava-offline report-yearly 2020
@@ -225,7 +225,7 @@ Sample config file can be generated using the `--config-sample` flag:
     
     # '_strava4_session' cookie value
     strava_cookie_strava4_session: TEXT
-<!-- end include -->
+<!-- end include tests/readme/config-sample.md -->
 
 ### Note about incremental synchronization
 
@@ -243,7 +243,26 @@ API supports webhooks so that a service can subscribe to be notified of new
 activities and changes to existing activities, but `strava-offline` is not a
 web service, it's a local tool, so it can't do that.)
 
-## Donations (♥ = €)
+## Contributing
+
+### Code
+
+We welcome bug fixes, (reasonable) new features, documentation improvements,
+and more. Submit these as GitHub pull requests. Use GitHub issues to report
+bugs and discuss non-trivial code improvements; alternatively, get in touch
+via [IRC/Matrix/Fediverse](https://work.lisk.in/contact/).
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for more details about the code base
+(including running tests locally).
+
+Note that this project was born out of a desire to solve a problem I was
+facing. While I'm excited to share it with the world, keep in mind that I'll
+be prioritizing features and bug fixes that align with my personal use cases.
+There may be times when I'm busy with other commitments and replies to
+contributions might be delayed, or even occasionally missed. Progress may come
+in bursts. Adjust your expectations accordingly.
+
+### Donations (♥ = €)
 
 If you like this tool and wish to support its development and maintenance,
 please consider [a small donation](https://www.paypal.me/lisknisi/10EUR) or

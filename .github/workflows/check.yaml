@@ -133,7 +133,7 @@ jobs:
             apt update
             apt install -t unstable -y python3-flake8
           fi
-      - name: Workaround for https://github.com/actions/checkout/pull/762 not persisting
+      - name: Workaround for https://github.com/actions/checkout/issues/1169
         run: git config --global --add safe.directory "$PWD"
       - name: Install remaining dependencies
         run: make venv-system-site-packages
