@@ -13,7 +13,7 @@ jobs:
     name: Build distribution 📦
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0  # needed for pre-releases
       - name: Set up Python
