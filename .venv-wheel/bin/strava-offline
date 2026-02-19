@@ -1,6 +1,0 @@
-#!/home/runner/work/strava-offline/strava-offline/.venv-wheel/bin/python
-import sys
-from strava_offline.cli import cli
-if __name__ == '__main__':
-    sys.argv[0] = sys.argv[0].removesuffix('.exe')
-    sys.exit(cli())

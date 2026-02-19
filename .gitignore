@@ -2,6 +2,7 @@
 *.md.err
 /.*_cache/
 /.venv/
+/.venv-wheel/
 /build/
 /dist/
 __pycache__/
