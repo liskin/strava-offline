@@ -41,7 +41,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ steps.pip-cache.outputs.dir }}
-          key: pip-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('pyproject.toml', 'setup.cfg', 'setup.py', 'Makefile') }}
+          key: pip-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('pyproject.toml', 'setup.cfg', 'setup.py', 'Justfile') }}
           restore-keys: |
             pip-${{ runner.os }}-${{ matrix.python-version }}-
             pip-${{ runner.os }}-
@@ -49,33 +49,35 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .venv/
-          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('pyproject.toml', 'setup.cfg', 'setup.py', 'Makefile') }}
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('pyproject.toml', 'setup.cfg', 'setup.py', 'Justfile') }}
+      - name: Install Just
+        uses: extractions/setup-just@v2
       - name: Install dependencies
-        run: make venv
+        run: just venv
       - name: flake8
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: flake8
-          run: make lint-flake8
+          run: just lint-flake8
       - name: mypy
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: mypy
-          run: make lint-mypy
+          run: just lint-mypy
       - name: isort
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: isort
-          run: make lint-isort
+          run: just lint-isort
       - name: pytest
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: pytest
-          run: make test-pytest
+          run: just test-pytest
       - name: prysk, readme
-        run: make test-prysk readme
+        run: just test-prysk readme
       - name: check-wheel
-        run: make check-wheel
+        run: just check-wheel
 
   check-distro:
     runs-on: ubuntu-latest
@@ -135,32 +137,34 @@ jobs:
           fi
       - name: Workaround for https://github.com/actions/checkout/issues/1169
         run: git config --global --add safe.directory "$PWD"
+      - name: Install Just
+        uses: extractions/setup-just@v2
       - name: Install remaining dependencies
-        run: make venv-system-site-packages
+        run: just venv-system-site-packages
       - name: flake8
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: flake8
-          run: make lint-flake8
+          run: just lint-flake8
       - name: mypy
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: mypy
-          run: make lint-mypy
+          run: just lint-mypy
       - name: isort
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: isort
-          run: make lint-isort
+          run: just lint-isort
       - name: pytest
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: pytest
-          run: make test-pytest
+          run: just test-pytest
       - name: prysk, readme
-        run: make readme
+        run: just readme
       - name: check-wheel
-        run: make check-wheel
+        run: just check-wheel
 
   workflow-keepalive:
     if: github.event_name == 'schedule'

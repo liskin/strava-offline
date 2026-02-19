@@ -35,7 +35,7 @@ To keep a local git clone around:
 
 ```
 git clone https://github.com/liskin/strava-offline
-make -C strava-offline pipx
+just -d strava-offline pipx
 ```
 
 Alternatively, if you don't need the isolated virtualenv that [pipx][]

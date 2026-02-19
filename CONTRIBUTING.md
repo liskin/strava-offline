@@ -8,52 +8,52 @@ Obtain the source code:
 
 Setup Python virtual env and install missing dependencies:
 
-    $ make
+    $ just
 
 Make changes using your preferred editor.
 
 Then invoke lints, tests, …:
 
-    $ make check
+    $ just check
 
 These checks are also invoked in [CI (GitHub Actions)][ci] (against multiple
 Python versions and also using different Linux distributions Python packages)
 whenever a branch is pushed or a pull request is opened. You may need to
 enable Actions in your fork's settings.
 
-Other common tasks are available in the [Makefile](Makefile):
+Other common tasks are available in the [Justfile](Justfile):
 
 <!-- include tests/readme/make-help.md -->
 <!--
     $ cd "$TESTDIR"/../..
 
-    $ function make {
-    >   command make --no-print-directory COLUMNS=120 "$@" 2>/dev/null
+    $ function just {
+    >   command just --list --list-heading '' --list-prefix '' 2>/dev/null | awk '{print $1, substr($0, index($0, "#"))}'
     > }
 -->
 
-    $ make help
-    venv-system-site-packages: Setup ./.venv/ (--system-site-packages)
-    venv: Setup ./.venv/
-    pipx: Install locally using pipx
-    pipx-site-packages: Install locally using pipx (--system-site-packages)
-    check: Invoke all checks (lints, tests, readme)
-    lint: Invoke lints
-    lint-flake8:
-    lint-mypy:
-    lint-isort:
-    test: Invoke tests
-    test-pytest:
-    test-prysk:
-    readme: Update usage/examples in *.md and fail if it differs from version control
-    dist: Build distribution artifacts (tar, wheel)
-    twine-upload: Release to PyPI
-    ipython: Invoke IPython in venv (not installed by default)
-    clean: Clean all gitignored files/directories
-    template-update: Re-render cookiecutter template into the template branch
-    template-merge: Re-render cookiecutter template and merge into the current branch
-    check-wheel: Check that the wheel we build works in a completely empty venv (i.e. check for unspecified dependencies)
-    help: Display this help
+    $ just
+    check # Invoke all checks (lints, tests, readme)
+    check-wheel # Check that the wheel we build works in a completely empty venv (i.e. check for unspecified dependencies)
+    clean # Clean all gitignored files/directories
+    dist # Build distribution artifacts (tar, wheel)
+    help # Display this help
+    ipython # Invoke IPython in venv (not installed by default)
+    lint # Invoke lints
+    lint-flake8 # Run flake8
+    lint-isort # Run isort check
+    lint-mypy # Run mypy
+    pipx # Install locally using pipx
+    pipx-site-packages # Install locally using pipx (--system-site-packages)
+    readme # Update usage/examples in *.md and fail if it differs from version control
+    template-merge # Re-render cookiecutter template and merge into the current branch
+    template-update # Re-render cookiecutter template into the template branch
+    test # Invoke tests
+    test-prysk # Run prysk tests
+    test-pytest # Run pytest
+    twine-upload # Release to PyPI
+    venv # Setup ./.venv/
+    venv-system-site-packages # Setup ./.venv/ (--system-site-packages)
 <!-- end include tests/readme/make-help.md -->
 
 [ci]: https://github.com/liskin/strava-offline/actions
