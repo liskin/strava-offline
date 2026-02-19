@@ -141,9 +141,10 @@ template-merge: template-update
 check-wheel: dist
     #!/usr/bin/env bash
     set -euo pipefail
+    cd "{{justfile_directory()}}"
     PACKAGE=$(sed -ne '/^name / { y/-/_/; s/^.*=\s*"\(.*\)"/\1/p }' pyproject.toml)
     {{PYTHON}} -m venv --clear --without-pip {{VENV_WHEEL}}
-    cd {{VENV_WHEEL}} && {{PYTHON}} -m pip --isolated download pip
+    cd {{VENV_WHEEL}} && {{PYTHON}} -m pip --isolated download pip && cd ..
     set -- {{VENV_WHEEL}}/pip-*-py3-none-any.whl
     {{VENV_WHEEL_PYTHON}} "$1/pip" install dist/${PACKAGE}-*.whl
     {{VENV_WHEEL_PYTHON}} -m ${PACKAGE} --help

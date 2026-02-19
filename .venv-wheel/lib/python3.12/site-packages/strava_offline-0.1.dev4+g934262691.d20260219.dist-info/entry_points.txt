@@ -1,0 +1,2 @@
+[console_scripts]
+strava-offline = strava_offline.cli:cli
