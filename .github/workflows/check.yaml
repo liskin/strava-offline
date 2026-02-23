@@ -27,10 +27,10 @@ jobs:
           - '3.14'
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Set up Python ${{ matrix.python-version }}
         id: setup-python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
       - name: Get pip cache dir
@@ -38,7 +38,7 @@ jobs:
         run: |
           echo "dir=$(pip cache dir)" >> $GITHUB_OUTPUT
       - name: Persistent Github pip cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ steps.pip-cache.outputs.dir }}
           key: pip-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('pyproject.toml', 'setup.cfg', 'setup.py', 'Makefile') }}
@@ -46,7 +46,7 @@ jobs:
             pip-${{ runner.os }}-${{ matrix.python-version }}-
             pip-${{ runner.os }}-
       - name: Persistent Github venv cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .venv/
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('pyproject.toml', 'setup.cfg', 'setup.py', 'Makefile') }}
@@ -102,7 +102,7 @@ jobs:
           set -ex
           apt update
           apt install -y git
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Install dependencies via apt
         env:
           DEBIAN_FRONTEND: noninteractive
