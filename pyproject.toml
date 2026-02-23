@@ -17,19 +17,18 @@ classifiers = [ # https://pypi.org/classifiers/
     "Environment :: Console",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     # FIXME: "Topic :: …",
 ]
-requires-python = "~= 3.8"
+requires-python = ">= 3.10"
 dependencies = [
     "PyYAML",
     "click ~= 8.0",
     "click-config-file",
-    "importlib-metadata; python_version<'3.10'",
     "platformdirs >= 2.1",
 ]
 
@@ -60,11 +59,11 @@ strava-offline = "strava_offline.cli:cli"
 
 [tool.gha-check-distro]
 dependencies-apt = [
+    "make",
     "python3-build",
     "python3-click",
     "python3-configobj",
     "python3-flake8",
-    "python3-importlib-metadata",
     "python3-isort",
     "python3-mypy",
     "python3-pip",

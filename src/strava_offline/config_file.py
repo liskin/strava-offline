@@ -71,7 +71,10 @@ def yaml_config_sample(
         elif isinstance(opt.default, pathlib.Path):
             return str(opt.default)
         else:
-            return opt.make_metavar()
+            try:
+                return opt.make_metavar(click.get_current_context())  # type: ignore [call-arg]
+            except TypeError:
+                return opt.make_metavar()  # type: ignore [call-arg]
 
     def sample_yaml(opt: click.Option):
         sample = ""

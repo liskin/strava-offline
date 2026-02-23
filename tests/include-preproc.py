@@ -2,8 +2,6 @@
 
 # orig src: https://github.com/liskin/dotfiles/blob/home/bin/liskin-include-preproc.py
 
-from __future__ import annotations  # python 3.8 compat
-
 from dataclasses import dataclass
 from pathlib import Path
 import re

@@ -20,11 +20,11 @@ jobs:
       fail-fast: false
       matrix:
         python-version:
-          - '3.8'
-          - '3.9'
           - '3.10'
           - '3.11'
           - '3.12'
+          - '3.13'
+          - '3.14'
 
     steps:
       - uses: actions/checkout@v4
@@ -116,23 +116,6 @@ jobs:
           apt-cache --generate pkgnames \
             | grep --line-regexp --fixed-strings "$deps" \
             | xargs apt install -y
-      - name: Workaround for https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1057968
-        env:
-          DEBIAN_FRONTEND: noninteractive
-        shell: bash
-        run: |
-          set -ex
-          grep "Suites: noble" /etc/apt/sources.list.d/ubuntu.sources || exit 0
-          apt install -y debian-archive-keyring
-          ln -s /usr/share/keyrings/debian-archive-keyring.gpg /etc/apt/trusted.gpg.d/
-          python3_pycodestyle=$(dpkg-query --showformat='${Version}\n' --show python3-pycodestyle)
-          python3_flake8=$(dpkg-query --showformat='${Version}\n' --show python3-flake8)
-          if [[ $python3_pycodestyle == 2.11.* && $python3_flake8 == 5.* ]]; then
-            echo 'deb https://deb.debian.org/debian unstable main' >/etc/apt/sources.list.d/debian-unstable.list
-            echo 'APT::Default-Release "noble";' >/etc/apt/apt.conf.d/debian-release
-            apt update
-            apt install -t unstable -y python3-flake8
-          fi
       - name: Workaround for https://github.com/actions/checkout/issues/1169
         run: git config --global --add safe.directory "$PWD"
       - name: Install remaining dependencies
