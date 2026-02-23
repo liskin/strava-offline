@@ -15,13 +15,11 @@ shared = SimpleNamespace()
 @bottle.route("/")
 @bottle.route("/authorize")
 def authorize():
-    global shared
     bottle.redirect(shared.authorization_url)
 
 
 @bottle.route("/code")
 def code():
-    global shared
     shared.queue.put(bottle.request.query.code)
 
     return "OK"
