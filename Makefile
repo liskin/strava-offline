@@ -133,18 +133,8 @@ endef
 
 define VENV_CREATE_SYSTEM_SITE_PACKAGES
 	$(PYTHON) -m venv --system-site-packages --without-pip $(VENV)
-	$(VENV_PYTHON) -m pip --version || $(PYTHON) -m venv --system-site-packages $(VENV)
-	$(VENV_PYTHON) -m pip install 'pip >= 22.3' # PEP-660 (editable without setup.py)
 	touch $(VENV_SYSTEM_SITE_PACKAGES)
 endef
-
-# workaround for https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1003252 and/or https://github.com/pypa/pip/issues/6264
-ifneq ($(VENV_USE_SYSTEM_SITE_PACKAGES),)
-ifneq ($(shell test -f /etc/debian_version && python3 -c 'import sys; exit(not(sys.version_info < (3, 10)))' && echo x),)
-$(warning XXX: using SETUPTOOLS_USE_DISTUTILS=stdlib workaround)
-$(VENV_DONE): export SETUPTOOLS_USE_DISTUTILS := stdlib
-endif
-endif
 
 $(VENV_DONE): $(MAKEFILE_LIST) pyproject.toml
 	$(if $(VENV_USE_SYSTEM_SITE_PACKAGES),$(VENV_CREATE_SYSTEM_SITE_PACKAGES),$(VENV_CREATE))
