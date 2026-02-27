@@ -1,6 +1,6 @@
 [build-system]
 requires = [
-    "setuptools >= 64.0",
+    "setuptools >= 77.0.3",
     "setuptools_scm[toml] >= 6.2",
 ]
 build-backend = "setuptools.build_meta"
@@ -9,13 +9,12 @@ build-backend = "setuptools.build_meta"
 name = "strava-offline"
 description = "FIXME"
 authors = [{name = "Tomáš Janoušek", email = "tomi@nomi.cz"}]
-license = {text = "MIT"}
+license = "MIT"
 readme = {file="README.md", content-type="text/markdown"}
 dynamic = ["version"]
 classifiers = [ # https://pypi.org/classifiers/
     # FIXME: "Development Status :: …",
     "Environment :: Console",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -32,18 +31,14 @@ dependencies = [
     "platformdirs >= 2.1",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
-    "build >= 0.7",
     "flake8",
     "isort >= 5.0",
     "mypy >= 0.900",
     "prysk >= 0.20.0",
-    "twine",
-    "types-PyYAML",
-]
-test = [
     "pytest",
+    "types-PyYAML",
 ]
 
 [project.urls]
@@ -60,20 +55,17 @@ strava-offline = "strava_offline.cli:cli"
 [tool.gha-check-distro]
 dependencies-apt = [
     "make",
-    "python3-build",
     "python3-click",
     "python3-configobj",
     "python3-flake8",
     "python3-isort",
     "python3-mypy",
     "python3-pip",
-    "python3-pip-whl",
     "python3-platformdirs",
     "python3-pytest",
     "python3-typeshed",
     "python3-venv",
     "python3-yaml",
-    "twine",
 ]
 
 [tool.setuptools_scm]

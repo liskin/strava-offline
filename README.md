@@ -12,27 +12,27 @@ strava-offline is a …
 
 ## Installation
 
+Using [uv][]:
+
+```console
+$ uv tool install strava-offline
+```
+
 Using [pipx][]:
 
-```
-pipx ensurepath
-pipx install strava-offline
-```
-
-To keep a local git clone around:
-
-```
-git clone https://github.com/liskin/strava-offline
-make -C strava-offline pipx
+```console
+$ pipx ensurepath
+$ pipx install strava-offline
 ```
 
-Alternatively, if you don't need the isolated virtualenv that [pipx][]
-provides, feel free to just:
+From a git clone:
 
-```
-pip install strava-offline
+```console
+$ git clone https://github.com/liskin/strava-offline
+$ uv tool install ./strava-offline
 ```
 
+[uv]: https://docs.astral.sh/uv/
 [pipx]: https://github.com/pypa/pipx
 
 ## Usage
