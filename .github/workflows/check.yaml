@@ -8,6 +8,9 @@ on:
     # Re-test every month
     - cron: '0 2 1 * *'
 
+permissions:
+  contents: read
+
 env:
   # more verbosity to make it easier to understand failures
   PYTEST_FLAGS: -v --log-level=DEBUG
@@ -31,6 +34,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
       - name: Set up Python ${{ matrix.python-version }}
         id: setup-python
         uses: actions/setup-python@v6
@@ -110,6 +115,8 @@ jobs:
           apt update
           apt install -y git
       - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
       - name: Workaround for https://github.com/actions/checkout/issues/1169
         run: git config --global --add safe.directory "$PWD"
       - name: Install dependencies via apt
