@@ -65,6 +65,7 @@ strava-offline = "strava_offline.cli:cli"
 
 [tool.gha-check-distro]
 dependencies-apt = [
+    "jq",
     "make",
     "python3-bottle",
     "python3-click",

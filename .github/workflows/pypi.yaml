@@ -8,6 +8,10 @@ on:
   release:
     types: [created]
 
+env:
+  # dependency cooldown to mitigate supply chain attacks
+  UV_EXCLUDE_NEWER: '1 week'
+
 jobs:
   build:
     name: Build distribution 📦
@@ -23,12 +27,12 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v7
         with:
-          add-problem-matchers: "false"
+          add-problem-matchers: 'false'
       - name: Build
         run: |
           make dist
       - name: Store artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: dist
           path: dist/
@@ -45,7 +49,7 @@ jobs:
       id-token: write
     steps:
       - name: Fetch artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: dist
           path: dist/

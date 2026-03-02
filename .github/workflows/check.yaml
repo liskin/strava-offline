@@ -12,6 +12,9 @@ env:
   # more verbosity to make it easier to understand failures
   PYTEST_FLAGS: -v --log-level=DEBUG
 
+  # dependency cooldown to mitigate supply chain attacks
+  UV_EXCLUDE_NEWER: '1 week'
+
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -36,7 +39,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v7
         with:
-          add-problem-matchers: "false"
+          add-problem-matchers: 'false'
       - name: Get pip cache dir
         id: pip-cache
         run: |
@@ -107,6 +110,8 @@ jobs:
           apt update
           apt install -y git
       - uses: actions/checkout@v6
+      - name: Workaround for https://github.com/actions/checkout/issues/1169
+        run: git config --global --add safe.directory "$PWD"
       - name: Install dependencies via apt
         env:
           DEBIAN_FRONTEND: noninteractive
@@ -120,8 +125,10 @@ jobs:
           apt-cache --generate pkgnames \
             | grep --line-regexp --fixed-strings "$deps" \
             | xargs apt install -y
-      - name: Workaround for https://github.com/actions/checkout/issues/1169
-        run: git config --global --add safe.directory "$PWD"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          add-problem-matchers: 'false'
       - name: Install remaining dependencies
         run: make venv-system-site-packages
       - name: flake8
