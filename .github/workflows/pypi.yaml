@@ -8,6 +8,9 @@ on:
   release:
     types: [created]
 
+permissions:
+  contents: read
+
 env:
   # dependency cooldown to mitigate supply chain attacks
   UV_EXCLUDE_NEWER: '1 week'
@@ -19,6 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
+          persist-credentials: false
           fetch-depth: 0  # needed for pre-releases
       - name: Set up Python
         uses: actions/setup-python@v6
