@@ -1,13 +1,13 @@
+SHELL := bash
+.SHELLFLAGS := -eu -o pipefail -c
+
 PYTHON = python3
 
 VENV = .venv
 VENV_PYTHON = $(VENV)/bin/python
 VENV_DONE = $(VENV)/.done
-VENV_PIP_INSTALL = .
 VENV_SYSTEM_SITE_PACKAGES = $(VENV)/.venv-system-site-packages
 VENV_USE_SYSTEM_SITE_PACKAGES = $(wildcard $(VENV_SYSTEM_SITE_PACKAGES))
-
-PACKAGE := $(shell sed -ne '/^name / { y/-/_/; s/^.*=\s*"\(.*\)"/\1/p }' pyproject.toml)
 
 TEMPLATES_DIR = $(HOME)/src
 TEMPLATE = $(eval TEMPLATE := $$(shell realpath --relative-to=. $$(TEMPLATES_DIR)/cookiecutter-python-cli))$(TEMPLATE)
@@ -71,8 +71,8 @@ readme: $(wildcard *.md)
 	git diff --exit-code $^
 
 .PHONY: $(wildcard *.md)
-$(wildcard *.md): $(VENV_DONE) test-prysk
-	$(VENV_PYTHON) tests/include-preproc.py --comment-start="<!-- " --comment-end=" -->" $@
+$(wildcard *.md) &: $(VENV_DONE) test-prysk
+	$(VENV_PYTHON) tests/include-preproc.py --comment-start="<!-- " --comment-end=" -->" $(wildcard *.md)
 
 .PHONY: dist
 ## Build distribution artifacts (sdist, wheel)
@@ -108,11 +108,12 @@ template-merge: template-update
 ## Smoke test the build artifacts in an isolated venv
 ## (i.e. check for unspecified dependencies)
 smoke-dist: dist
-	for dist in dist/$(PACKAGE)-*.whl dist/$(PACKAGE)-*.tar*; do \
+	package=$$(uvx --from yq -- tomlq -e -r '.project.name | gsub("-"; "_")' pyproject.toml); \
+	for dist in dist/"$$package"-*.{whl,tar*}; do \
 		uv run \
 			--isolated --no-project \
 			--with "$$dist" \
-			-- python -m $(PACKAGE) --help; \
+			-- python -m "$$package" --help; \
 	done
 
 define VENV_CREATE
@@ -127,7 +128,8 @@ endef
 $(VENV_DONE): $(MAKEFILE_LIST) pyproject.toml
 	$(if $(VENV_USE_SYSTEM_SITE_PACKAGES),$(VENV_CREATE_SYSTEM_SITE_PACKAGES),$(VENV_CREATE))
 	$(VENV_PYTHON) -m pip install 'pip >= 25.1' # PEP-735 (dependency groups)
-	$(VENV_PYTHON) -m pip install --group dev -e $(VENV_PIP_INSTALL)
+	extras=$$(uvx --from yq -- tomlq -e -r '.project."optional-dependencies" // [] | keys | join(",")' pyproject.toml); \
+	$(VENV_PYTHON) -m pip install --group dev -e ".[ $$extras ]"
 	touch $@
 
 include _help.mk
