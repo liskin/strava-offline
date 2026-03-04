@@ -79,6 +79,7 @@ dependencies-apt = [
     "python3-pip",
     "python3-platformdirs",
     "python3-pytest",
+    "python3-pytest-recording",
     "python3-rich",
     "python3-requests",
     "python3-requests-oauthlib",
