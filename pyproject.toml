@@ -75,7 +75,6 @@ dependencies-apt = [
     "python3-isort",
     "python3-multidict",
     "python3-mypy",
-    "python3-pep517",
     "python3-pip",
     "python3-platformdirs",
     "python3-pytest",
