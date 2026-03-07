@@ -1,7 +1,9 @@
 SHELL := bash
 .SHELLFLAGS := -eu -o pipefail -c
 
-UV_RUN_SYNC_FLAGS ?= --exact --all-extras
+VENV_INCLUDE_SYSTEM_SITE_PACKAGES := $(shell grep -s -l '^include-system-site-packages\s*=\s*true$$' .venv/pyvenv.cfg)
+UV_RUN_SYNC_FLAGS ?= $(if $(VENV_INCLUDE_SYSTEM_SITE_PACKAGES),--no-sync,--exact --all-extras)
+# ^ uv's dependency solver ignores --system-site-packages, so we need to pass --no-sync
 
 .PHONY: check
 ## Invoke all checks (lints, tests, readme)
@@ -109,9 +111,6 @@ venv-system-site-packages:
 	uv venv --system-site-packages --seed .venv
 	extras=$$(uvx --from yq -- tomlq -e -r '.project."optional-dependencies" // [] | keys | join(",")' pyproject.toml); \
 	uv run $(UV_RUN_SYNC_FLAGS) python -m pip install --group dev -e ".[ $$extras ]"
-	@echo
-	@echo "Now use: make UV_RUN_SYNC_FLAGS=$(UV_RUN_SYNC_FLAGS)"
-	@if [[ $${GITHUB_ENV-} ]]; then echo 'UV_RUN_SYNC_FLAGS="$(UV_RUN_SYNC_FLAGS)"' >> $$GITHUB_ENV; fi
 # ^ uv's dependency solver ignores --system-site-packages, so we need to use pip
 
 include _help.mk
