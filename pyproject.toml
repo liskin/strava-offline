@@ -48,6 +48,7 @@ dev = [
     "pytest-recording",
     "types-PyYAML",
     "types-requests",
+    "types-requests-oauthlib",
     "types-tabulate",
     "vcrpy >= 4.3.1",
 ]

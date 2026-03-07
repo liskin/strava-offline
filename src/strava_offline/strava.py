@@ -8,7 +8,7 @@ from typing import Mapping
 from typing import Optional
 
 from requests import Session
-from requests_oauthlib import OAuth2Session  # type: ignore [import]
+from requests_oauthlib import OAuth2Session
 
 from . import config
 from . import redirect_server
