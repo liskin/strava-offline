@@ -1,4 +1,4 @@
-import pytest  # type: ignore [import]
+import pytest
 
 
 @pytest.fixture(scope="session")

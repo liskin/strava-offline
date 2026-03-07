@@ -2,7 +2,7 @@ from datetime import datetime
 from datetime import timezone
 import sqlite3
 
-import pytest  # type: ignore [import]
+import pytest
 
 from strava_offline import config
 from strava_offline.strava import StravaAPI

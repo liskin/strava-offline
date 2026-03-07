@@ -1,4 +1,4 @@
-import pytest  # type: ignore [import]
+import pytest
 
 from strava_offline import config
 from strava_offline import gpx
