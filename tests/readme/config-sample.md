@@ -1,3 +1,7 @@
+<!--
+    $ . "$TESTDIR"/../.xdg-user.sh
+-->
+
     $ strava-offline --config-sample
     # Perform full sync instead of incremental
     full: false

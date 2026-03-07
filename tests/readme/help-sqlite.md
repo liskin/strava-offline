@@ -1,3 +1,7 @@
+<!--
+    $ . "$TESTDIR"/../.xdg-user.sh
+-->
+
     $ strava-offline sqlite --help
     Usage: strava-offline sqlite [OPTIONS]
     

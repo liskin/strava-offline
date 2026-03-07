@@ -1,3 +1,7 @@
+<!--
+    $ . "$TESTDIR"/../.xdg-user.sh
+-->
+
     $ strava-offline gpx --help
     Usage: strava-offline gpx [OPTIONS]
     

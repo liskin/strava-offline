@@ -132,6 +132,10 @@ least once to let strava-offline reuse these downloaded files.
 [strava-bulk-export]: https://support.strava.com/hc/en-us/articles/216918437-Exporting-your-Data-and-Bulk-Export#Bulk
 
 <!-- include tests/readme/help-gpx.md -->
+<!--
+    $ . "$TESTDIR"/../.xdg-user.sh
+-->
+
     $ strava-offline gpx --help
     Usage: strava-offline gpx [OPTIONS]
     
@@ -192,6 +196,10 @@ which is located at `~/.config/strava_offline/config.yaml` by default
 Sample config file can be generated using the `--config-sample` flag:
 
 <!-- include tests/readme/config-sample.md -->
+<!--
+    $ . "$TESTDIR"/../.xdg-user.sh
+-->
+
     $ strava-offline --config-sample
     # Perform full sync instead of incremental
     full: false
