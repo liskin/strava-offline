@@ -1,3 +1,7 @@
+<!--
+    $ . "$TESTDIR"/../.xdg-user.sh
+-->
+
     $ strava-offline --help
     Usage: strava-offline [OPTIONS]
     

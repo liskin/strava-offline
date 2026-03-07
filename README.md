@@ -38,6 +38,10 @@ $ uv tool install ./strava-offline
 ## Usage
 
 <!-- include tests/readme/help.md -->
+<!--
+    $ . "$TESTDIR"/../.xdg-user.sh
+-->
+
     $ strava-offline --help
     Usage: strava-offline [OPTIONS]
     
@@ -59,6 +63,10 @@ which is located at `~/.config/strava_offline/config.yaml` by default
 Sample config file can be generated using the `--config-sample` flag:
 
 <!-- include tests/readme/config-sample.md -->
+<!--
+    $ . "$TESTDIR"/../.xdg-user.sh
+-->
+
     $ strava-offline --config-sample
 <!-- end include tests/readme/config-sample.md -->
 
