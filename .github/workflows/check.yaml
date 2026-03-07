@@ -107,6 +107,7 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
         run: |
           set -ex
+
           deps=$(sed -n '/^\[tool.gha-check-distro\]/,/^\[/p' pyproject.toml \
             | tr '\n' ' ' \
             | grep -o -P '\sdependencies-apt\s*=\s*\K\[.*?\]' \
@@ -115,12 +116,25 @@ jobs:
           apt-cache --generate pkgnames \
             | grep --line-regexp --fixed-strings "$deps" \
             | xargs apt install -y
+
+          echo '# apt-installed python* packages' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          apt list --installed 'python*' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
       - name: Install uv
         uses: astral-sh/setup-uv@v7
         with:
           add-problem-matchers: 'false'
       - name: Install remaining dependencies
-        run: make venv-system-site-packages
+        run: |
+          set -ex
+
+          make venv-system-site-packages
+
+          echo '# pip-installed packages' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          uv pip list >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
       - name: flake8
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
@@ -146,7 +160,7 @@ jobs:
 
   workflow-keepalive:
     if: github.event_name == 'schedule'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       actions: write
     steps:
