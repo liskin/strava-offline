@@ -112,7 +112,7 @@ venv-system-site-packages:
 	uv run $(UV_RUN_SYNC_FLAGS) python -m pip install --group dev -e ".[ $$extras ]"
 	@echo
 	@echo "Now use: make UV_RUN_SYNC_FLAGS=$(UV_RUN_SYNC_FLAGS)"
-	@if [[ $$GITHUB_ENV ]]; then echo 'UV_RUN_SYNC_FLAGS="$(UV_RUN_SYNC_FLAGS)"' >> $$GITHUB_ENV; fi
+	@if [[ $${GITHUB_ENV-} ]]; then echo 'UV_RUN_SYNC_FLAGS="$(UV_RUN_SYNC_FLAGS)"' >> $$GITHUB_ENV; fi
 # ^ uv's dependency solver ignores --system-site-packages, so we need to use pip
 
 include _help.mk
