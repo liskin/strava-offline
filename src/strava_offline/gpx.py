@@ -1,6 +1,5 @@
 import gzip
 import logging
-import os
 from pathlib import Path
 import sqlite3
 from typing import Optional
@@ -32,10 +31,7 @@ def link_backup_activities(
         backup = find_gpx(dir_activities_backup, activity_id) or find_gpx(dir_activities_backup, upload_id)
         if backup:
             link = Path(dir_activities, str(activity_id) + "".join(backup.suffixes))
-            if hasattr(backup, 'hardlink_to'):
-                link.hardlink_to(backup)  # type: ignore [attr-defined]
-            else:
-                os.link(backup, link)  # python 3.9 compat
+            link.hardlink_to(backup)
 
 
 def download_gpx(strava: StravaWeb, activity_id: int, path: Path) -> None:
