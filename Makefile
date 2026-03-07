@@ -3,9 +3,6 @@ SHELL := bash
 
 UV_RUN_SYNC_FLAGS ?= --exact --all-extras
 
-TEMPLATES_DIR = $(HOME)/src
-TEMPLATE = $(eval TEMPLATE := $$(shell realpath --relative-to=. $$(TEMPLATES_DIR)/cookiecutter-python-cli))$(TEMPLATE)
-
 .PHONY: check
 ## Invoke all checks (lints, tests, readme)
 check: lint test readme
@@ -42,7 +39,7 @@ test-pytest:
 
 .PHONY: test-prysk
 ##
-test-prysk: PRYSK_INTERACTIVE=$(shell [ -t 0 ] && echo --interactive)
+test-prysk: PRYSK_INTERACTIVE := $(shell [ -t 0 ] && echo --interactive)
 test-prysk:
 	uv run $(UV_RUN_SYNC_FLAGS) python -m prysk --indent=4 --shell=/bin/bash $(PRYSK_INTERACTIVE) \
 		$(wildcard tests/*.md tests/*/*.md tests/*/*/*.md)
@@ -78,6 +75,8 @@ clean:
 
 .PHONY: template-update
 ## Re-render cookiecutter template into the template branch
+template-update: TEMPLATES_DIR ?= $(HOME)/src
+template-update: TEMPLATE := $(shell realpath --relative-to=. $(TEMPLATES_DIR)/cookiecutter-python-cli)
 template-update:
 	$(TEMPLATE)/update.sh -t $(TEMPLATE) -p . -b template -i .cookiecutter.json
 
