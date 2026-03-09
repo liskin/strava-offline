@@ -12,6 +12,10 @@ Setup Python virtual env and install dependencies:
 
 Make changes using your preferred editor.
 
+Try running the modified code:
+
+    $ just run --help
+
 Then invoke lints, tests, …:
 
     $ just check
@@ -31,6 +35,7 @@ Other common tasks are available in the [Justfile](Justfile):
     $ just help
     Available recipes:
         help
+        run *params               # Run the project
         check                     # Run all checks (`lint`, `test`, `readme-diff`)
         clean                     # Clean all gitignored files/directories
         ipython                   # Invoke IPython with the project and its dependencies available

@@ -5,6 +5,7 @@
     $ just help
     Available recipes:
         help
+        run *params               # Run the project
         check                     # Run all checks (`lint`, `test`, `readme-diff`)
         clean                     # Clean all gitignored files/directories
         ipython                   # Invoke IPython with the project and its dependencies available
