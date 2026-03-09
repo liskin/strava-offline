@@ -83,12 +83,14 @@ publish: dist
 [group('dist')]
 [script]
 smoke-dist: dist
-    package=$(uvx --from yq -- tomlq -e -r '.project.name | gsub("-"; "_")' pyproject.toml); \
-    for dist in dist/"$package"-*.{whl,tar*}; do \
-        uv run \
-            --isolated --no-project \
-            --with "$dist" \
-            -- python -m "$package" --help; \
+    package=$(uvx --from yq -- tomlq -e -r '.project.name | gsub("-"; "_")' pyproject.toml)
+    for dist in dist/"$package"-*.{whl,tar*}; do
+        for bin in $(uvx --from yq -- tomlq -e -r '.project.scripts | keys[]' pyproject.toml); do
+            uv run \
+                --isolated --no-project \
+                --with "$dist" \
+                -- "$bin" --help
+        done
     done
 
 # ----------------------------------------------------------------------

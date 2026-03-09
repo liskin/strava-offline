@@ -38,7 +38,7 @@ jobs:
         uses: taiki-e/install-action@just
       - name: Build
         run: |
-          just dist
+          just --color=always dist
       - name: Store artifacts
         uses: actions/upload-artifact@v7
         with:

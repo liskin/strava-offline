@@ -12,9 +12,6 @@ permissions:
   contents: read
 
 env:
-  # more verbosity to make it easier to understand failures
-  PYTEST_FLAGS: -v --log-level=DEBUG
-
   # dependency cooldown to mitigate supply chain attacks
   UV_EXCLUDE_NEWER: '1 week'
 
@@ -48,31 +45,32 @@ jobs:
       - name: Install just
         uses: taiki-e/install-action@just
       - name: Install dependencies
-        run: just venv
+        run: just --color=always venv
       - name: flake8
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: flake8
-          run: just lint-flake8
+          run: just --color=always lint-flake8
       - name: mypy
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: mypy
-          run: just lint-mypy
+          run: just --color=always lint-mypy
       - name: isort
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: isort
-          run: just lint-isort
+          run: just --color=always lint-isort
       - name: pytest
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: pytest
-          run: just test-pytest
+          # more pytest verbosity to make it easier to understand failures
+          run: just --color=always test-pytest -v --log-level=DEBUG
       - name: prysk, readme
-        run: just readme-diff
+        run: just --color=always readme-diff
       - name: smoke-dist
-        run: just smoke-dist
+        run: just --color=always smoke-dist
 
   check-distro:
     runs-on: ubuntu-latest
@@ -134,7 +132,7 @@ jobs:
         run: |
           set -ex
 
-          just venv-system-site-packages
+          just --color=always venv-system-site-packages
 
           echo '# pip-installed packages' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
@@ -144,24 +142,25 @@ jobs:
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: flake8
-          run: just lint-flake8
+          run: just --color=always lint-flake8
       - name: mypy
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: mypy
-          run: just lint-mypy
+          run: just --color=always lint-mypy
       - name: isort
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: isort
-          run: just lint-isort
+          run: just --color=always lint-isort
       - name: pytest
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: pytest
-          run: just test-pytest
+          # more pytest verbosity to make it easier to understand failures
+          run: just --color=always test-pytest -v --log-level=DEBUG
       - name: prysk, readme
-        run: just readme-diff
+        run: just --color=always readme-diff
 
   workflow-keepalive:
     if: github.event_name == 'schedule'
