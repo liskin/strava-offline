@@ -25,20 +25,20 @@ classifiers = [ # https://pypi.org/classifiers/
 ]
 requires-python = ">= 3.10"
 dependencies = [
-    "PyYAML",
-    "click ~= 8.0",
-    "click-config-file",
+    "PyYAML >= 5.1",
+    "click >= 8.1.1",
+    "click-config-file >= 0.6.0",
     "platformdirs >= 2.1",
 ]
 
 [dependency-groups]
 dev = [
-    "flake8",
-    "isort >= 5.0",
-    "mypy >= 0.900",
+    "flake8 >= 6.1",
+    "isort >= 5.1",
+    "mypy >= 1.15",
     "prysk >= 0.20.0",
-    "pytest",
-    "types-PyYAML",
+    "pytest >= 7.0",
+    "types-PyYAML >= 5.4.0",
 ]
 
 [project.urls]

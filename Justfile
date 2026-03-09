@@ -5,10 +5,18 @@ venv_include_system_site_packages := shell("grep -s -l '^include-system-site-pac
 uv_run_sync_flags := if venv_include_system_site_packages == "" { '--exact --all-extras' } else { '--no-sync' }
 # ^ uv's dependency solver ignores --system-site-packages, so we need to pass --no-sync
 
+package := 'strava_offline'
+template := 'cookiecutter-python-cli'
+templates_dir := home_directory() / 'src'
+
 # ----------------------------------------------------------------------
 
 help:
     @just --list --unsorted
+
+# Run the project
+run *params:
+    uv run {{ uv_run_sync_flags }} python -m {{ package }} {{ params }}
 
 # Run all checks (`lint`, `test`, `readme-diff`)
 check: lint test readme-diff
@@ -83,8 +91,7 @@ publish: dist
 [group('dist')]
 [script]
 smoke-dist: dist
-    package=$(uvx --from yq -- tomlq -e -r '.project.name | gsub("-"; "_")' pyproject.toml)
-    for dist in dist/"$package"-*.{whl,tar*}; do
+    for dist in dist/{{ package }}-*.{whl,tar*}; do
         for bin in $(uvx --from yq -- tomlq -e -r '.project.scripts | keys[]' pyproject.toml); do
             uv run \
                 --isolated --no-project \
@@ -110,9 +117,6 @@ venv-system-site-packages:
     # ^ uv's dependency solver ignores --system-site-packages, so we need to use pip
 
 # ----------------------------------------------------------------------
-
-template := 'cookiecutter-python-cli'
-templates_dir := home_directory() / 'src'
 
 # Re-render cookiecutter template into the template branch
 [group('template')]
