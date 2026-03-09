@@ -11,10 +11,9 @@ from typing import Iterable
 from typing import Iterator
 from typing import List
 from typing import Mapping
+from typing import Protocol
 from typing import Tuple
 from typing import Union
-
-from typing_extensions import Protocol
 
 
 class FromDict(Protocol):

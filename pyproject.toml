@@ -35,7 +35,6 @@ dependencies = [
     "requests",
     "requests_oauthlib",
     "tabulate",
-    "typing-extensions",
 ]
 
 [dependency-groups]
@@ -85,7 +84,6 @@ dependencies-apt = [
     "python3-requests-oauthlib",
     "python3-tabulate",
     "python3-typeshed",
-    "python3-typing-extensions",
     "python3-ujson",
     "python3-vcr",
     "python3-venv",
