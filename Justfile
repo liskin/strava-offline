@@ -100,6 +100,11 @@ smoke-dist: dist
 venv:
     uv sync {{ uv_run_sync_flags }}
 
+# Setup .venv with --resolution lowest-direct (to test lower bounds of dependencies)
+[group('venv')]
+venv-lowest-direct:
+    uv sync --resolution lowest-direct --all-extras
+
 # Setup .venv with --system-site-packages
 [group('venv')]
 [script]

@@ -72,6 +72,52 @@ jobs:
       - name: smoke-dist
         run: just --color=always smoke-dist
 
+  check-lowest-direct:
+    runs-on: ubuntu-latest
+
+    env:
+      UV_RESOLUTION: lowest-direct
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          add-problem-matchers: 'false'
+      - name: Install just
+        uses: taiki-e/install-action@just
+      - name: Install dependencies
+        run: just --color=always venv-lowest-direct
+      - name: flake8
+        uses: liskin/gh-problem-matcher-wrap@v3
+        with:
+          linters: flake8
+          run: just --color=always lint-flake8
+      - name: mypy
+        uses: liskin/gh-problem-matcher-wrap@v3
+        with:
+          linters: mypy
+          run: just --color=always lint-mypy
+      - name: isort
+        uses: liskin/gh-problem-matcher-wrap@v3
+        with:
+          linters: isort
+          run: just --color=always lint-isort
+      - name: pytest
+        uses: liskin/gh-problem-matcher-wrap@v3
+        with:
+          linters: pytest
+          # more pytest verbosity to make it easier to understand failures
+          run: just --color=always test-pytest -v --log-level=DEBUG
+      - name: prysk, readme
+        run: just --color=always readme-diff
+
   check-distro:
     runs-on: ubuntu-latest
 
