@@ -45,32 +45,34 @@ jobs:
         uses: astral-sh/setup-uv@v7
         with:
           add-problem-matchers: 'false'
+      - name: Install just
+        uses: taiki-e/install-action@just
       - name: Install dependencies
-        run: make venv
+        run: just venv
       - name: flake8
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: flake8
-          run: make lint-flake8
+          run: just lint-flake8
       - name: mypy
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: mypy
-          run: make lint-mypy
+          run: just lint-mypy
       - name: isort
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: isort
-          run: make lint-isort
+          run: just lint-isort
       - name: pytest
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: pytest
-          run: make test-pytest
+          run: just test-pytest
       - name: prysk, readme
-        run: make test-prysk readme
+        run: just readme-diff
       - name: smoke-dist
-        run: make smoke-dist
+        run: just smoke-dist
 
   check-distro:
     runs-on: ubuntu-latest
@@ -125,11 +127,14 @@ jobs:
         uses: astral-sh/setup-uv@v7
         with:
           add-problem-matchers: 'false'
+      - name: Install just
+        uses: taiki-e/install-action@just
+        # ^ TODO: drop in favor of apt once Ubuntu 26.04 and Debian 14 are released
       - name: Install remaining dependencies
         run: |
           set -ex
 
-          make venv-system-site-packages
+          just venv-system-site-packages
 
           echo '# pip-installed packages' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
@@ -139,24 +144,24 @@ jobs:
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: flake8
-          run: make lint-flake8
+          run: just lint-flake8
       - name: mypy
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: mypy
-          run: make lint-mypy
+          run: just lint-mypy
       - name: isort
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: isort
-          run: make lint-isort
+          run: just lint-isort
       - name: pytest
         uses: liskin/gh-problem-matcher-wrap@v3
         with:
           linters: pytest
-          run: make test-pytest
+          run: just test-pytest
       - name: prysk, readme
-        run: make readme
+        run: just readme-diff
 
   workflow-keepalive:
     if: github.event_name == 'schedule'
