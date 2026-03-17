@@ -93,9 +93,10 @@ publish: dist
 smoke-dist: dist
     for dist in dist/{{ package }}-*.{whl,tar*}; do
         for bin in $(uvx --from yq -- tomlq -e -r '.project.scripts | keys[]' pyproject.toml); do
+            extras=$(uvx --from yq -- tomlq -r --arg script "$bin" '.project.scripts[$script] // "" | scan("\\[.*\\]")' pyproject.toml)
             uv run \
                 --isolated --no-project \
-                --with "$dist" \
+                --with "$dist$extras" \
                 -- "$bin" --help
         done
     done
