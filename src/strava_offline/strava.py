@@ -27,7 +27,7 @@ class StravaAPI:
         self._session = OAuth2Session(
             client_id=config.strava_client_id,
             redirect_uri=redirect_server.redirect_uri(config),
-            scope=','.join(scope),
+            scope=scope,
             token=token,
             auto_refresh_url="https://www.strava.com/oauth/token",
             auto_refresh_kwargs={
