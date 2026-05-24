@@ -37,8 +37,9 @@ Other common tasks are available in the [Justfile](Justfile):
         help
         run *params               # Run the project
         check                     # Run all checks (`lint`, `test`, `readme-diff`)
-        clean                     # Clean all gitignored files/directories
+        clean                     # Clean all (locally) gitignored files/directories
         ipython                   # Invoke IPython with the project and its dependencies available
+        watch *params             # watchexec -I -- just …
     
         [check]
         lint                      # Run all linters
