@@ -21,13 +21,17 @@ run *params:
 # Run all checks (`lint`, `test`, `readme-diff`)
 check: lint test readme-diff
 
-# Clean all gitignored files/directories
+# Clean all (locally) gitignored files/directories
 clean:
-    git clean -ffdX
+    git -c core.excludesFile= clean -ffdX
 
 # Invoke IPython with the project and its dependencies available
 ipython:
     uv run {{ uv_run_sync_flags }} --with ipython python -m IPython
+
+# watchexec -I -- just …
+watch *params:
+    watchexec -I -- just {{ params }}
 
 # ----------------------------------------------------------------------
 

@@ -1,10 +1,13 @@
 version: 2
 updates:
   - package-ecosystem: "github-actions"
-    directory: "/"
+    directories:
+      - "/"
     schedule:
-      interval: "weekly"
+      interval: "daily"
+    commit-message:
+      prefix: "ci"
     groups:
-      actions:
+      github-actions:
         patterns:
-          - "actions/*"
+          - "*"
