@@ -1,5 +1,5 @@
 import datetime
-from typing import TextIO
+from typing import Optional, TextIO
 
 import click
 
@@ -44,6 +44,11 @@ def cli_gpx(config: config.GpxConfig) -> None:
 
 option_output = click.option('-o', '--output', type=click.File('w'), default='-', help="Output file")
 option_year = click.argument('year', type=int, default=datetime.datetime.now().year)
+option_year_start = click.argument('start_year', type=int, default=datetime.datetime.fromtimestamp(0).year)
+option_year_end = click.argument('end_year', type=int, default=datetime.datetime.now().year)
+option_time_resolution = click.option('-r', '--resolution', type=click.Choice(['day', 'month', 'year']), default='day')
+option_output_format = click.option('-f', '--format', type=click.Choice(['plain', 'csv']), default='plain')
+option_bike = click.option('-b', '--bike', type=str, required=False)
 
 
 @cli.command(name='report-yearly')
@@ -64,6 +69,27 @@ def cli_report_yearly_bikes(config: config.DatabaseConfig, output: TextIO, year:
     "Show yearly report by bike"
     with sync.database(config) as db:
         print(reports.yearly_bikes(db, year), file=output)
+
+@cli.command(name='report-bikes-cummulative-distance')
+@config.DatabaseConfig.options()
+@option_output
+@option_time_resolution
+@option_output_format
+@option_bike
+@option_year_start
+@option_year_end
+def cli_report_bikes_cummulative_distance(
+        config: config.DatabaseConfig,
+        output: TextIO,
+        resolution: str,
+        format: str,
+        bike: Optional[str],
+        start_year: int, end_year: int,
+) -> None:
+    "Show monthly report by bike"
+
+    with sync.database(config) as db:
+        print(reports.bikes_cummulative_distance(db, resolution, format, bike, start_year, end_year), file=output)
 
 
 @cli.command(name='report-bikes')
