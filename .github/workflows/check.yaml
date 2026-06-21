@@ -39,7 +39,7 @@ jobs:
           if [[ $UV_RESOLUTION ]]; then
             echo UV_RESOLUTION="$UV_RESOLUTION" >> $GITHUB_ENV
           fi
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
       - name: Set up Python ${{ matrix.python-version }}
@@ -107,7 +107,7 @@ jobs:
           apt update
           apt full-upgrade -y # apt solver 3.0 won't upgrade package to install recommends
           apt install -y git
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
       - name: Workaround for https://github.com/actions/checkout/issues/1169
