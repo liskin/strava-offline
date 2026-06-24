@@ -48,7 +48,8 @@ Other common tasks are available in the [Justfile](Justfile):
         lint-isort
         test                      # Run all tests
         test-pytest *pytest_flags # Run Python tests
-        test-prysk *prysk_flags=shell("[ -t 0 ] && echo --interactive || :") # Run CLI tests
+        # Run CLI tests
+        test-prysk *prysk_flags=shell("[ -t 0 ] && echo --interactive || :")
         readme                    # Update usage/examples in docs
         readme-diff               # `readme` and fail if they differ from version control
     
