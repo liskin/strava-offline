@@ -1,12 +1,30 @@
 from contextlib import contextmanager
 from datetime import datetime
 import sqlite3
+from typing import Any
 from typing import Iterator
+from typing import Mapping
 from typing import Optional
+from typing import Union
 
 from . import config
 from . import sqlite
+from .intervals import IntervalsAPI
 from .strava import StravaAPI
+
+# A metadata source: the Strava OAuth API client or the intervals.icu client.
+# Both expose get_bikes() and get_activities().
+StravaSource = Union[StravaAPI, IntervalsAPI]
+
+
+def _has_location_data(activity: Mapping[str, Any]) -> bool:
+    # The Strava API exposes start_latlng (a [lat, lng] list) but no explicit
+    # boolean; the intervals.icu source provides has_location_data directly.
+    if 'has_location_data' in activity:
+        return bool(activity['has_location_data'])
+    start_latlng = activity.get('start_latlng')
+    return isinstance(start_latlng, list) and len(start_latlng) >= 2
+
 
 table_bike = sqlite.Table(
     name='bike',
@@ -52,7 +70,7 @@ table_activity = sqlite.Table(
         'sport_type': activity.get('sport_type'),
         'commute': activity['commute'],
         'trainer': activity['trainer'],
-        'has_location_data': isinstance(activity['start_latlng'], list) and len(activity['start_latlng']) >= 2,
+        'has_location_data': _has_location_data(activity),
     },
 )
 
@@ -74,12 +92,12 @@ def database(config: config.DatabaseConfig) -> Iterator[sqlite3.Connection]:
         yield db
 
 
-def sync_bikes(strava: StravaAPI, db: sqlite3.Connection) -> None:
+def sync_bikes(strava: StravaSource, db: sqlite3.Connection) -> None:
     table_bike.upsert(db, strava.get_bikes())
 
 
 def sync_activities(
-    strava: StravaAPI,
+    strava: StravaSource,
     db: sqlite3.Connection,
     before: Optional[datetime] = None,
     incremental: bool = False,
@@ -87,7 +105,7 @@ def sync_activities(
     table_activity.upsert(db, strava.get_activities(before=before), incremental=incremental)
 
 
-def sync(config: config.SyncConfig, strava: StravaAPI):
+def sync(config: config.SyncConfig, strava: StravaSource):
     with database(config) as db:
         sync_bikes(strava, db)
         sync_activities(strava, db, incremental=(not config.full))
