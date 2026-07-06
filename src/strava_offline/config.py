@@ -4,6 +4,7 @@ from functools import reduce
 from functools import wraps
 import logging
 from pathlib import Path
+from typing import ClassVar
 from typing import Optional
 from typing import Set
 from typing import Type
@@ -108,6 +109,10 @@ class StravaApiConfig(BaseConfig):
 class StravaWebConfig(BaseConfig):
     strava_cookie_strava4_session: str = ""
 
+    # Whether the cookie is a required CLI option. The gpx command requires it;
+    # the sqlite command (which can also use the API) makes it optional.
+    strava4_session_required: ClassVar[bool] = True
+
     @classmethod
     def options(cls):
         group = OptionGroup("Strava web")
@@ -115,7 +120,7 @@ class StravaWebConfig(BaseConfig):
             group.option(
                 '--strava4-session', 'strava_cookie_strava4_session', type=str,
                 envvar='STRAVA_COOKIE_STRAVA4_SESSION', show_envvar=True,
-                required=True,
+                required=cls.strava4_session_required,
                 help="'_strava4_session' cookie value"),
             super().options()
         )
@@ -138,13 +143,23 @@ class DatabaseConfig(BaseConfig):
 
 
 @dataclass
-class SyncConfig(StravaApiConfig, DatabaseConfig):
+class SyncConfig(StravaApiConfig, StravaWebConfig, DatabaseConfig):
     full: bool = False
+    source: str = 'api'
+
+    # The sqlite command can source metadata from either the API or the website,
+    # so the web cookie is optional here (validated at runtime for --source web).
+    strava4_session_required: ClassVar[bool] = False
 
     @classmethod
     def options(cls):
         group = OptionGroup("Sync options")
         return compose_decorators(
+            group.option(
+                '--source', type=click.Choice(['api', 'web']),
+                default=cls.source, show_default=True,
+                help="Metadata source: 'api' (Strava API, needs a Strava subscription) "
+                     "or 'web' (website scraping, needs --strava4-session)"),
             group.option(
                 '--full / --no-full', default=cls.full, show_default=True,
                 help="Perform full sync instead of incremental"),
