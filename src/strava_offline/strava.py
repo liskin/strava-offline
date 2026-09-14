@@ -1,5 +1,6 @@
 from datetime import datetime
 from datetime import timezone
+from email.message import Message
 import json
 from typing import Any
 from typing import Iterable
@@ -105,11 +106,11 @@ class StravaWeb:
 
         content_type_ok = r.headers.get('Content-Type') == "application/octet-stream"
 
-        content_disposition, content_disposition_params = _parse_content_disposition_header(
-            r.headers.get('Content-Disposition', ""))
+        headers = Message()
+        headers['Content-Disposition'] = r.headers.get('Content-Disposition', "")
         content_disposition_ok = (
-            content_disposition == "attachment"
-            and content_disposition_params['filename'].endswith(".gpx"))
+            headers.get_content_disposition() == "attachment"
+            and headers.get_filename("").endswith(".gpx"))
 
         if content_type_ok and content_disposition_ok:
             return r.content
@@ -124,21 +125,3 @@ class StravaWeb:
             return self._get_gpx("original", activity_id)
         except NotGpx:
             return self._get_gpx("gpx", activity_id)
-
-
-def _parse_content_disposition_header(header):
-    tokens = header.split(';')
-    content_disposition, params = tokens[0].strip(), tokens[1:]
-    params_dict = {}
-    items_to_strip = "\"' "
-
-    for param in params:
-        param = param.strip()
-        if param:
-            key, value = param, True
-            index_of_equals = param.find("=")
-            if index_of_equals != -1:
-                key = param[:index_of_equals].strip(items_to_strip)
-                value = param[index_of_equals + 1:].strip(items_to_strip)
-            params_dict[key.lower()] = value
-    return content_disposition, params_dict
