@@ -1,12 +1,31 @@
 from contextlib import contextmanager
 from datetime import datetime
+import logging
 import sqlite3
+from typing import Any
 from typing import Iterator
+from typing import Mapping
 from typing import Optional
+from typing import Union
 
 from . import config
 from . import sqlite
 from .strava import StravaAPI
+from .strava import StravaWeb
+
+# A metadata source: the OAuth API client or the website scraper. Both expose
+# get_bikes() and get_activities().
+StravaSource = Union[StravaAPI, StravaWeb]
+
+
+def _has_location_data(activity: Mapping[str, Any]) -> bool:
+    # The Strava API exposes start_latlng (a [lat, lng] list) but no explicit
+    # boolean; the website scraper provides has_location_data directly.
+    if 'has_location_data' in activity:
+        return bool(activity['has_location_data'])
+    start_latlng = activity.get('start_latlng')
+    return isinstance(start_latlng, list) and len(start_latlng) >= 2
+
 
 table_bike = sqlite.Table(
     name='bike',
@@ -52,7 +71,7 @@ table_activity = sqlite.Table(
         'sport_type': activity.get('sport_type'),
         'commute': activity['commute'],
         'trainer': activity['trainer'],
-        'has_location_data': isinstance(activity['start_latlng'], list) and len(activity['start_latlng']) >= 2,
+        'has_location_data': _has_location_data(activity),
     },
 )
 
@@ -74,12 +93,23 @@ def database(config: config.DatabaseConfig) -> Iterator[sqlite3.Connection]:
         yield db
 
 
-def sync_bikes(strava: StravaAPI, db: sqlite3.Connection) -> None:
-    table_bike.upsert(db, strava.get_bikes())
+def sync_bikes(strava: StravaSource, db: sqlite3.Connection) -> None:
+    # Bikes referenced by already-synced activities. The API source returns its
+    # full roster regardless; the web source resolves names for exactly these
+    # ids (it has no roster endpoint).
+    bike_ids = [row['gear_id'] for row in db.execute(
+        "SELECT DISTINCT gear_id FROM activity WHERE gear_id LIKE 'b%'")]
+    bikes = list(strava.get_bikes(bike_ids))
+    if bikes:
+        table_bike.upsert(db, bikes)
+    else:
+        # Don't run a (destructive) full upsert with no data: that would delete
+        # bikes synced earlier.
+        logging.info("no bikes to sync; bike table left unchanged")
 
 
 def sync_activities(
-    strava: StravaAPI,
+    strava: StravaSource,
     db: sqlite3.Connection,
     before: Optional[datetime] = None,
     incremental: bool = False,
@@ -87,7 +117,8 @@ def sync_activities(
     table_activity.upsert(db, strava.get_activities(before=before), incremental=incremental)
 
 
-def sync(config: config.SyncConfig, strava: StravaAPI):
+def sync(config: config.SyncConfig, strava: StravaSource):
     with database(config) as db:
-        sync_bikes(strava, db)
+        # Activities first: the web bike sync derives its id list from them.
         sync_activities(strava, db, incremental=(not config.full))
+        sync_bikes(strava, db)

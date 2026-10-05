@@ -21,14 +21,16 @@ def find_gpx(d: Path, i: int) -> Optional[Path]:
 def link_backup_activities(
         db: sqlite3.Connection,
         dir_activities: Path, dir_activities_backup: Path) -> None:
-    for activity in db.execute("SELECT id, upload_id FROM activity WHERE upload_id IS NOT NULL"):
+    for activity in db.execute("SELECT id, upload_id FROM activity WHERE upload_id IS NOT NULL OR has_location_data"):
         activity_id = int(activity['id'])
-        upload_id = int(activity['upload_id'])
+        upload_id = activity['upload_id']
 
         if find_gpx(dir_activities, activity_id):
             continue
 
-        backup = find_gpx(dir_activities_backup, activity_id) or find_gpx(dir_activities_backup, upload_id)
+        backup = find_gpx(dir_activities_backup, activity_id)
+        if not backup and upload_id is not None:
+            backup = find_gpx(dir_activities_backup, int(upload_id))
         if backup:
             link = Path(dir_activities, str(activity_id) + "".join(backup.suffixes))
             link.hardlink_to(backup)
@@ -46,7 +48,7 @@ def download_gpx(strava: StravaWeb, activity_id: int, path: Path) -> None:
 def download_activities(db: sqlite3.Connection, strava: StravaWeb, dir_activities: Path) -> None:
     new = 0
 
-    for activity in db.execute("SELECT id FROM activity WHERE upload_id IS NOT NULL AND has_location_data"):
+    for activity in db.execute("SELECT id FROM activity WHERE has_location_data"):
         activity_id = int(activity['id'])
         if find_gpx(dir_activities, activity_id):
             continue
