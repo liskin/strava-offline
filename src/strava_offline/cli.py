@@ -1,5 +1,6 @@
 import datetime
 from typing import TextIO
+from typing import Union
 
 import click
 
@@ -7,6 +8,7 @@ from . import config
 from . import gpx
 from . import reports
 from . import sync
+from .intervals import IntervalsAPI
 from .strava import StravaAPI
 from .strava import StravaWeb
 
@@ -24,8 +26,21 @@ def cli_sqlite(config: config.SyncConfig) -> None:
     Synchronize bikes and activities metadata to local sqlite3 database.
     Unless --full is given, the sync is incremental, i.e. only new activities
     are synchronized and deletions aren't detected.
+
+    With --source intervals, metadata is fetched from intervals.icu using the
+    --intervals-api-key instead of the (subscription-gated) Strava API. Note
+    that intervals.icu can't re-expose activities it received from Strava, so
+    only activities recorded elsewhere (e.g. a bike computer syncing directly to
+    intervals.icu) are available; upload_id isn't provided either.
     """
-    strava = StravaAPI(config=config)
+    strava: Union[StravaAPI, IntervalsAPI]
+    if config.source == 'intervals':
+        if not config.intervals_api_key:
+            raise click.UsageError(
+                "--intervals-api-key (env INTERVALS_API_KEY) is required for --source intervals")
+        strava = IntervalsAPI(config=config)
+    else:
+        strava = StravaAPI(config=config)
     sync.sync(config=config, strava=strava)
 
 
