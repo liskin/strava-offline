@@ -3,6 +3,9 @@
 -->
 
     $ strava-offline --config-sample
+    # Metadata source: 'api' (Strava API, needs a Strava subscription) or 'intervals' (intervals.icu, needs --intervals-api-key)
+    source: api
+    
     # Perform full sync instead of incremental
     full: false
     
@@ -20,6 +23,9 @@
     
     # OAuth 2 HTTP server port
     http_port: 12345
+    
+    # intervals.icu API key (Settings -> Developer)
+    intervals_api_key: ''
     
     # Sqlite database file
     strava_sqlite_database: /home/user/.local/share/strava_offline/strava.sqlite

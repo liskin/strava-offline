@@ -122,6 +122,23 @@ class StravaWebConfig(BaseConfig):
 
 
 @dataclass
+class IntervalsConfig(BaseConfig):
+    intervals_api_key: str = ""
+
+    @classmethod
+    def options(cls):
+        group = OptionGroup("intervals.icu")
+        return compose_decorators(
+            group.option(
+                '--intervals-api-key', 'intervals_api_key', type=str,
+                envvar='INTERVALS_API_KEY', show_envvar=True,
+                default=cls.intervals_api_key,
+                help="intervals.icu API key (Settings -> Developer)"),
+            super().options()
+        )
+
+
+@dataclass
 class DatabaseConfig(BaseConfig):
     strava_sqlite_database: Path = data_dir / 'strava.sqlite'
 
@@ -138,13 +155,19 @@ class DatabaseConfig(BaseConfig):
 
 
 @dataclass
-class SyncConfig(StravaApiConfig, DatabaseConfig):
+class SyncConfig(StravaApiConfig, IntervalsConfig, DatabaseConfig):
     full: bool = False
+    source: str = 'api'
 
     @classmethod
     def options(cls):
         group = OptionGroup("Sync options")
         return compose_decorators(
+            group.option(
+                '--source', type=click.Choice(['api', 'intervals']),
+                default=cls.source, show_default=True,
+                help="Metadata source: 'api' (Strava API, needs a Strava subscription) "
+                     "or 'intervals' (intervals.icu, needs --intervals-api-key)"),
             group.option(
                 '--full / --no-full', default=cls.full, show_default=True,
                 help="Perform full sync instead of incremental"),

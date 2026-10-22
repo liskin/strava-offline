@@ -87,12 +87,26 @@ $ uv tool install ./strava-offline
   download private activities or see names of bikes. Therefore its use is not
   supported in strava-offline.)
 
+* If you can't (or don't want to) use the Strava API, which now requires a
+  Strava subscription, you can sync activities metadata from [intervals.icu][]
+  instead: `strava-offline sqlite --source intervals`. Get an API key from
+  intervals.icu Settings → Developer and pass it as `--intervals-api-key` or
+  export it as `INTERVALS_API_KEY`. Note that Strava's API terms forbid
+  intervals.icu from re-exposing activities it received *from* Strava, so only
+  activities recorded elsewhere (e.g. a bike computer syncing directly to
+  intervals.icu) are available this way; `upload_id` isn't provided either.
+
 [sqlite3]: https://manpages.debian.org/buster/sqlite3/sqlite3.1.en.html
 [rate limits]: http://developers.strava.com/docs/rate-limits/
+[intervals.icu]: https://intervals.icu/
 
 ### Mirror activities metadata
 
 <!-- include tests/readme/help-sqlite.md -->
+<!--
+    $ . "$TESTDIR"/../.xdg-user.sh
+-->
+
     $ strava-offline sqlite --help
     Usage: strava-offline sqlite [OPTIONS]
     
@@ -100,27 +114,41 @@ $ uv tool install ./strava-offline
       --full is given, the sync is incremental, i.e. only new activities are
       synchronized and deletions aren't detected.
     
+      With --source intervals, metadata is fetched from intervals.icu using the
+      --intervals-api-key instead of the (subscription-gated) Strava API. Note
+      that intervals.icu can't re-expose activities it received from Strava, so
+      only activities recorded elsewhere (e.g. a bike computer syncing directly to
+      intervals.icu) are available; upload_id isn't provided either.
+    
     Options:
       Sync options: 
-        --full / --no-full    Perform full sync instead of incremental  [default:
-                              no-full]
+        --source [api|intervals]  Metadata source: 'api' (Strava API, needs a
+                                  Strava subscription) or 'intervals'
+                                  (intervals.icu, needs --intervals-api-key)
+                                  [default: api]
+        --full / --no-full        Perform full sync instead of incremental
+                                  [default: no-full]
       Strava API: 
-        --client-id TEXT      Strava OAuth 2 client id  [env var:
-                              STRAVA_CLIENT_ID]
-        --client-secret TEXT  Strava OAuth 2 client secret  [env var:
-                              STRAVA_CLIENT_SECRET]
-        --token-file FILE     Strava OAuth 2 token store  [default:
-                              /home/user/.config/strava_offline/token.json]
-        --http-host TEXT      OAuth 2 HTTP server host  [default: 127.0.0.1]
-        --http-port INTEGER   OAuth 2 HTTP server port  [default: 12345]
+        --client-id TEXT          Strava OAuth 2 client id  [env var:
+                                  STRAVA_CLIENT_ID]
+        --client-secret TEXT      Strava OAuth 2 client secret  [env var:
+                                  STRAVA_CLIENT_SECRET]
+        --token-file FILE         Strava OAuth 2 token store  [default:
+                                  /home/user/.config/strava_offline/token.json]
+        --http-host TEXT          OAuth 2 HTTP server host  [default: 127.0.0.1]
+        --http-port INTEGER       OAuth 2 HTTP server port  [default: 12345]
+      intervals.icu: 
+        --intervals-api-key TEXT  intervals.icu API key (Settings -> Developer)
+                                  [env var: INTERVALS_API_KEY]
       Database: 
-        --database FILE       Sqlite database file  [default: /home/user/.local/sh
-                              are/strava_offline/strava.sqlite]
-      -v, --verbose           Logging verbosity (0 = WARNING, 1 = INFO, 2 = DEBUG)
-      --config FILE           Read configuration from FILE.  [default:
-                              /home/user/.config/strava_offline/config.yaml]
-      --help                  Show this message and exit.
-<!-- end include tests/readme/help.md -->
+        --database FILE           Sqlite database file  [default: /home/user/.loca
+                                  l/share/strava_offline/strava.sqlite]
+      -v, --verbose               Logging verbosity (0 = WARNING, 1 = INFO, 2 =
+                                  DEBUG)
+      --config FILE               Read configuration from FILE.  [default:
+                                  /home/user/.config/strava_offline/config.yaml]
+      --help                      Show this message and exit.
+<!-- end include tests/readme/help-sqlite.md -->
 
 ### Mirror activities as GPX
 
@@ -201,6 +229,9 @@ Sample config file can be generated using the `--config-sample` flag:
 -->
 
     $ strava-offline --config-sample
+    # Metadata source: 'api' (Strava API, needs a Strava subscription) or 'intervals' (intervals.icu, needs --intervals-api-key)
+    source: api
+    
     # Perform full sync instead of incremental
     full: false
     
@@ -218,6 +249,9 @@ Sample config file can be generated using the `--config-sample` flag:
     
     # OAuth 2 HTTP server port
     http_port: 12345
+    
+    # intervals.icu API key (Settings -> Developer)
+    intervals_api_key: ''
     
     # Sqlite database file
     strava_sqlite_database: /home/user/.local/share/strava_offline/strava.sqlite
