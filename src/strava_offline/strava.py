@@ -1,6 +1,8 @@
 from datetime import datetime
 from datetime import timezone
 import json
+import logging
+import re
 from typing import Any
 from typing import Iterable
 from typing import List
@@ -68,7 +70,9 @@ class StravaAPI:
         r.raise_for_status()
         return r.json()
 
-    def get_bikes(self) -> Iterable[Mapping[str, Any]]:
+    def get_bikes(self, bike_ids: Optional[Iterable[str]] = None) -> Iterable[Mapping[str, Any]]:
+        # bike_ids is accepted for interface parity with StravaWeb but unused:
+        # the API returns the athlete's full bike roster.
         return self.get_athlete()['bikes']
 
     def get_activities(self, before: Optional[datetime] = None) -> Iterable[Mapping[str, Any]]:
@@ -90,6 +94,64 @@ class NotGpx(Exception):
     pass
 
 
+def _normalize_start_date(start_time: Optional[str]) -> Optional[str]:
+    # Strava's website returns e.g. "2026-06-08T14:38:34+0000"; the API uses the
+    # "...Z" form. Normalize so both sources store the same shape.
+    if not start_time:
+        return None
+    return start_time.replace("+0000", "Z")
+
+
+def _web_gear_id(model: Mapping[str, Any]) -> Optional[str]:
+    # training_activities exposes a numeric bike_id / athlete_gear_id; the API
+    # (and strava-offline's bike table) uses the "b"/"g"-prefixed string form.
+    bike_id = model.get('bike_id')
+    if bike_id:
+        return f"b{bike_id}"
+    gear_id = model.get('athlete_gear_id')
+    if gear_id:
+        return f"g{gear_id}"
+    return None
+
+
+def _parse_bike_name(html: str) -> Optional[str]:
+    # The bike detail page title is "Strava | <athlete> | <bike name>"; fall
+    # back to the page's <h1> if the title format ever changes.
+    m = re.search(r"<title>(.*?)</title>", html, re.S | re.I)
+    if m:
+        parts = [p.strip() for p in m.group(1).split("|")]
+        if len(parts) >= 3 and parts[-1]:
+            return parts[-1]
+    m = re.search(r"<h1[^>]*>(.*?)</h1>", html, re.S | re.I)
+    if m:
+        return re.sub(r"<[^>]+>", "", m.group(1)).strip() or None
+    return None
+
+
+def _training_activity_to_summary(model: Mapping[str, Any]) -> Mapping[str, Any]:
+    # Map a /athlete/training_activities row to the shape table_activity expects
+    # from the API's SummaryActivity. upload_id has no website equivalent.
+    return {
+        'id': model['id'],
+        'upload_id': None,
+        'name': model.get('name'),
+        'start_date': _normalize_start_date(model.get('start_time')),
+        'moving_time': model.get('moving_time_raw'),
+        'elapsed_time': model.get('elapsed_time_raw'),
+        'distance': model.get('distance_raw'),
+        'total_elevation_gain': model.get('elevation_gain_raw'),
+        'gear_id': _web_gear_id(model),
+        # activity_type_display_name is the coarse category ("Ride") matching the
+        # API's `type`; sport_type is the fine enum ("MountainBikeRide"). Avoid
+        # display_type, which is the human label ("Mountain Bike Ride").
+        'type': model.get('activity_type_display_name') or model.get('sport_type'),
+        'sport_type': model.get('sport_type') or model.get('activity_type_display_name'),
+        'commute': bool(model.get('commute')),
+        'trainer': bool(model.get('trainer')),
+        'has_location_data': bool(model.get('has_latlng')),
+    }
+
+
 class StravaWeb:
     def __init__(self, config: config.StravaWebConfig):
         self._config = config
@@ -98,6 +160,42 @@ class StravaWeb:
             '_strava4_session', config.strava_cookie_strava4_session,
             domain="www.strava.com", secure=True,
         )
+
+    def get_bikes(self, bike_ids: Optional[Iterable[str]] = None) -> Iterable[Mapping[str, Any]]:
+        # The website has no bike-roster endpoint, so resolve names one detail
+        # page at a time for the bikes referenced by synced activities. gear_id
+        # is "b<id>"; the page lives at /bikes/<id>. Deleted bikes 404 and are
+        # skipped, which naturally yields the athlete's current roster.
+        for gear_id in (bike_ids or []):
+            r = self._session.get(f"https://www.strava.com/bikes/{gear_id[1:]}")
+            if r.status_code == 404:
+                logging.debug("bike %s not found (deleted?), skipping", gear_id)
+                continue
+            r.raise_for_status()
+            name = _parse_bike_name(r.text)
+            if name:
+                yield {'id': gear_id, 'name': name}
+            else:
+                logging.warning("could not parse name for bike %s", gear_id)
+
+    def get_activities(self, before: Optional[datetime] = None) -> Iterable[Mapping[str, Any]]:
+        # Page through the website's training-log JSON endpoint (same cookie as
+        # gpx export). `before` is unused: the log is newest-first and the
+        # incremental cutoff is handled by the sqlite upsert.
+        headers = {'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json'}
+        page = 0
+        while True:
+            page += 1
+            r = self._session.get(
+                "https://www.strava.com/athlete/training_activities",
+                params={'per_page': '20', 'page': str(page), 'new_activity_only': 'false'},
+                headers=headers)
+            r.raise_for_status()
+            models = r.json().get('models') or []
+            if not models:
+                break
+            for model in models:
+                yield _training_activity_to_summary(model)
 
     def _get_gpx(self, what: str, activity_id: int) -> bytes:
         r = self._session.get(f"https://www.strava.com/activities/{activity_id}/export_{what}")

@@ -1,5 +1,6 @@
 import datetime
 from typing import TextIO
+from typing import Union
 
 import click
 
@@ -24,8 +25,19 @@ def cli_sqlite(config: config.SyncConfig) -> None:
     Synchronize bikes and activities metadata to local sqlite3 database.
     Unless --full is given, the sync is incremental, i.e. only new activities
     are synchronized and deletions aren't detected.
+
+    With --source web, metadata is scraped from the Strava website using the
+    --strava4-session cookie instead of the (subscription-gated) Strava API.
+    Website scraping doesn't provide upload_id.
     """
-    strava = StravaAPI(config=config)
+    strava: Union[StravaAPI, StravaWeb]
+    if config.source == 'web':
+        if not config.strava_cookie_strava4_session:
+            raise click.UsageError(
+                "--strava4-session (env STRAVA_COOKIE_STRAVA4_SESSION) is required for --source web")
+        strava = StravaWeb(config=config)
+    else:
+        strava = StravaAPI(config=config)
     sync.sync(config=config, strava=strava)
 
 

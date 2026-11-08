@@ -3,6 +3,9 @@
 -->
 
     $ strava-offline --config-sample
+    # Metadata source: 'api' (Strava API, needs a Strava subscription) or 'web' (website scraping, needs --strava4-session)
+    source: api
+    
     # Perform full sync instead of incremental
     full: false
     
@@ -21,6 +24,9 @@
     # OAuth 2 HTTP server port
     http_port: 12345
     
+    # '_strava4_session' cookie value
+    strava_cookie_strava4_session: TEXT
+    
     # Sqlite database file
     strava_sqlite_database: /home/user/.local/share/strava_offline/strava.sqlite
     
@@ -32,6 +38,3 @@
     
     # Optional path to activities in Strava backup (no need to redownload these)
     dir_activities_backup: DIRECTORY
-    
-    # '_strava4_session' cookie value
-    strava_cookie_strava4_session: TEXT
