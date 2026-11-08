@@ -14,6 +14,7 @@ permissions:
 env:
   # dependency cooldown to mitigate supply chain attacks
   UV_EXCLUDE_NEWER: '1 week'
+  PIP_UPLOADED_PRIOR_TO: 'P7D'
 
 jobs:
   check:
