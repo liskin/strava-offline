@@ -44,7 +44,7 @@ class StravaAPI:
         try:
             with self._config.strava_token_filename.open("r") as f:
                 return json.load(f)
-        except Exception:
+        except (OSError, ValueError):
             return None
 
     def _save_token(self, token) -> None:
