@@ -1,6 +1,6 @@
 from datetime import datetime
 from datetime import timezone
-from email.message import Message
+from email.message import EmailMessage
 import json
 from typing import Any
 from typing import Iterable
@@ -104,18 +104,17 @@ class StravaWeb:
         r = self._session.get(f"https://www.strava.com/activities/{activity_id}/export_{what}")
         r.raise_for_status()
 
-        content_type_ok = r.headers.get('Content-Type') == "application/octet-stream"
+        headers = EmailMessage()
+        for h in ('Content-Type', 'Content-Disposition'):
+            headers[h] = r.headers.get(h)
 
-        headers = Message()
-        headers['Content-Disposition'] = r.headers.get('Content-Disposition', "")
-        content_disposition_ok = (
-            headers.get_content_disposition() == "attachment"
-            and headers.get_filename("").endswith(".gpx"))
+        match (headers.get_content_type(), headers.is_attachment(), headers.get_filename()):
+            case ("application/octet-stream", True, str() as filename) if filename.endswith(".gpx"):
+                pass
+            case _:
+                raise NotGpx(f"expected gpx attachment, got:\n{r.headers}")
 
-        if content_type_ok and content_disposition_ok:
-            return r.content
-        else:
-            raise NotGpx(f"expected gpx attachment, got:\n{r.headers}")
+        return r.content
 
     def get_gpx(self, activity_id: int) -> bytes:
         try:
