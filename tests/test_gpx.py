@@ -55,7 +55,7 @@ def test_download_gpx(tmp_path):
 
 
 @pytest.fixture
-def strava_web(monkeypatch):
+def strava_web_mock_get(monkeypatch):
     cfg = config.StravaWebConfig(strava_cookie_strava4_session="TEST")
     strava = StravaWeb(config=cfg)
     get = Mock()
@@ -63,7 +63,7 @@ def strava_web(monkeypatch):
     return strava, get
 
 
-def attachment(content_disposition, body=b"<gpx/>"):
+def response_attachment(content_disposition, body=b"<gpx/>"):
     response = Response()
     response.status_code = 200
     response.headers["Content-Type"] = "application/octet-stream"
@@ -79,9 +79,9 @@ def attachment(content_disposition, body=b"<gpx/>"):
     'attachment; filename*=UTF-8\'\'Morning%3B%20Ride.gpx',
     'ATTACHMENT; FILENAME="Morning.gpx"',
 ])
-def test_download_gpx_attachment_filename(tmp_path, strava_web, content_disposition):
-    strava, get = strava_web
-    get.return_value = attachment(content_disposition)
+def test_download_gpx_attachment_filename(tmp_path, strava_web_mock_get, content_disposition):
+    strava, get = strava_web_mock_get
+    get.return_value = response_attachment(content_disposition)
 
     gpx.download_gpx(strava=strava, activity_id=123, path=tmp_path)
 
@@ -94,11 +94,11 @@ def test_download_gpx_attachment_filename(tmp_path, strava_web, content_disposit
     'attachment; filename',
     'attachment; filename="Morning.fit"',
 ])
-def test_download_gpx_falls_back_without_gpx_filename(tmp_path, strava_web, content_disposition):
-    strava, get = strava_web
+def test_download_gpx_falls_back_without_gpx_filename(tmp_path, strava_web_mock_get, content_disposition):
+    strava, get = strava_web_mock_get
     get.side_effect = [
-        attachment(content_disposition, b"original"),
-        attachment('attachment; filename="Morning.gpx"', b"<gpx/>")]
+        response_attachment(content_disposition, b"original"),
+        response_attachment('attachment; filename="Morning.gpx"', b"<gpx/>")]
 
     gpx.download_gpx(strava=strava, activity_id=123, path=tmp_path)
 
@@ -107,9 +107,9 @@ def test_download_gpx_falls_back_without_gpx_filename(tmp_path, strava_web, cont
     get.assert_called_with("https://www.strava.com/activities/123/export_gpx")
 
 
-def test_download_gpx_rejects_attachments_without_filename(tmp_path, strava_web):
-    strava, get = strava_web
-    get.return_value = attachment('attachment')
+def test_download_gpx_rejects_attachments_without_filename(tmp_path, strava_web_mock_get):
+    strava, get = strava_web_mock_get
+    get.return_value = response_attachment('attachment')
 
     with pytest.raises(NotGpx):
         gpx.download_gpx(strava=strava, activity_id=123, path=tmp_path)
