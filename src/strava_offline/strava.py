@@ -1,5 +1,6 @@
 from datetime import datetime
 from datetime import timezone
+from email.message import EmailMessage
 import json
 from typing import Any
 from typing import Iterable
@@ -103,18 +104,17 @@ class StravaWeb:
         r = self._session.get(f"https://www.strava.com/activities/{activity_id}/export_{what}")
         r.raise_for_status()
 
-        content_type_ok = r.headers.get('Content-Type') == "application/octet-stream"
+        headers = EmailMessage()
+        for h in ('Content-Type', 'Content-Disposition'):
+            headers[h] = r.headers.get(h)
 
-        content_disposition, content_disposition_params = _parse_content_disposition_header(
-            r.headers.get('Content-Disposition', ""))
-        content_disposition_ok = (
-            content_disposition == "attachment"
-            and content_disposition_params['filename'].endswith(".gpx"))
+        match (headers.get_content_type(), headers.is_attachment(), headers.get_filename()):
+            case ("application/octet-stream", True, str() as filename) if filename.endswith(".gpx"):
+                pass
+            case _:
+                raise NotGpx(f"expected gpx attachment, got:\n{r.headers}")
 
-        if content_type_ok and content_disposition_ok:
-            return r.content
-        else:
-            raise NotGpx(f"expected gpx attachment, got:\n{r.headers}")
+        return r.content
 
     def get_gpx(self, activity_id: int) -> bytes:
         try:
@@ -124,21 +124,3 @@ class StravaWeb:
             return self._get_gpx("original", activity_id)
         except NotGpx:
             return self._get_gpx("gpx", activity_id)
-
-
-def _parse_content_disposition_header(header):
-    tokens = header.split(';')
-    content_disposition, params = tokens[0].strip(), tokens[1:]
-    params_dict = {}
-    items_to_strip = "\"' "
-
-    for param in params:
-        param = param.strip()
-        if param:
-            key, value = param, True
-            index_of_equals = param.find("=")
-            if index_of_equals != -1:
-                key = param[:index_of_equals].strip(items_to_strip)
-                value = param[index_of_equals + 1:].strip(items_to_strip)
-            params_dict[key.lower()] = value
-    return content_disposition, params_dict
